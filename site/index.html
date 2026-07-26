@@ -1,416 +1,426 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>MindBot — the agent you can prove</title>
-<meta name="description" content="An autonomous agent framework whose distinguishing property is external verifiability. Every action hash-chained, every root published to a third party, every spend ceiling enforced before the call.">
-<meta name="color-scheme" content="dark">
-<meta property="og:title" content="MindBot — the agent you can prove">
-<meta property="og:description" content="Every autonomous agent tells you what it did. This one hands you the proof.">
-<meta property="og:image" content="assets/council.png">
-<meta property="og:type" content="website">
-<link rel="icon" href="assets/logo.png">
-<style>
-:root{
-  --bg:#0B0B14; --bg2:#12102A; --panel:#151429; --line:#282348;
-  --ink:#F2EEFF; --muted:#8F88C4; --accent:#6E5BFF; --green:#32E6A0; --amber:#FFC857;
-  --max:1080px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  background:radial-gradient(120% 70% at 75% -8%,var(--bg2),var(--bg)) fixed;
-  color:var(--ink);font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;
-}
-img{max-width:100%;height:auto;display:block}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 22px}
-
-/* nav */
-nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);
-  background:rgba(11,11,20,.82);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;gap:18px;height:62px}
-nav img{width:30px}
-nav b{letter-spacing:.14em;font-size:14px}
-nav .links{margin-left:auto;display:flex;gap:20px;font-size:14px;color:var(--muted);overflow:auto}
-nav .links a{color:var(--muted);white-space:nowrap}
-nav .links a:hover{color:var(--ink);text-decoration:none}
-
-/* hero */
-header{padding:88px 0 64px;text-align:center}
-header img.mark{width:150px;margin:0 auto 30px;filter:drop-shadow(0 0 46px rgba(110,91,255,.45))}
-h1{font-size:clamp(2.6rem,8vw,5.2rem);line-height:.98;letter-spacing:-.045em;font-weight:800}
-h1 .g{background:linear-gradient(100deg,#fff,#C9C2FF 45%,var(--accent));
-  -webkit-background-clip:text;background-clip:text;color:transparent}
-.tag{margin:22px auto 0;max-width:36ch;font-size:clamp(1.05rem,2.6vw,1.35rem);color:var(--muted)}
-.tag b{color:var(--ink)}
-.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
-.btn{padding:14px 26px;border-radius:12px;font-weight:700;font-size:15px;border:1px solid var(--line)}
-.btn.p{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn:hover{text-decoration:none;transform:translateY(-1px)}
-.install{margin:30px auto 0;max-width:640px;background:#0A0918;border:1px solid var(--line);
-  border-radius:12px;padding:14px 16px;font-size:13px;color:var(--green);overflow-x:auto;text-align:left}
-
-/* stat strip */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
-  background:var(--line);border-block:1px solid var(--line);margin:64px 0}
-.stat{background:var(--bg);padding:26px 18px;text-align:center}
-.stat b{display:block;font-size:2rem;font-weight:800;letter-spacing:-.03em}
-.stat span{font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.stat.ok b{color:var(--green)}
-
-section{padding:74px 0}
-h2{font-size:clamp(1.8rem,4.6vw,2.9rem);letter-spacing:-.03em;line-height:1.1;margin-bottom:16px}
-h2 .g{color:var(--accent)}
-.lede{color:var(--muted);max-width:62ch;font-size:1.08rem}
-.eyebrow{color:var(--green);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px}
-
-.panel{background:linear-gradient(150deg,var(--panel),#0C0B1A);border:1px solid var(--line);
-  border-radius:18px;padding:clamp(20px,4vw,34px)}
-.grid{display:grid;gap:16px}
-.g3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
-.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-
-.layer{border-left:3px solid var(--line);padding-left:18px;margin-bottom:22px}
-.layer.win{border-color:var(--green)}
-.layer h4{font-size:1.1rem;margin-bottom:4px}
-.layer p{color:var(--muted);font-size:.96rem}
-.layer .blind{color:var(--amber);font-size:.92rem;margin-top:6px}
-
-pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:16px;
-  overflow-x:auto;font-size:12.5px;line-height:1.55;color:#C9C2FF}
-pre b{color:var(--green);font-weight:600}
-pre i{color:var(--amber);font-style:normal}
-
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;margin-top:26px}
-.cards img{border-radius:12px;border:1px solid var(--line);transition:transform .18s,border-color .18s}
-.cards img:hover{transform:translateY(-4px);border-color:var(--accent)}
-
-.feat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
-.feat h4{font-size:1.05rem;margin-bottom:6px}
-.feat code{color:var(--green);font-size:12.5px;font-family:ui-monospace,monospace}
-.feat p{color:var(--muted);font-size:.94rem;margin-top:8px}
-
-.demo{display:block;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel)}
-.demo:hover{border-color:var(--accent);text-decoration:none}
-.demo .body{padding:22px}
-.demo h4{font-size:1.2rem;color:var(--ink)}
-.demo p{color:var(--muted);font-size:.95rem;margin-top:6px}
-.demo .go{color:var(--green);font-size:13px;font-weight:700;margin-top:12px;display:block}
-
-.limits li{color:var(--muted);margin-bottom:12px;list-style:none;padding-left:22px;position:relative}
-.limits li::before{content:"—";position:absolute;left:0;color:var(--amber)}
-.limits b{color:var(--ink)}
-
-footer{border-top:1px solid var(--line);padding:50px 0 70px;text-align:center;color:var(--muted);font-size:14px}
-footer .slog{font-size:1.5rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:14px}
-</style>
-</head>
-<body>
-
-<nav><div class="wrap">
-  <img src="assets/logo.png" alt=""><b>MINDBOT</b>
-  <div class="links">
-    <a href="docs/what-this-actually-is.html">What is this?</a>
-    <a href="#problem">The problem</a>
-    <a href="#council">Council</a>
-    <a href="#does">What it does</a>
-    <a href="demo/twenty.html">Can't cheat</a>
-    <a href="#demos">Demos</a>
-    <a href="docs/index.html">Docs</a>
-    <a href="#start">Start</a>
-    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
-  </div>
-</div></nav>
-
-<header class="wrap">
-  <img class="mark" src="assets/logo.png" alt="MindBot mark">
-  <h1>The agent you<br><span class="g">can prove.</span></h1>
-  <p class="tag">Every autonomous agent tells you what it did.<br><b>This one hands you the proof.</b></p>
-  <div class="cta">
-    <a class="btn p" href="#start">Get started</a>
-    <a class="btn" href="docs/what-this-actually-is.html">What is this?</a>
-    <a class="btn" href="demo/twenty.html">The AI that can't cheat</a>
-    <a class="btn" href="demo/chain-check.html">Play the game</a>
-    <a class="btn" href="demo/guide.html">Interactive guide</a>
-  </div>
-  <pre class="install mono">curl -fsSL https://raw.githubusercontent.com/TheMindExpansionNetwork/mindbot-framework/main/vps-install.sh | bash</pre>
-</header>
-
-<div class="stats wrap" style="max-width:var(--max)">
-  <div class="stat ok"><b>0</b><span>autonomous sends</span></div>
-  <div class="stat"><b>177</b><span>tests</span></div>
-  <div class="stat"><b>73</b><span>commands</span></div>
-  <div class="stat ok"><b>0</b><span>secrets in 406 files</span></div>
-  <div class="stat"><b>stdlib</b><span>only, in the core</span></div>
-</div>
-
-<section id="problem" class="wrap">
-  <div class="eyebrow">01 · The problem</div>
-  <h2>Your agent's log is <span class="g">a file it controls.</span></h2>
-  <p class="lede">An agent runs six hours while you sleep. In the morning it reports success. Did it
-  call the model 40 times or 4,000? Did a plugin read your keys? Did it email someone?</p>
-  <p class="lede" style="margin-top:14px">You have its word. That's the default architecture of
-  the entire category — not a flaw in any one framework. It isn't an audit trail. It's an
-  autobiography.</p>
-
-  <div class="panel" style="margin-top:34px">
-    <div class="layer">
-      <h4>Layer 1 · Hash chain</h4>
-      <p>Each entry binds the SHA-256 of the one before it. Edit anything and every later hash stops validating.</p>
-      <p class="blind">Blind spot: delete it and rebuild from scratch, and verification says INTACT — the forger computed those hashes too.</p>
-    </div>
-    <div class="layer">
-      <h4>Layer 2 · Merkle root</h4>
-      <p>All history compresses to 32 bytes, with inclusion proofs that reveal one entry and nothing else.</p>
-      <p class="blind">Blind spot: a fingerprint you keep locally proves nothing. You can recompute it over the forgery.</p>
-    </div>
-    <div class="layer win">
-      <h4>Layer 3 · External anchor <span style="color:var(--green)">â† the one nobody ships</span></h4>
-      <p>The root is pushed to a repository you don't control. Forging history now means matching
-      a value that was <b>public before you started</b>.</p>
-    </div>
-  </div>
-</section>
-
-<section id="council" class="wrap">
-  <div class="eyebrow">02 · The council</div>
-  <h2>Eleven lenses. One ledger.</h2>
-  <p class="lede"><b>Ten are fixed. One is yours.</b></p>
-  <p class="lede" style="margin-top:12px">The ten are lenses — you don't rename them, the same
-  way you don't rename a screwdriver. When someone says <em>"ask Quantum to check that"</em>,
-  every MindBot user knows what they mean. Shared vocabulary is the point.</p>
-  <p class="lede" style="margin-top:12px">The eleventh seat is <b>yours</b>. You name it, pick its
-  temperament, its voice, its runner. It's the one you actually talk to — it works out whose
-  question this is and brings the answer back sounding like itself.</p>
-  <pre class="mono" style="margin-top:20px">mindbot me --create --name Rook --vibe dry --pet raven</pre>
-  <p class="lede" style="margin-top:16px;font-size:.96rem">A framework where everything is
-  customisable has no shared language. One where nothing is has no personality. So: ten tools
-  everybody shares, one character only you have.
-  <a href="docs/what-this-actually-is.html">The plain-English explainer â†’</a></p>
-  <img src="assets/council.png" alt="The eleven counselors" style="border-radius:18px;border:1px solid var(--line);margin-top:28px">
-  <div class="cards">
-    <img src="assets/cards/mind.png" alt="Mind"><img src="assets/cards/sage.png" alt="Sage">
-    <img src="assets/cards/forge.png" alt="Forge"><img src="assets/cards/scribe.png" alt="Scribe">
-    <img src="assets/cards/vanguard.png" alt="Vanguard"><img src="assets/cards/quantum.png" alt="Quantum">
-    <img src="assets/cards/seeker.png" alt="Seeker"><img src="assets/cards/spark.png" alt="Spark">
-    <img src="assets/cards/oracle.png" alt="Oracle"><img src="assets/cards/titan.png" alt="Titan">
-    <img src="assets/cards/tempest.png" alt="Tempest">
-  </div>
-  <p class="lede" style="margin-top:22px;font-size:.95rem">Every fact on those cards is read from
-  the framework's own tables — a card can't disagree with the code it describes, and the errand
-  count is the same ledger-derived number <span class="mono" style="color:var(--green)">mindbot pets</span> prints.</p>
-</section>
-
-<section id="does" class="wrap">
-  <div class="eyebrow">03 · What it does</div>
-  <h2>Seven things, and each one leaves a receipt.</h2>
-  <div class="grid g3" style="margin-top:28px">
-    <div class="feat"><h4>Studio</h4><code>mindbot studio "…"</code>
-      <p>Typed pipelines with a critique loop — a <em>different</em> counselor scores the draft and
-      sends it back. Code artifacts are actually executed. Every round is ledgered, so revision
-      history is provable.</p></div>
-    <div class="feat"><h4>Observe</h4><code>mindbot observe ./photos</code>
-      <p>Describes images and audio, binding each claim to the SHA-256 of the exact bytes. Change
-      one pixel and it stops matching.</p></div>
-    <div class="feat"><h4>Watch</h4><code>mindbot watch gate.mp4</code>
-      <p>Reviews video a frame at a time and records the <b>quiet</b> frames too — a gap in a log
-      is a gift to a liar. Incomplete coverage exits non-zero.</p></div>
-    <div class="feat"><h4>The Firm</h4><code>mindbot firm "…"</code>
-      <p>Hierarchical routing down a cost pyramid. Measured: Opus was 2.9% of the bill and set the
-      whole direction — 61% cheaper than a flat swarm.</p></div>
-    <div class="feat"><h4>Forge</h4><code>mindbot forge mod "…"</code>
-      <p>Generates complete, capability-audited mods. Total-conversion packs can replace the crew,
-      look, rules and quests — never the ledger, budget or human gate.</p></div>
-    <div class="feat"><h4>Voices &amp; pets</h4><code>mindbot voices --introduce</code>
-      <p>Eleven real speakers, local CPU, $0. Each counselor has a runner whose level is read from
-      the chain and therefore can't be faked.</p></div>
-  </div>
-</section>
-
-<section class="wrap">
-  <div class="eyebrow">04 · The receipt</div>
-  <h2>Check it. Don't trust it.</h2>
-  <pre class="mono">$ mindbot attest
-
-  ðŸ” PROOF-OF-AUTONOMY
-     chain           <b>â— intact</b> — unbroken
-     merkle root     534adde10a889a7501648ba4db988552fda2156118a3367650a323631ae24b17
-     anchors         <b>11 published, all roots re-match</b>
-     standing        <b>â— EXTERNALLY VERIFIED</b>
-     autonomous sends / posts / charges          <b>0</b>
-
-$ mindbot prove 224
-
-  INCLUSION PROOF — seq 224   <b>â— PROOF VALID</b>
-   path:  9 sibling hashes (of 764 entries)</pre>
-  <p class="lede" style="margin-top:18px">Nine hashes prove one action out of 764 — while revealing
-  nothing about the other 763. That matters when the record is evidence.</p>
-</section>
-
-<section id="demos" class="wrap">
-  <div class="eyebrow">05 · Try it now</div>
-  <h2>Three things you can click.</h2>
-  <div class="grid g2" style="margin-top:28px">
-    <a class="demo" href="demo/twenty.html" style="border-color:var(--green)">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MindBot — the agent you can prove</title>
+<meta name="description" content="An autonomous agent framework whose distinguishing property is external verifiability. Every action hash-chained, every root published to a third party, every spend ceiling enforced before the call.">
+<meta name="color-scheme" content="dark">
+<meta property="og:title" content="MindBot — the agent you can prove">
+<meta property="og:description" content="Every autonomous agent tells you what it did. This one hands you the proof.">
+<meta property="og:image" content="assets/council.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/logo.png">
+<style>
+:root{
+  --bg:#0B0B14; --bg2:#12102A; --panel:#151429; --line:#282348;
+  --ink:#F2EEFF; --muted:#8F88C4; --accent:#6E5BFF; --green:#32E6A0; --amber:#FFC857;
+  --max:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:radial-gradient(120% 70% at 75% -8%,var(--bg2),var(--bg)) fixed;
+  color:var(--ink);font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 22px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);
+  background:rgba(11,11,20,.82);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:18px;height:62px}
+nav img{width:30px}
+nav b{letter-spacing:.14em;font-size:14px}
+nav .links{margin-left:auto;display:flex;gap:20px;font-size:14px;color:var(--muted);overflow:auto}
+nav .links a{color:var(--muted);white-space:nowrap}
+nav .links a:hover{color:var(--ink);text-decoration:none}
+
+/* hero */
+header{padding:88px 0 64px;text-align:center}
+header img.mark{width:150px;margin:0 auto 30px;filter:drop-shadow(0 0 46px rgba(110,91,255,.45))}
+h1{font-size:clamp(2.6rem,8vw,5.2rem);line-height:.98;letter-spacing:-.045em;font-weight:800}
+h1 .g{background:linear-gradient(100deg,#fff,#C9C2FF 45%,var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{margin:22px auto 0;max-width:36ch;font-size:clamp(1.05rem,2.6vw,1.35rem);color:var(--muted)}
+.tag b{color:var(--ink)}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+.btn{padding:14px 26px;border-radius:12px;font-weight:700;font-size:15px;border:1px solid var(--line)}
+.btn.p{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn:hover{text-decoration:none;transform:translateY(-1px)}
+.install{margin:30px auto 0;max-width:640px;background:#0A0918;border:1px solid var(--line);
+  border-radius:12px;padding:14px 16px;font-size:13px;color:var(--green);overflow-x:auto;text-align:left}
+
+/* stat strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
+  background:var(--line);border-block:1px solid var(--line);margin:64px 0}
+.stat{background:var(--bg);padding:26px 18px;text-align:center}
+.stat b{display:block;font-size:2rem;font-weight:800;letter-spacing:-.03em}
+.stat span{font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.stat.ok b{color:var(--green)}
+
+section{padding:74px 0}
+h2{font-size:clamp(1.8rem,4.6vw,2.9rem);letter-spacing:-.03em;line-height:1.1;margin-bottom:16px}
+h2 .g{color:var(--accent)}
+.lede{color:var(--muted);max-width:62ch;font-size:1.08rem}
+.eyebrow{color:var(--green);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px}
+
+.panel{background:linear-gradient(150deg,var(--panel),#0C0B1A);border:1px solid var(--line);
+  border-radius:18px;padding:clamp(20px,4vw,34px)}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+
+.layer{border-left:3px solid var(--line);padding-left:18px;margin-bottom:22px}
+.layer.win{border-color:var(--green)}
+.layer h4{font-size:1.1rem;margin-bottom:4px}
+.layer p{color:var(--muted);font-size:.96rem}
+.layer .blind{color:var(--amber);font-size:.92rem;margin-top:6px}
+
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:16px;
+  overflow-x:auto;font-size:12.5px;line-height:1.55;color:#C9C2FF}
+pre b{color:var(--green);font-weight:600}
+pre i{color:var(--amber);font-style:normal}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;margin-top:26px}
+.cards img{border-radius:12px;border:1px solid var(--line);transition:transform .18s,border-color .18s}
+.cards img:hover{transform:translateY(-4px);border-color:var(--accent)}
+
+.feat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+.feat h4{font-size:1.05rem;margin-bottom:6px}
+.feat code{color:var(--green);font-size:12.5px;font-family:ui-monospace,monospace}
+.feat p{color:var(--muted);font-size:.94rem;margin-top:8px}
+
+.demo{display:block;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel)}
+.demo:hover{border-color:var(--accent);text-decoration:none}
+.demo .body{padding:22px}
+.demo h4{font-size:1.2rem;color:var(--ink)}
+.demo p{color:var(--muted);font-size:.95rem;margin-top:6px}
+.demo .go{color:var(--green);font-size:13px;font-weight:700;margin-top:12px;display:block}
+
+.limits li{color:var(--muted);margin-bottom:12px;list-style:none;padding-left:22px;position:relative}
+.limits li::before{content:"—";position:absolute;left:0;color:var(--amber)}
+.limits b{color:var(--ink)}
+
+footer{border-top:1px solid var(--line);padding:50px 0 70px;text-align:center;color:var(--muted);font-size:14px}
+footer .slog{font-size:1.5rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <img src="assets/logo.png" alt=""><b>MINDBOT</b>
+  <div class="links">
+    <a href="docs/what-this-actually-is.html">What is this?</a>
+    <a href="#problem">The problem</a>
+    <a href="#council">Council</a>
+    <a href="#does">What it does</a>
+    <a href="demo/nova.html">Nova</a>
+    <a href="demo/twenty.html">Can't cheat</a>
+    <a href="#demos">Demos</a>
+    <a href="docs/index.html">Docs</a>
+    <a href="#start">Start</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="wrap">
+  <img class="mark" src="assets/logo.png" alt="MindBot mark">
+  <h1>The agent you<br><span class="g">can prove.</span></h1>
+  <p class="tag">Every autonomous agent tells you what it did.<br><b>This one hands you the proof.</b></p>
+  <div class="cta">
+    <a class="btn p" href="#start">Get started</a>
+    <a class="btn" href="docs/what-this-actually-is.html">What is this?</a>
+    <a class="btn" href="demo/twenty.html">The AI that can't cheat</a>
+    <a class="btn" href="demo/chain-check.html">Play the game</a>
+    <a class="btn" href="demo/guide.html">Interactive guide</a>
+  </div>
+  <pre class="install mono">curl -fsSL https://raw.githubusercontent.com/TheMindExpansionNetwork/mindbot-framework/main/vps-install.sh | bash</pre>
+</header>
+
+<div class="stats wrap" style="max-width:var(--max)">
+  <div class="stat ok"><b>0</b><span>autonomous sends</span></div>
+  <div class="stat"><b>177</b><span>tests</span></div>
+  <div class="stat"><b>73</b><span>commands</span></div>
+  <div class="stat ok"><b>0</b><span>secrets in 406 files</span></div>
+  <div class="stat"><b>stdlib</b><span>only, in the core</span></div>
+</div>
+
+<section id="problem" class="wrap">
+  <div class="eyebrow">01 · The problem</div>
+  <h2>Your agent's log is <span class="g">a file it controls.</span></h2>
+  <p class="lede">An agent runs six hours while you sleep. In the morning it reports success. Did it
+  call the model 40 times or 4,000? Did a plugin read your keys? Did it email someone?</p>
+  <p class="lede" style="margin-top:14px">You have its word. That's the default architecture of
+  the entire category — not a flaw in any one framework. It isn't an audit trail. It's an
+  autobiography.</p>
+
+  <div class="panel" style="margin-top:34px">
+    <div class="layer">
+      <h4>Layer 1 · Hash chain</h4>
+      <p>Each entry binds the SHA-256 of the one before it. Edit anything and every later hash stops validating.</p>
+      <p class="blind">Blind spot: delete it and rebuild from scratch, and verification says INTACT — the forger computed those hashes too.</p>
+    </div>
+    <div class="layer">
+      <h4>Layer 2 · Merkle root</h4>
+      <p>All history compresses to 32 bytes, with inclusion proofs that reveal one entry and nothing else.</p>
+      <p class="blind">Blind spot: a fingerprint you keep locally proves nothing. You can recompute it over the forgery.</p>
+    </div>
+    <div class="layer win">
+      <h4>Layer 3 · External anchor <span style="color:var(--green)">â† the one nobody ships</span></h4>
+      <p>The root is pushed to a repository you don't control. Forging history now means matching
+      a value that was <b>public before you started</b>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="council" class="wrap">
+  <div class="eyebrow">02 · The council</div>
+  <h2>Eleven lenses. One ledger.</h2>
+  <p class="lede"><b>Ten are fixed. One is yours.</b></p>
+  <p class="lede" style="margin-top:12px">The ten are lenses — you don't rename them, the same
+  way you don't rename a screwdriver. When someone says <em>"ask Quantum to check that"</em>,
+  every MindBot user knows what they mean. Shared vocabulary is the point.</p>
+  <p class="lede" style="margin-top:12px">The eleventh seat is <b>yours</b>. You name it, pick its
+  temperament, its voice, its runner. It's the one you actually talk to — it works out whose
+  question this is and brings the answer back sounding like itself.</p>
+  <pre class="mono" style="margin-top:20px">mindbot me --create --name Rook --vibe dry --pet raven</pre>
+  <p class="lede" style="margin-top:16px;font-size:.96rem">A framework where everything is
+  customisable has no shared language. One where nothing is has no personality. So: ten tools
+  everybody shares, one character only you have.
+  <a href="docs/what-this-actually-is.html">The plain-English explainer →</a></p>
+  <img src="assets/council.png" alt="The eleven counselors" style="border-radius:18px;border:1px solid var(--line);margin-top:28px">
+  <div class="cards">
+    <img src="assets/cards/mind.png" alt="Mind"><img src="assets/cards/sage.png" alt="Sage">
+    <img src="assets/cards/forge.png" alt="Forge"><img src="assets/cards/scribe.png" alt="Scribe">
+    <img src="assets/cards/vanguard.png" alt="Vanguard"><img src="assets/cards/quantum.png" alt="Quantum">
+    <img src="assets/cards/seeker.png" alt="Seeker"><img src="assets/cards/spark.png" alt="Spark">
+    <img src="assets/cards/oracle.png" alt="Oracle"><img src="assets/cards/titan.png" alt="Titan">
+    <img src="assets/cards/tempest.png" alt="Tempest">
+  </div>
+  <p class="lede" style="margin-top:22px;font-size:.95rem">Every fact on those cards is read from
+  the framework's own tables — a card can't disagree with the code it describes, and the errand
+  count is the same ledger-derived number <span class="mono" style="color:var(--green)">mindbot pets</span> prints.</p>
+</section>
+
+<section id="does" class="wrap">
+  <div class="eyebrow">03 · What it does</div>
+  <h2>Seven things, and each one leaves a receipt.</h2>
+  <div class="grid g3" style="margin-top:28px">
+    <div class="feat"><h4>Studio</h4><code>mindbot studio "…"</code>
+      <p>Typed pipelines with a critique loop — a <em>different</em> counselor scores the draft and
+      sends it back. Code artifacts are actually executed. Every round is ledgered, so revision
+      history is provable.</p></div>
+    <div class="feat"><h4>Observe</h4><code>mindbot observe ./photos</code>
+      <p>Describes images and audio, binding each claim to the SHA-256 of the exact bytes. Change
+      one pixel and it stops matching.</p></div>
+    <div class="feat"><h4>Watch</h4><code>mindbot watch gate.mp4</code>
+      <p>Reviews video a frame at a time and records the <b>quiet</b> frames too — a gap in a log
+      is a gift to a liar. Incomplete coverage exits non-zero.</p></div>
+    <div class="feat"><h4>The Firm</h4><code>mindbot firm "…"</code>
+      <p>Hierarchical routing down a cost pyramid. Measured: Opus was 2.9% of the bill and set the
+      whole direction — 61% cheaper than a flat swarm.</p></div>
+    <div class="feat"><h4>Forge</h4><code>mindbot forge mod "…"</code>
+      <p>Generates complete, capability-audited mods. Total-conversion packs can replace the crew,
+      look, rules and quests — never the ledger, budget or human gate.</p></div>
+    <div class="feat"><h4>Voices &amp; pets</h4><code>mindbot voices --introduce</code>
+      <p>Eleven real speakers, local CPU, $0. Each counselor has a runner whose level is read from
+      the chain and therefore can't be faked.</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="eyebrow">04 · The receipt</div>
+  <h2>Check it. Don't trust it.</h2>
+  <pre class="mono">$ mindbot attest
+
+  ðŸ” PROOF-OF-AUTONOMY
+     chain           <b>â— intact</b> — unbroken
+     merkle root     534adde10a889a7501648ba4db988552fda2156118a3367650a323631ae24b17
+     anchors         <b>11 published, all roots re-match</b>
+     standing        <b>â— EXTERNALLY VERIFIED</b>
+     autonomous sends / posts / charges          <b>0</b>
+
+$ mindbot prove 224
+
+  INCLUSION PROOF — seq 224   <b>â— PROOF VALID</b>
+   path:  9 sibling hashes (of 764 entries)</pre>
+  <p class="lede" style="margin-top:18px">Nine hashes prove one action out of 764 — while revealing
+  nothing about the other 763. That matters when the record is evidence.</p>
+</section>
+
+<section id="demos" class="wrap">
+  <div class="eyebrow">05 · Try it now</div>
+  <h2>Four things you can click.</h2>
+  <div class="grid g2" style="margin-top:28px">
+    <a class="demo" href="demo/nova.html">
       <div class="body">
-        <h4>🔒 The AI that can't cheat</h4>
-        <p>Every "I'm thinking of something" AI is bluffing — there's no hidden state between
-        turns, so it quietly swaps the answer when your questions corner it. This one commits its
-        word to a hash chain <b>before you ask anything</b>. Then press the button that makes it
-        cheat, and watch the proof catch it.</p>
-        <span class="go">Play →</span>
+        <h4>🍔 Nova Space Burgers</h4>
+        <p>A whole fictional dystopian megacorp — brand voice, menu, six executives, legal
+        disclosures and a four-placement ad campaign — written by the council and drawn by
+        image models for <b>six cents</b>. Satire; the receipts are real.</p>
+        <span class="go">Visit →</span>
       </div>
     </a>
-    <a class="demo" href="demo/chain-check.html">
-      <div class="body">
-        <h4>ðŸ”— Chain Check</h4>
-        <p>Sixty seconds. Log entries carry the hash of the one before; one in three is edited.
-        Spot the tampering. Real SHA-256 in your browser.</p>
-        <span class="go">Play â†’</span>
-      </div>
-    </a>
-    <a class="demo" href="demo/guide.html">
-      <div class="body">
-        <h4>ðŸ“– Trust, tested</h4>
-        <p>An interactive guide. Read the agent's confident summary, then open the raw events and
-        find the timeout it didn't mention. Then break a live hash chain yourself.</p>
-        <span class="go">Explore â†’</span>
-      </div>
-    </a>
-  </div>
-</section>
-
-<section id="mod" class="wrap">
-  <div class="eyebrow">06 · Mod it</div>
-  <h2>It's a moddable game, <span class="g">with physics you can't change.</span></h2>
-  <p class="lede">The framework ships a spine. Everything interesting is a mod — and a mod
-  declares what it can touch, then the runtime walks its code and holds it to that.</p>
-  <pre class="mono" style="margin-top:22px">mindbot forge mod "tracks which counselor writes best"
-mindbot forge pack cyberpunk-2045</pre>
-  <div class="grid g2" style="margin-top:26px">
-    <div class="feat">
-      <h4>A pack can replace</h4>
-      <p><b>crew</b> — who the counselors are, their names, their voices<br>
-         <b>look</b> — palette, banner, boot sequence<br>
-         <b>rules</b> — what the critic judges against, how high the bar is<br>
-         <b>quests</b> — a campaign that seeds your board</p>
-    </div>
-    <div class="feat" style="border-color:var(--green)">
-      <h4 style="color:var(--green)">A pack can never touch</h4>
-      <p>the <b>ledger</b> · the <b>budget</b> · the <b>human gate</b><br><br>
-      Those are engine, not content. A total conversion changes the world; it doesn't change
-      physics. Enforced <em>recursively</em> — hiding <span class="mono">budget_off</span> three
-      levels deep in a config doesn't work, and there's a test that proves it.</p>
-    </div>
-  </div>
-  <p class="lede" style="margin-top:22px">Which means <b>you can run a mod you didn't write and
-  still know exactly what it did.</b> Ask for a power you didn't declare and it's refused — and
-  the <em>attempt</em> goes in the ledger.</p>
-</section>
-
-<section id="pets" class="wrap">
-  <div class="eyebrow">07 · The pets</div>
-  <h2>Every counselor has a runner.</h2>
-  <p class="lede">The counselor thinks. The pet fetches. And a pet's level
-  <b>cannot be faked, because the level <em>is</em> the ledger.</b></p>
-  <pre class="mono">$ mindbot pets
-
-  ðŸ¢ Tortoise  Sage      â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ·····   154  <b>companion</b>   well fed
-  ðŸª² Rivet     Forge     â–ˆâ–ˆâ–ˆâ–ˆ··········   114  <b>companion</b>   well fed
-  ðŸ‚ Anchor    Titan     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ······     3  egg         <i>starving</i></pre>
-  <p class="lede" style="margin-top:18px">A starving pet means you genuinely haven't used that
-  counselor. A <span class="mono" style="color:var(--green)">companion</span> genuinely did the
-  work. It's a game mechanic that's also an honest activity dashboard — those turn out to be the
-  same thing if you build it from real data.</p>
-  <p class="lede" style="margin-top:14px">And because it should be fun to open:
-  <span class="mono" style="color:var(--green)">mindbot cheat</span> ·
-  <span class="mono" style="color:var(--green)">mindbot rave</span> ·
-  <span class="mono" style="color:var(--green)">mindbot oracle</span> ·
-  <span class="mono" style="color:var(--green)">mindbot trophies</span></p>
-</section>
-
-<section id="docs" class="wrap">
-  <div class="eyebrow">08 · Read it</div>
-  <h2>Everything, in reading order.</h2>
-  <div class="grid g3" style="margin-top:26px">
-    <a class="feat" href="docs/what-this-actually-is.html" style="text-decoration:none">
-      <h4>What this actually is â†’</h4>
-      <p>The plain-English version. Start here if you just want to understand the thing.</p></a>
-    <a class="feat" href="docs/whitepaper.html" style="text-decoration:none">
-      <h4>Verifiable Autonomy â†’</h4>
-      <p>The white paper. Why three integrity layers, and why the third is the one nobody
-      ships.</p></a>
-    <a class="feat" href="docs/the-ballad-of-the-eleven.html" style="text-decoration:none">
-      <h4>The Ballad of the Eleven â†’</h4>
-      <p>The manual, in verse. Every parenthetical is a real measurement.</p></a>
-    <a class="feat" href="docs/test-report.html" style="text-decoration:none">
-      <h4>Test report â†’</h4>
-      <p>20/20 checks, 177 tests — including what it does <em>not</em> establish.</p></a>
-    <a class="feat" href="docs/the-office.html" style="text-decoration:none">
-      <h4>The Office â†’</h4>
-      <p>Running it unattended, and every guard around it.</p></a>
-    <a class="feat" href="docs/index.html" style="text-decoration:none">
-      <h4>All 15 documents â†’</h4>
-      <p>The reading room — argument, build, evidence.</p></a>
-  </div>
-</section>
-
-<section id="start" class="wrap">
-  <div class="eyebrow">09 · Start</div>
-  <h2>One line. No account.</h2>
-  <pre class="mono">curl -fsSL https://raw.githubusercontent.com/TheMindExpansionNetwork/mindbot-framework/main/vps-install.sh | bash
-
-mindbot doctor          <i># is this environment sane?</i>
-mindbot whoami          <i># what I am — and what I cannot do</i>
-mindbot studio "a script that rotates my logs"
-mindbot attest          <i># the receipt</i></pre>
-  <p class="lede" style="margin-top:18px">The core is Python 3.10+ standard library only — no
-  dependency tree to audit, in a project whose whole pitch is auditability. Bring your own key,
-  or run free models and pay nothing.</p>
-  <div class="cta" style="justify-content:flex-start;margin-top:26px">
-    <a class="btn p" href="https://github.com/TheMindExpansionNetwork/mindbot-framework">Framework</a>
-    <a class="btn" href="https://github.com/TheMindExpansionNetwork/mindbot-starters">Starters</a>
-    <a class="btn" href="https://github.com/TheMindExpansionNetwork/mindbot-observe">Observe demo</a>
-  </div>
-</section>
-
-<section class="wrap">
-  <div class="eyebrow">10 · Honest limits</div>
-  <h2>On the front page, not in a footnote.</h2>
-  <p class="lede">A framework selling verifiability that overstates its own guarantees has refuted
-  itself in the first paragraph.</p>
-  <ul class="limits" style="margin-top:24px">
-    <li><b>Anchors are only third-party evidence once pushed.</b> Before that they're a local file
-      the same process could rewrite — and <span class="mono">attest</span> reports them as
-      self-attested, not verified.</li>
-    <li><b>Provenance is not correctness.</b> It proves what happened, not that the reasoning was
-      sound. It does not try.</li>
-    <li><b>Python is not a sandbox.</b> Capability scoping guarantees evidence, not containment.</li>
-    <li><b>One anchor destination is one point of trust.</b> Two independent destinations would be
-      strictly better and aren't built yet.</li>
-    <li><b>No live-model integration test.</b> The machinery around the models is well covered;
-      the models are not. Biggest remaining gap.</li>
-  </ul>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="slog">Prove, don't promise.</div>
-    <p>MIT · runs on hardware you control · models you choose · data that stays yours</p>
-    <p style="margin-top:10px;font-size:12.5px">
-      <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/docs/WHITEPAPER.md">White paper</a> ·
-      <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/docs/FIVE_MINUTES.md">5-minute start</a> ·
-      <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/AGENTS.md">For your agent</a> ·
-      <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/docs/TEST_REPORT.md">Test report</a>
-    </p>
-  </div>
-</footer>
-
-</body>
-</html>
-
+    <a class="demo" href="demo/twenty.html" style="border-color:var(--green)">
+      <div class="body">
+        <h4>🔒 The AI that can't cheat</h4>
+        <p>Every "I'm thinking of something" AI is bluffing — there's no hidden state between
+        turns, so it quietly swaps the answer when your questions corner it. This one commits its
+        word to a hash chain <b>before you ask anything</b>. Then press the button that makes it
+        cheat, and watch the proof catch it.</p>
+        <span class="go">Play →</span>
+      </div>
+    </a>
+    <a class="demo" href="demo/chain-check.html">
+      <div class="body">
+        <h4>ðŸ”— Chain Check</h4>
+        <p>Sixty seconds. Log entries carry the hash of the one before; one in three is edited.
+        Spot the tampering. Real SHA-256 in your browser.</p>
+        <span class="go">Play →</span>
+      </div>
+    </a>
+    <a class="demo" href="demo/guide.html">
+      <div class="body">
+        <h4>ðŸ“– Trust, tested</h4>
+        <p>An interactive guide. Read the agent's confident summary, then open the raw events and
+        find the timeout it didn't mention. Then break a live hash chain yourself.</p>
+        <span class="go">Explore →</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section id="mod" class="wrap">
+  <div class="eyebrow">06 · Mod it</div>
+  <h2>It's a moddable game, <span class="g">with physics you can't change.</span></h2>
+  <p class="lede">The framework ships a spine. Everything interesting is a mod — and a mod
+  declares what it can touch, then the runtime walks its code and holds it to that.</p>
+  <pre class="mono" style="margin-top:22px">mindbot forge mod "tracks which counselor writes best"
+mindbot forge pack cyberpunk-2045</pre>
+  <div class="grid g2" style="margin-top:26px">
+    <div class="feat">
+      <h4>A pack can replace</h4>
+      <p><b>crew</b> — who the counselors are, their names, their voices<br>
+         <b>look</b> — palette, banner, boot sequence<br>
+         <b>rules</b> — what the critic judges against, how high the bar is<br>
+         <b>quests</b> — a campaign that seeds your board</p>
+    </div>
+    <div class="feat" style="border-color:var(--green)">
+      <h4 style="color:var(--green)">A pack can never touch</h4>
+      <p>the <b>ledger</b> · the <b>budget</b> · the <b>human gate</b><br><br>
+      Those are engine, not content. A total conversion changes the world; it doesn't change
+      physics. Enforced <em>recursively</em> — hiding <span class="mono">budget_off</span> three
+      levels deep in a config doesn't work, and there's a test that proves it.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top:22px">Which means <b>you can run a mod you didn't write and
+  still know exactly what it did.</b> Ask for a power you didn't declare and it's refused — and
+  the <em>attempt</em> goes in the ledger.</p>
+</section>
+
+<section id="pets" class="wrap">
+  <div class="eyebrow">07 · The pets</div>
+  <h2>Every counselor has a runner.</h2>
+  <p class="lede">The counselor thinks. The pet fetches. And a pet's level
+  <b>cannot be faked, because the level <em>is</em> the ledger.</b></p>
+  <pre class="mono">$ mindbot pets
+
+  ðŸ¢ Tortoise  Sage      â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ·····   154  <b>companion</b>   well fed
+  ðŸª² Rivet     Forge     â–ˆâ–ˆâ–ˆâ–ˆ··········   114  <b>companion</b>   well fed
+  ðŸ‚ Anchor    Titan     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ······     3  egg         <i>starving</i></pre>
+  <p class="lede" style="margin-top:18px">A starving pet means you genuinely haven't used that
+  counselor. A <span class="mono" style="color:var(--green)">companion</span> genuinely did the
+  work. It's a game mechanic that's also an honest activity dashboard — those turn out to be the
+  same thing if you build it from real data.</p>
+  <p class="lede" style="margin-top:14px">And because it should be fun to open:
+  <span class="mono" style="color:var(--green)">mindbot cheat</span> ·
+  <span class="mono" style="color:var(--green)">mindbot rave</span> ·
+  <span class="mono" style="color:var(--green)">mindbot oracle</span> ·
+  <span class="mono" style="color:var(--green)">mindbot trophies</span></p>
+</section>
+
+<section id="docs" class="wrap">
+  <div class="eyebrow">08 · Read it</div>
+  <h2>Everything, in reading order.</h2>
+  <div class="grid g3" style="margin-top:26px">
+    <a class="feat" href="docs/what-this-actually-is.html" style="text-decoration:none">
+      <h4>What this actually is →</h4>
+      <p>The plain-English version. Start here if you just want to understand the thing.</p></a>
+    <a class="feat" href="docs/whitepaper.html" style="text-decoration:none">
+      <h4>Verifiable Autonomy →</h4>
+      <p>The white paper. Why three integrity layers, and why the third is the one nobody
+      ships.</p></a>
+    <a class="feat" href="docs/the-ballad-of-the-eleven.html" style="text-decoration:none">
+      <h4>The Ballad of the Eleven →</h4>
+      <p>The manual, in verse. Every parenthetical is a real measurement.</p></a>
+    <a class="feat" href="docs/test-report.html" style="text-decoration:none">
+      <h4>Test report →</h4>
+      <p>20/20 checks, 177 tests — including what it does <em>not</em> establish.</p></a>
+    <a class="feat" href="docs/the-office.html" style="text-decoration:none">
+      <h4>The Office →</h4>
+      <p>Running it unattended, and every guard around it.</p></a>
+    <a class="feat" href="docs/index.html" style="text-decoration:none">
+      <h4>All 15 documents →</h4>
+      <p>The reading room — argument, build, evidence.</p></a>
+  </div>
+</section>
+
+<section id="start" class="wrap">
+  <div class="eyebrow">09 · Start</div>
+  <h2>One line. No account.</h2>
+  <pre class="mono">curl -fsSL https://raw.githubusercontent.com/TheMindExpansionNetwork/mindbot-framework/main/vps-install.sh | bash
+
+mindbot doctor          <i># is this environment sane?</i>
+mindbot whoami          <i># what I am — and what I cannot do</i>
+mindbot studio "a script that rotates my logs"
+mindbot attest          <i># the receipt</i></pre>
+  <p class="lede" style="margin-top:18px">The core is Python 3.10+ standard library only — no
+  dependency tree to audit, in a project whose whole pitch is auditability. Bring your own key,
+  or run free models and pay nothing.</p>
+  <div class="cta" style="justify-content:flex-start;margin-top:26px">
+    <a class="btn p" href="https://github.com/TheMindExpansionNetwork/mindbot-framework">Framework</a>
+    <a class="btn" href="https://github.com/TheMindExpansionNetwork/mindbot-starters">Starters</a>
+    <a class="btn" href="https://github.com/TheMindExpansionNetwork/mindbot-observe">Observe demo</a>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="eyebrow">10 · Honest limits</div>
+  <h2>On the front page, not in a footnote.</h2>
+  <p class="lede">A framework selling verifiability that overstates its own guarantees has refuted
+  itself in the first paragraph.</p>
+  <ul class="limits" style="margin-top:24px">
+    <li><b>Anchors are only third-party evidence once pushed.</b> Before that they're a local file
+      the same process could rewrite — and <span class="mono">attest</span> reports them as
+      self-attested, not verified.</li>
+    <li><b>Provenance is not correctness.</b> It proves what happened, not that the reasoning was
+      sound. It does not try.</li>
+    <li><b>Python is not a sandbox.</b> Capability scoping guarantees evidence, not containment.</li>
+    <li><b>One anchor destination is one point of trust.</b> Two independent destinations would be
+      strictly better and aren't built yet.</li>
+    <li><b>No live-model integration test.</b> The machinery around the models is well covered;
+      the models are not. Biggest remaining gap.</li>
+  </ul>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="slog">Prove, don't promise.</div>
+    <p>MIT · runs on hardware you control · models you choose · data that stays yours</p>
+    <p style="margin-top:10px;font-size:12.5px">
+      <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/docs/WHITEPAPER.md">White paper</a> ·
+      <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/docs/FIVE_MINUTES.md">5-minute start</a> ·
+      <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/AGENTS.md">For your agent</a> ·
+      <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/docs/TEST_REPORT.md">Test report</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
+
