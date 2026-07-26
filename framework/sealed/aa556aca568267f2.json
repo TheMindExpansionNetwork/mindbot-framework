@@ -1,0 +1,11 @@
+{
+  "kind": "twenty-questions",
+  "commitment": "aa556aca568267f2c2e0aead4de32ec76fb69329b70acb7a98a5a41f418d3c8c",
+  "nonce": "ab9b3ee1657960e85beb3574d9715662",
+  "secret": "toaster",
+  "seq": 1335,
+  "sealed_at": "2026-07-26 08:55",
+  "note": "category=a household object",
+  "revealed": true,
+  "reveal_seq": 1343
+}

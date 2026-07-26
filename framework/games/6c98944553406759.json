@@ -1,0 +1,55 @@
+{
+  "id": "6c98944553406759",
+  "commitment": "6c989445534067597352a2594d14ce7afab2ba80ad1ac6ce55cde9df32aaa173",
+  "commit_seq": 1328,
+  "category": "an animal",
+  "started": "2026-07-26 08:54",
+  "asked": [
+    {
+      "n": 1,
+      "q": "is it a mammal",
+      "verdict": "YES",
+      "detail": "giraffe is a mammal",
+      "seq": 1330
+    },
+    {
+      "n": 2,
+      "q": "does it live in water",
+      "verdict": "NO",
+      "detail": "giraffes live on land in Africa",
+      "seq": 1331
+    },
+    {
+      "n": 3,
+      "q": "is it larger than a dog",
+      "verdict": "YES",
+      "detail": "giraffes are far larger than dogs",
+      "seq": 1332
+    },
+    {
+      "n": 4,
+      "q": "is it a predator",
+      "verdict": "NO",
+      "detail": "herbivore browsing leaves and plants",
+      "seq": 1333
+    },
+    {
+      "n": 5,
+      "q": "does it live in Africa",
+      "verdict": "YES",
+      "detail": "lives in African savannas",
+      "seq": 1334
+    }
+  ],
+  "question_seqs": [
+    1330,
+    1331,
+    1332,
+    1333,
+    1334
+  ],
+  "guesses": [],
+  "over": false,
+  "won": null,
+  "model": "modal:thinkingmachines/Inkling-NVFP4"
+}

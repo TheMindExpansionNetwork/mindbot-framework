@@ -393,6 +393,12 @@ def main():
     psay.add_argument("--check", action="store_true", help="is Inflect installed and loadable?")
     psay.add_argument("--as", dest="as_", default="", help="speak as a counselor (mindbot voices)")
     psay.add_argument("--variation", type=float, default=None)
+    p20 = sub.add_parser("twenty", help="🎯 TWENTY — 20 questions vs an opponent that provably cannot cheat")
+    p20.add_argument("action", nargs="?", default="play",
+                     choices=["play", "new", "ask", "guess", "status", "audit"])
+    p20.add_argument("text", nargs="*", default=[], help="your question or guess")
+    p20.add_argument("--game", default="", help="game id (default: the most recent)")
+    p20.add_argument("--category", default="", help="e.g. 'an animal'")
     pme = sub.add_parser("me", help="🫵 ME — your own MindBot: the eleventh seat, the one you talk to")
     pme.add_argument("--create", action="store_true", help="make one")
     pme.add_argument("--name", default="", help="what to call it")
@@ -732,6 +738,86 @@ def main():
             sys.exit(1)
         who = f"{tui.CYAN}{args.as_}{tui.R} " if args.as_ else ""
         print(f"\n  {tui.GREEN}♪{tui.R} {who}{p}   {tui.DIM}({p.stat().st_size // 1024} KB){tui.R}\n")
+    elif args.cmd == "twenty":
+        from mindbot_pipeline import tui, twenty
+        text = " ".join(args.text).strip()
+
+        def show_proof(a):
+            head = f"{tui.GREEN}● PROVABLY FAIR{tui.R}" if a["ok"] else f"{tui.AMBER}● CHEATED{tui.R}"
+            print(f"\n   {head}")
+            names = {"hash_matches": "the word never changed",
+                     "committed_first": "it was chosen before question 1",
+                     "chain_intact": "the record was not edited afterwards"}
+            for k, ok in a["checks"].items():
+                mark = f"{tui.GREEN}✓{tui.R}" if ok else f"{tui.AMBER}✗{tui.R}"
+                print(f"   {mark} {names.get(k, k)}")
+            for r in a["reasons"]:
+                print(f"     {tui.AMBER}{r}{tui.R}")
+            print(f"\n   {tui.DIM}commitment {a['commitment'][:32]}…{tui.R}")
+            print(f"   {tui.DIM}sealed at seq {a['commit_seq']} · "
+                  f"questions ran {min(a['question_seqs'] or [0])}–{max(a['question_seqs'] or [0])}{tui.R}")
+
+        if args.action in ("new", "play"):
+            try:
+                g = twenty.new_game(args.category)
+            except RuntimeError as e:
+                print(f"\n  {tui.AMBER}✗ {e}{tui.R}\n")
+                sys.exit(1)
+            print(f"\n  {tui.CYAN}🎯 TWENTY QUESTIONS{tui.R}   {tui.DIM}game {g['id']}{tui.R}\n")
+            print(f"   I'm thinking of {tui.GREEN}{g['category']}{tui.R}.")
+            print(f"   {tui.DIM}The word is already sealed — commitment {g['commitment'][:24]}…")
+            print(f"   written to the ledger at seq {g['commit_seq']}, before you ask anything.")
+            print(f"   I cannot change it, and at the end you can prove I didn't.{tui.R}\n")
+            print(f"   {tui.GREEN}mindbot twenty ask is it alive{tui.R}")
+            print(f"   {tui.GREEN}mindbot twenty guess otter{tui.R}\n")
+            return
+        g = twenty.load(args.game) if args.game else twenty.latest()
+        if not g:
+            print(f"\n  {tui.AMBER}no game — mindbot twenty new{tui.R}\n")
+            sys.exit(1)
+        if args.action == "ask":
+            if not text:
+                print(f"\n  {tui.AMBER}ask something: mindbot twenty ask is it alive{tui.R}\n")
+                sys.exit(1)
+            r = twenty.ask(g["id"], text)
+            if r.get("over"):
+                print(f"\n  {tui.AMBER}{r.get('note') or 'game over'}{tui.R}\n")
+                return
+            col = tui.GREEN if r["verdict"] == "YES" else tui.AMBER if r["verdict"] == "NO" else tui.CYAN
+            print(f"\n   {r['n']:>2}. {text}")
+            print(f"       {col}{r['verdict']}{tui.R}"
+                  + (f" — {tui.DIM}{r['detail']}{tui.R}" if r["detail"] else ""))
+            print(f"\n   {tui.DIM}{r['left']} left · recorded at seq {r['seq']}{tui.R}\n")
+        elif args.action == "guess":
+            if not text:
+                print(f"\n  {tui.AMBER}guess something{tui.R}\n")
+                sys.exit(1)
+            r = twenty.guess(g["id"], text)
+            if r.get("over"):
+                if r["won"]:
+                    print(f"\n  {tui.GREEN}✓ YOU GOT IT — it was '{r['secret']}'{tui.R}")
+                else:
+                    print(f"\n  {tui.AMBER}✗ out of questions — it was '{r['secret']}'{tui.R}")
+                print(f"   {tui.DIM}{r['questions']} questions asked{tui.R}")
+                show_proof(r["audit"])
+                print(f"\n   {tui.DIM}verify it yourself: mindbot verify · "
+                      f"mindbot prove {r['audit']['commit_seq']}{tui.R}\n")
+            else:
+                print(f"\n   {tui.AMBER}no{tui.R} — {r['left']} left\n")
+        elif args.action == "audit":
+            show_proof(twenty.audit(g["commitment"], g.get("question_seqs", [])))
+            print()
+        else:  # status
+            print(f"\n  {tui.CYAN}🎯 game {g['id']}{tui.R}   {tui.DIM}{g['category']}{tui.R}\n")
+            for a in g["asked"]:
+                print(f"   {a['n']:>2}. {a['q'][:52]:<52} {a['verdict']}")
+            if g["over"]:
+                print(f"\n   {'WON' if g['won'] else 'LOST'} — it was "
+                      f"{tui.GREEN}'{g.get('secret')}'{tui.R}")
+                show_proof(g["audit"])
+            else:
+                print(f"\n   {20 - len(g['asked'])} questions left")
+            print()
     elif args.cmd == "me":
         from mindbot_pipeline import persona, tui
         if args.create:

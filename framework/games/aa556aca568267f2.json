@@ -1,0 +1,87 @@
+{
+  "id": "aa556aca568267f2",
+  "commitment": "aa556aca568267f2c2e0aead4de32ec76fb69329b70acb7a98a5a41f418d3c8c",
+  "commit_seq": 1335,
+  "category": "a household object",
+  "started": "2026-07-26 08:55",
+  "asked": [
+    {
+      "n": 1,
+      "q": "is it electrical",
+      "verdict": "YES",
+      "detail": "typically powered by electricity",
+      "seq": 1337
+    },
+    {
+      "n": 2,
+      "q": "is it in the kitchen",
+      "verdict": "YES",
+      "detail": "typically a kitchen countertop appliance",
+      "seq": 1338
+    },
+    {
+      "n": 3,
+      "q": "is it bigger than a shoebox",
+      "verdict": "SOMETIMES",
+      "detail": "depends on [redacted] and box size",
+      "seq": 1339
+    },
+    {
+      "n": 4,
+      "q": "does it heat things",
+      "verdict": "YES",
+      "detail": "it heats bread using electric elements",
+      "seq": 1340
+    },
+    {
+      "n": 5,
+      "q": "is it used for coffee",
+      "verdict": "NO",
+      "detail": "it toasts bread, not coffee",
+      "seq": 1341
+    }
+  ],
+  "question_seqs": [
+    1337,
+    1338,
+    1339,
+    1340,
+    1341,
+    1342
+  ],
+  "guesses": [
+    {
+      "guess": "toaster",
+      "correct": true,
+      "seq": 1342
+    }
+  ],
+  "over": true,
+  "won": true,
+  "model": "modal:thinkingmachines/Inkling-NVFP4",
+  "why": "guessed 'toaster'",
+  "secret": "toaster",
+  "reveal_seq": 1343,
+  "audit": {
+    "ok": true,
+    "checks": {
+      "hash_matches": true,
+      "committed_first": true,
+      "chain_intact": true
+    },
+    "commitment": "aa556aca568267f2c2e0aead4de32ec76fb69329b70acb7a98a5a41f418d3c8c",
+    "secret": "toaster",
+    "commit_seq": 1335,
+    "question_seqs": [
+      1337,
+      1338,
+      1339,
+      1340,
+      1341,
+      1342
+    ],
+    "entries": 1343,
+    "reasons": []
+  },
+  "ended": "2026-07-26 08:56"
+}

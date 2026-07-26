@@ -1,0 +1,10 @@
+{
+  "kind": "twenty-questions",
+  "commitment": "6c989445534067597352a2594d14ce7afab2ba80ad1ac6ce55cde9df32aaa173",
+  "nonce": "d68433fecf682126531166682d4db413",
+  "secret": "giraffe",
+  "seq": 1328,
+  "sealed_at": "2026-07-26 08:54",
+  "note": "category=an animal",
+  "revealed": false
+}

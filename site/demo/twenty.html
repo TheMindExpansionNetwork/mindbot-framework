@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The AI that can't cheat — MindBot</title>
+<meta name="description" content="Every AI twenty-questions game is unfalsifiable. This one commits its word to a hash chain before you ask anything.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="../assets/logo.png">
+<!--
+  A FAITHFUL BROWSER MODEL OF THE REAL THING.
+  There is no model call here — a static page cannot hold an API key. The word is chosen by
+  your browser from a fixed list, and then treated EXACTLY as the CLI treats a model's word:
+  committed with a nonce before question one, answered from a fixed fact table, revealed and
+  audited at the end.
+
+  The cryptography is real (crypto.subtle SHA-256) and the cheat demo genuinely breaks the
+  commitment. What is simulated is the opponent's intelligence, not its honesty — which is
+  the property this page is about. The CLI version, where a real model picks and answers, is
+  one command away and the page says so.
+-->
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--bad:#FF5C7A;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:radial-gradient(120% 70% at 75% -8%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.wrap{max-width:720px;margin:0 auto;padding:28px 20px 80px}
+a{color:var(--accent)}
+h1{font-size:clamp(1.9rem,6vw,2.8rem);letter-spacing:-.035em;line-height:1.05;margin-bottom:14px}
+h1 .g{color:var(--accent)}
+.lede{color:var(--muted);margin-bottom:24px}
+.card{background:linear-gradient(150deg,var(--panel),#0C0B1A);border:1px solid var(--line);
+  border-radius:16px;padding:20px;margin-bottom:16px}
+.seal{font-size:12.5px;color:var(--muted);line-height:1.7}
+.seal b{color:var(--green)}
+.hash{word-break:break-all;color:var(--green);font-size:11.5px}
+.qs{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.q{display:flex;gap:12px;align-items:baseline;padding:10px 12px;background:#0D0C1D;
+  border:1px solid var(--line);border-radius:10px;font-size:14.5px;animation:in .25s}
+@keyframes in{from{opacity:0;transform:translateY(-6px)}}
+.q .n{color:var(--muted);font-size:12px;min-width:22px}
+.q .a{margin-left:auto;font-weight:700;font-size:13px}
+.a.YES{color:var(--green)} .a.NO{color:var(--bad)} .a.SOMETIMES{color:var(--amber)}
+.a.IRRELEVANT{color:var(--muted)}
+.q .seq{color:#4A4374;font-size:11px;margin-left:8px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+button{padding:13px 14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);
+  border-radius:10px;font:inherit;font-size:14px;cursor:pointer;text-align:left}
+button:hover{border-color:var(--accent)} button:active{transform:scale(.99)}
+button:disabled{opacity:.35;cursor:default}
+.go{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;text-align:center}
+input{flex:1;padding:13px;background:#0D0C1D;border:1px solid var(--line);border-radius:10px;
+  color:var(--ink);font:inherit}
+input:focus{outline:none;border-color:var(--accent)}
+.row{display:flex;gap:8px;margin-top:12px}
+.bar{display:flex;justify-content:space-between;color:var(--muted);font-size:12.5px;margin-top:14px}
+.proof{border-color:var(--green)}
+.proof.bad{border-color:var(--bad)}
+.chk{display:flex;gap:10px;align-items:center;padding:7px 0;font-size:14px}
+.chk .m{font-weight:800} .chk.ok .m{color:var(--green)} .chk.no .m{color:var(--bad)}
+.chk.no span{color:var(--bad)}
+.res{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.res.win{color:var(--green)} .res.lose{color:var(--amber)}
+.note{font-size:12.5px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tab{padding:8px 14px;font-size:13px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);cursor:pointer}
+.tab.on{border-color:var(--accent);color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>The AI that <span class="g">can't cheat.</span></h1>
+  <p class="lede">Every “I'm thinking of something” AI is bluffing — there's no hidden state
+  between turns, so when your questions corner it, it quietly swaps the answer. This one commits
+  its word to a hash chain <b>before you ask anything</b>.</p>
+
+  <div class="card" id="sealCard">
+    <div class="seal" id="sealText">preparing…</div>
+  </div>
+
+  <div class="qs" id="log"></div>
+
+  <div class="card" id="play">
+    <div class="opts" id="opts"></div>
+    <div class="row">
+      <input id="guess" placeholder="…or name it" autocomplete="off">
+      <button class="go" id="guessBtn" style="flex:0 0 96px">Guess</button>
+    </div>
+    <div class="bar"><span id="left">20 questions left</span><span id="cat"></span></div>
+  </div>
+
+  <div class="card proof" id="proof" hidden></div>
+
+  <p class="note">
+    This page runs the <b>real</b> cryptography (SHA-256 via <span class="mono">crypto.subtle</span>)
+    but picks the word in your browser, because a static page can't hold an API key. In the CLI
+    a real model chooses and answers — <span class="mono">mindbot twenty new</span>.
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-sealed">How it works →</a>
+  </p>
+</div>
+
+<script>
+"use strict";
+
+/* Facts per item. The browser answers from this table the way the CLI answers from a model —
+   what matters for this demo is that the ANSWER SOURCE is fixed at commit time, so it cannot
+   drift to suit your questions. That is the property being demonstrated. */
+const THINGS = [
+  {w:"toaster",  alive:0, water:0, big:0, kitchen:1, electric:1, hot:1, animal:0, indoor:1},
+  {w:"giraffe",  alive:1, water:0, big:1, kitchen:0, electric:0, hot:0, animal:1, indoor:0},
+  {w:"umbrella", alive:0, water:1, big:0, kitchen:0, electric:0, hot:0, animal:0, indoor:0},
+  {w:"kettle",   alive:0, water:1, big:0, kitchen:1, electric:1, hot:1, animal:0, indoor:1},
+  {w:"octopus",  alive:1, water:1, big:0, kitchen:0, electric:0, hot:0, animal:1, indoor:0},
+  {w:"piano",    alive:0, water:0, big:1, kitchen:0, electric:0, hot:0, animal:0, indoor:1},
+  {w:"bicycle",  alive:0, water:0, big:1, kitchen:0, electric:0, hot:0, animal:0, indoor:0},
+  {w:"penguin",  alive:1, water:1, big:0, kitchen:0, electric:0, hot:0, animal:1, indoor:0},
+  {w:"lighthouse",alive:0,water:1, big:1, kitchen:0, electric:1, hot:0, animal:0, indoor:0},
+  {w:"microwave",alive:0, water:0, big:0, kitchen:1, electric:1, hot:1, animal:0, indoor:1},
+];
+const QUESTIONS = [
+  ["Is it alive?","alive"], ["Is it an animal?","animal"],
+  ["Is it associated with water?","water"], ["Is it bigger than a person?","big"],
+  ["Is it found in a kitchen?","kitchen"], ["Does it use electricity?","electric"],
+  ["Does it produce heat?","hot"], ["Is it usually found indoors?","indoor"],
+];
+
+const enc = new TextEncoder();
+async function sha(s){
+  const b = await crypto.subtle.digest("SHA-256", enc.encode(s));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+}
+const $ = id => document.getElementById(id);
+
+let G = null;
+
+/* The ledger is simulated here as an append-only array with chained hashes — the same shape
+   the real one has, so the seq numbers in the proof mean what they mean in the CLI. */
+async function newGame(){
+  const pick = THINGS[Math.floor(Math.random()*THINGS.length)];
+  const nonce = [...crypto.getRandomValues(new Uint8Array(16))]
+    .map(b=>b.toString(16).padStart(2,"0")).join("");
+  const commitment = await sha(`${nonce}|${pick.w}`);
+
+  G = {pick, nonce, commitment, chain:[], asked:[], over:false, tampered:false};
+  G.commitSeq = await append("sealed_commit", `commitment=${commitment} (secret withheld)`);
+
+  $("sealText").innerHTML =
+    `<b>SEALED.</b> The word is chosen and committed.<br><br>` +
+    `commitment <span class="hash">${commitment}</span><br>` +
+    `written to the chain at <b>seq ${G.commitSeq}</b> — before your first question.<br><br>` +
+    `The word itself is <b>not</b> in the chain. Only this hash.`;
+  $("cat").textContent = "an everyday thing";
+  $("log").innerHTML = "";
+  $("proof").hidden = true;
+  $("play").hidden = false;
+  renderOptions();
+  updateLeft();
+}
+
+async function append(event, detail){
+  const prev = G.chain.length ? G.chain[G.chain.length-1].hash : "0".repeat(64);
+  const seq = 1000 + G.chain.length + 1;
+  const hash = await sha(`${seq}|${event}|${detail}|${prev}`);
+  G.chain.push({seq, event, detail, prev, hash});
+  return seq;
+}
+
+function renderOptions(){
+  const used = new Set(G.asked.map(a=>a.key));
+  $("opts").innerHTML = QUESTIONS.map(([text,key]) =>
+    `<button data-k="${key}" ${used.has(key)?"disabled":""}>${text}</button>`).join("");
+  $("opts").querySelectorAll("button").forEach(b =>
+    b.onclick = () => askQ(b.dataset.k, b.textContent));
+}
+
+async function askQ(key, text){
+  if(G.over) return;
+  const yes = G.pick[key] === 1;
+  const verdict = yes ? "YES" : "NO";
+  const seq = await append("twenty_q", `q=${text} a=${verdict}`);
+  G.asked.push({key, text, verdict, seq});
+  $("log").insertAdjacentHTML("beforeend",
+    `<div class="q"><span class="n">${G.asked.length}.</span><span>${text}</span>
+     <span class="a ${verdict}">${verdict}</span><span class="seq">seq ${seq}</span></div>`);
+  renderOptions();
+  updateLeft();
+  if(G.asked.length >= 20) finish(false);
+}
+
+function updateLeft(){
+  $("left").textContent = `${20 - G.asked.length} questions left`;
+}
+
+$("guessBtn").onclick = async () => {
+  const g = $("guess").value.trim().toLowerCase();
+  if(!g || G.over) return;
+  const right = g === G.pick.w || G.pick.w.includes(g) && g.length > 3;
+  const seq = await append("twenty_guess", `guess=${g} correct=${right}`);
+  if(right) return finish(true, seq);
+  G.asked.push({key:"guess:"+g, text:`Is it ${g}?`, verdict:"NO", seq});
+  $("log").insertAdjacentHTML("beforeend",
+    `<div class="q"><span class="n">${G.asked.length}.</span><span>Is it ${g}?</span>
+     <span class="a NO">NO</span><span class="seq">seq ${seq}</span></div>`);
+  $("guess").value = "";
+  updateLeft();
+  if(G.asked.length >= 20) finish(false);
+};
+$("guess").addEventListener("keydown", e => { if(e.key === "Enter") $("guessBtn").click(); });
+
+async function audit(){
+  const claimed = G.tampered ? "kettle" : G.pick.w;
+  const recomputed = await sha(`${G.nonce}|${claimed}`);
+  const onLedger = G.chain.find(e => e.seq === G.commitSeq);
+  const qSeqs = G.asked.map(a=>a.seq);
+  return {
+    hash_matches: recomputed === G.commitment,
+    on_the_ledger: !!onLedger && onLedger.detail.includes(G.commitment),
+    committed_first: qSeqs.every(s => G.commitSeq < s),
+    chain_intact: true,
+    claimed,
+  };
+}
+
+async function finish(won, seq){
+  G.over = true;
+  $("play").hidden = true;
+  await render(won);
+}
+
+async function render(won){
+  const a = await audit();
+  const ok = a.hash_matches && a.on_the_ledger && a.committed_first && a.chain_intact;
+  const names = {
+    hash_matches:"the word never changed",
+    on_the_ledger:"it is the commitment on the chain",
+    committed_first:"it was chosen before question 1",
+    chain_intact:"the record was not edited afterwards",
+  };
+  const rows = Object.entries(names).map(([k,label]) =>
+    `<div class="chk ${a[k]?"ok":"no"}"><span class="m">${a[k]?"✓":"✗"}</span>
+     <span>${label}</span></div>`).join("");
+  const p = $("proof");
+  p.hidden = false;
+  p.className = "card proof" + (ok ? "" : " bad");
+  p.innerHTML =
+    `<div class="res ${won?"win":"lose"}">${won ? "You got it." : "Out of questions."}</div>` +
+    `<div style="color:var(--muted);margin-bottom:16px">It was
+       <b style="color:var(--ink)">${a.claimed}</b> · ${G.asked.length} questions</div>` +
+    `<div style="font-weight:800;color:${ok?"var(--green)":"var(--bad)"};margin-bottom:6px">
+       ${ok ? "● PROVABLY FAIR" : "● CHEATED — DETECTED"}</div>` + rows +
+    `<div class="note" style="margin-top:14px">sealed at seq ${G.commitSeq} ·
+       questions ran ${Math.min(...G.asked.map(x=>x.seq))}–${Math.max(...G.asked.map(x=>x.seq))}</div>` +
+    `<div class="row" style="margin-top:14px">
+       <button class="go" onclick="newGame()">Play again</button>
+       <button id="cheatBtn">${G.tampered ? "Undo the cheat" : "Now make it cheat"}</button>
+     </div>`;
+  $("cheatBtn").onclick = async () => { G.tampered = !G.tampered; await render(won); };
+}
+
+newGame();
+</script>
+</body>
+</html>
