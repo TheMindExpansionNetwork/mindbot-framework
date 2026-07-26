@@ -1,8 +1,8 @@
-﻿"""EXPORT â€” build the public framework release from this private working repo.
+"""EXPORT — build the public framework release from this private working repo.
 
 WHY AN EXPORT AND NOT `gh repo edit --visibility public`
   This repo is a workshop. It holds a 900-entry ledger of real work, internal task lists,
-  business planning, a personal runbook, and â€” discovered while preparing to publish â€” a live
+  business planning, a personal runbook, and — discovered while preparing to publish — a live
   API key sitting in git history as a test fixture. You cannot delete something from git
   history by editing a file; the only real options are rewriting history or starting clean.
 
@@ -14,11 +14,11 @@ WHY AN EXPORT AND NOT `gh repo edit --visibility public`
   the source of truth.
 
 WHAT IS DELIBERATELY LEFT BEHIND
-  * collaboration/  â€” the ledger is USER DATA. A fresh install must start with an empty chain,
+  * collaboration/  — the ledger is USER DATA. A fresh install must start with an empty chain,
                       or every user inherits our history and `verify` means nothing to them.
-  * NOTES / TOMORROW / HANDOFF / LAUNCH_*  â€” operational and personal.
-  * docs/BUSINESS_* , docs/HERMES_* , docs/plans/ â€” commercial planning.
-  * runtime output   â€” outbox, studio, observations, voice_out, firm_runs, spend.jsonl, .env
+  * NOTES / TOMORROW / HANDOFF / LAUNCH_*  — operational and personal.
+  * docs/BUSINESS_* , docs/HERMES_* , docs/plans/ — commercial planning.
+  * runtime output   — outbox, studio, observations, voice_out, firm_runs, spend.jsonl, .env
 
 RUN
     python framework/_export_public.py --to Z:\MINDBOT-PUBLIC
@@ -37,8 +37,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # Copied wholesale (minus the prune list below).
 # `lore/` ships: the canon, the vows and the counselor personas ARE the framework's identity,
-# not private notes. `collaboration/` does NOT ship â€” see SEED_FILES for the one exception.
-DIRS = ["framework", "mods", "apps", "assets", "lore", ".github", ".devcontainer"]
+# not private notes. `collaboration/` does NOT ship — see SEED_FILES for the one exception.
+DIRS = ["framework", "mods", "apps", "assets", "lore", "site", ".github", ".devcontainer"]
 
 # Individual files pulled out of otherwise-private directories because the code needs them.
 # Found by the verification step below: two tests failed on a fresh export because
@@ -74,7 +74,7 @@ PRUNE = [
 PRUNE_GLOBS = ["**/__pycache__", "**/*.pyc", "**/.pytest_cache", "**/*.wav", "**/*.mp4"]
 
 # Artifacts the VERIFICATION RUN itself creates inside the export. Running the suite exercises
-# the framework, which writes a ledger, a dashboard render and dataset output â€” so a naive
+# the framework, which writes a ledger, a dashboard render and dataset output — so a naive
 # "clean then verify" order ships those. Caught by inspecting the finished export and finding a
 # collaboration/ledger.jsonl that had never existed in the source copy.
 # Everything here is pruned AFTER the tests, never before.
@@ -101,7 +101,7 @@ def _wipe_keeping_git(dst: Path) -> None:
 
     Two reasons this is not a plain rmtree:
       1. A re-export should update the working tree and let git show the diff. Deleting .git
-         throws away the remote, the history, and any published commit â€” turning every refresh
+         throws away the remote, the history, and any published commit — turning every refresh
          into a force-push of unrelated history.
       2. `shutil.rmtree(ignore_errors=True)` silently FAILS on git's object store, because git
          marks those files read-only on Windows. The directory then still exists, mkdir raises
@@ -176,7 +176,7 @@ def audit(dst: Path) -> list[str]:
             continue
         for pat, label in FORBIDDEN:
             for m in pat.finditer(text):
-                hits.append(f"{p.relative_to(dst)}: {label} â€” {m.group(0)[:18]}â€¦")
+                hits.append(f"{p.relative_to(dst)}: {label} — {m.group(0)[:18]}…")
     return hits
 
 
@@ -192,28 +192,28 @@ def main() -> int:
     files = [p for p in dst.rglob("*") if p.is_file()]
     print(f"  {len(files)} files copied")
 
-    print("\n  credential auditâ€¦")
+    print("\n  credential audit…")
     hits = audit(dst)
     if hits:
-        print("  REFUSING TO PUBLISH â€” found:")
+        print("  REFUSING TO PUBLISH — found:")
         for h in hits[:20]:
             print(f"    {h}")
         return 1
-    print("  clean â€” no live credentials in the exported tree")
+    print("  clean — no live credentials in the exported tree")
 
     # Prove the export actually works before anyone clones it.
-    print("\n  verifying the exported framework runsâ€¦")
+    print("\n  verifying the exported framework runs…")
     r = subprocess.run([sys.executable, "-m", "unittest", "discover", "tests"],
                        cwd=dst / "framework", capture_output=True, text=True, timeout=900)
     line = next((l for l in r.stderr.splitlines() if l.startswith("Ran ")), "?")
-    print(f"  {line.strip()} â€” {'OK' if r.returncode == 0 else 'FAILED'}")
+    print(f"  {line.strip()} — {'OK' if r.returncode == 0 else 'FAILED'}")
     if r.returncode != 0:
         print(r.stderr[-1500:])
         return 1
 
     # NOW clean up what the tests just created. Order matters: prune-then-verify would ship
     # a ledger, a dashboard render and dataset output that the suite wrote on its way through.
-    print("\n  removing artifacts the test run createdâ€¦")
+    print("\n  removing artifacts the test run created…")
     removed = 0
     for rel in POST_TEST_PRUNE:
         p = dst / rel
@@ -231,7 +231,7 @@ def main() -> int:
     # Re-audit AFTER the tests, because a test run could in principle write a secret.
     hits = audit(dst)
     if hits:
-        print("  REFUSING TO PUBLISH â€” post-test audit found:")
+        print("  REFUSING TO PUBLISH — post-test audit found:")
         for h in hits[:20]:
             print(f"    {h}")
         return 1
@@ -240,7 +240,7 @@ def main() -> int:
     left = sorted(p.relative_to(dst).as_posix() for p in dst.rglob("*")
                   if p.is_file() and p.suffix in (".jsonl",))
     if left:
-        print(f"  note â€” .jsonl files remaining: {left}")
+        print(f"  note — .jsonl files remaining: {left}")
 
     print(f"\n  ready. next:")
     print(f"    cd {dst} && git init && git add -A && git commit && git push --force\n")

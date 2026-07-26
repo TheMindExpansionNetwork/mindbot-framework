@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400" role="img" aria-label="MindBot — the agent you can prove">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B0B14"/>
+      <stop offset="55%" stop-color="#12102A"/>
+      <stop offset="100%" stop-color="#07070F"/>
+    </linearGradient>
+    <linearGradient id="type" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="48%" stop-color="#C9C2FF"/>
+      <stop offset="100%" stop-color="#6E5BFF"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6E5BFF" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#6E5BFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6E5BFF" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#6E5BFF" stop-opacity=".9"/>
+      <stop offset="70%" stop-color="#32E6A0" stop-opacity=".9"/>
+      <stop offset="100%" stop-color="#32E6A0" stop-opacity="0"/>
+    </linearGradient>
+    <!-- the eclipse: a lit disc with a dark body sliding across it -->
+    <mask id="eclipse">
+      <rect width="1280" height="400" fill="#000"/>
+      <circle cx="1048" cy="196" r="88" fill="#fff"/>
+      <circle cx="1006" cy="172" r="84" fill="#000"/>
+    </mask>
+  </defs>
+
+  <rect width="1280" height="400" rx="20" fill="url(#bg)"/>
+
+  <!-- faint hash-chain motif: the ledger, drawn as links -->
+  <g opacity=".16" stroke="#6E5BFF" stroke-width="1.5" fill="none">
+    <path d="M0 330 H1280"/>
+    <path d="M0 356 H1280" opacity=".5"/>
+    <g>
+      <circle cx="120" cy="330" r="5"/><circle cx="260" cy="330" r="5"/><circle cx="400" cy="330" r="5"/>
+      <circle cx="540" cy="330" r="5"/><circle cx="680" cy="330" r="5"/><circle cx="820" cy="330" r="5"/>
+      <circle cx="960" cy="330" r="5"/><circle cx="1100" cy="330" r="5"/><circle cx="1240" cy="330" r="5"/>
+    </g>
+  </g>
+
+  <circle cx="1030" cy="188" r="190" fill="url(#glow)"/>
+  <g mask="url(#eclipse)">
+    <circle cx="1048" cy="196" r="88" fill="#F2EEFF"/>
+  </g>
+  <circle cx="1048" cy="196" r="88" fill="none" stroke="#6E5BFF" stroke-opacity=".45" stroke-width="1.5"/>
+
+  <g font-family="'Segoe UI Semibold','Helvetica Neue',Arial,sans-serif">
+    <text x="80" y="150" font-size="112" font-weight="800" letter-spacing="10" fill="url(#type)">MINDBOT</text>
+    <rect x="82" y="178" width="560" height="2.5" fill="url(#rule)"/>
+    <text x="82" y="232" font-size="34" font-weight="600" fill="#E8E4FF" letter-spacing="1">The agent you can prove.</text>
+    <text x="82" y="278" font-size="19" fill="#8F88C4" letter-spacing=".5">Every action hash-chained · Merkle-anchored to a third party · spend capped before the call</text>
+  </g>
+
+  <g font-family="'Cascadia Mono','SF Mono',Consolas,monospace" font-size="15" fill="#5C568F">
+    <text x="82" y="356">146 tests</text>
+    <text x="196" y="356">·</text>
+    <text x="216" y="356">0 autonomous sends</text>
+    <text x="386" y="356">·</text>
+    <text x="406" y="356">0 secrets in 280 files</text>
+    <text x="596" y="356">·</text>
+    <text x="616" y="356">stdlib-only core</text>
+  </g>
+</svg>

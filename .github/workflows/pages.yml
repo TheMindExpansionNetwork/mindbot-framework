@@ -1,0 +1,62 @@
+name: pages
+
+# Publishes site/ to GitHub Pages.
+#
+# The site lives in site/ rather than at the repo root or in docs/ for two reasons: docs/ is
+# already full of markdown that Pages would try to render, and a website at the root buries the
+# README that people actually land on. site/ keeps all three concerns separate.
+#
+# Deploys via the Pages ACTION rather than a gh-pages branch, so there is no second branch to
+# keep in sync and no generated artifact committed to history.
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; never cancel a running one mid-publish or the site can be left
+# half-updated.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sanity-check the site
+        # Cheap guards for the two failures that actually happen: a missing asset (so the page
+        # loads with broken images) and an unreplaced placeholder.
+        run: |
+          test -f site/index.html || { echo "no site/index.html"; exit 1; }
+          missing=0
+          for f in $(grep -oE '(src|href)="(assets|demo)/[^"]+"' site/index.html \
+                     | sed -E 's/.*"(.*)"/\1/' | sort -u); do
+            if [ ! -f "site/$f" ]; then echo "MISSING: site/$f"; missing=1; fi
+          done
+          [ "$missing" = "0" ] || exit 1
+          ! grep -q "TODO\|FIXME\|lorem ipsum" site/index.html || { echo "placeholder text"; exit 1; }
+          echo "site OK — $(du -sh site | cut -f1)"
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
