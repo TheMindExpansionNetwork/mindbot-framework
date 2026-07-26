@@ -393,6 +393,14 @@ def main():
     psay.add_argument("--check", action="store_true", help="is Inflect installed and loadable?")
     psay.add_argument("--as", dest="as_", default="", help="speak as a counselor (mindbot voices)")
     psay.add_argument("--variation", type=float, default=None)
+    pme = sub.add_parser("me", help="🫵 ME — your own MindBot: the eleventh seat, the one you talk to")
+    pme.add_argument("--create", action="store_true", help="make one")
+    pme.add_argument("--name", default="", help="what to call it")
+    pme.add_argument("--vibe", default="", help="warm | dry | eager | grave | feral | deadpan")
+    pme.add_argument("--voice", default="", help="a kokoro voice id (mindbot voices)")
+    pme.add_argument("--pet", default="", help="its runner")
+    pme.add_argument("--motto", default="", help="one line it lives by")
+    pme.add_argument("--overwrite", action="store_true", help="replace the one you have")
     ppt = sub.add_parser("pets", help="🦉 PETS — every counselor has a runner; their stats come from the ledger")
     ppt.add_argument("who", nargs="?", default="", help="one counselor, for detail")
     ppt.add_argument("--feed", default="", help="how do I level this one?")
@@ -724,6 +732,35 @@ def main():
             sys.exit(1)
         who = f"{tui.CYAN}{args.as_}{tui.R} " if args.as_ else ""
         print(f"\n  {tui.GREEN}♪{tui.R} {who}{p}   {tui.DIM}({p.stat().st_size // 1024} KB){tui.R}\n")
+    elif args.cmd == "me":
+        from mindbot_pipeline import persona, tui
+        if args.create:
+            try:
+                me = persona.create(name=args.name, vibe=args.vibe, voice=args.voice,
+                                    pet=args.pet, motto=args.motto, overwrite=args.overwrite)
+            except (FileExistsError, ValueError) as e:
+                print(f"\n  {tui.AMBER}{e}{tui.R}\n")
+                sys.exit(1)
+            print(f"\n  {tui.CYAN}🫵 {me['name']}{tui.R} is yours.\n")
+        me = persona.mine()
+        if not me:
+            print(f"\n  {tui.CYAN}🫵 YOUR MINDBOT{tui.R}   {tui.DIM}you don't have one yet{tui.R}\n")
+            print(f"   {tui.DIM}Ten counselors are fixed — they're lenses everyone shares.")
+            print(f"   The eleventh seat is yours: you name it, and it's the one you talk to.{tui.R}\n")
+            print(f"   {tui.GREEN}mindbot me --create{tui.R}                    {tui.DIM}pick everything for me{tui.R}")
+            print(f"   {tui.GREEN}mindbot me --create --name Rook --vibe dry{tui.R}\n")
+            print(f"   {tui.DIM}vibes:{tui.R} " + " · ".join(persona.VIBES))
+            print(f"   {tui.DIM}pets :{tui.R} " + " · ".join(persona.PETS_AVAILABLE) + "\n")
+            return
+        v = persona.VIBES[me["vibe"]]
+        print(f"\n  {tui.CYAN}🫵 {me['name']}{tui.R}   {tui.DIM}your MindBot · the eleventh seat{tui.R}\n")
+        print(f"   {'temperament':<13}{tui.GREEN}{me['vibe']}{tui.R}  {tui.DIM}{v['blurb']}{tui.R}")
+        print(f"   {'voice':<13}{me['voice']}  {tui.DIM}speed {me['speed']}{tui.R}")
+        print(f"   {'runner':<13}{me['pet']}  {tui.DIM}{me['pet_trait']}{tui.R}")
+        print(f"   {'motto':<13}{tui.DIM}{me['motto']}{tui.R}")
+        print(f"   {'since':<13}{tui.DIM}{me['created'][:16]}{tui.R}")
+        print(f"\n   {tui.DIM}behind {me['name']}: 10 counselors — mindbot voices{tui.R}")
+        print(f"   {tui.DIM}hear it:  mindbot say --as Mind \"...\"{tui.R}\n")
     elif args.cmd == "pets":
         from mindbot_pipeline import pets, tui
         MOOD = {"eager": tui.GREEN, "steady": tui.CYAN, "content": tui.DIM, "restless": tui.AMBER}

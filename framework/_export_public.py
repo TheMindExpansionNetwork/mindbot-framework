@@ -56,6 +56,7 @@ FILES = [
 # Only these docs ship. An allow-list, not a deny-list: a new internal doc must be explicitly
 # added to become public, which is the safe direction for that mistake to fail in.
 DOCS = [
+    "WHAT_THIS_ACTUALLY_IS.md",
     "WHITEPAPER.md", "FIVE_MINUTES.md", "POSITIONING.md", "SLOGANS.md",
     "PROOF_OF_AUTONOMY.md", "MODS.md", "BUDGET.md", "MODEL_LINEUP.md",
     "WHY_DIFFERENT.md", "THE_OFFICE.md", "THE_BALLAD_OF_THE_ELEVEN.md",
@@ -64,6 +65,10 @@ DOCS = [
 
 # Removed after copying. Runtime output and anything machine-specific.
 PRUNE = [
+    # my_mindbot.json is the operator's OWN agent — a name, a temperament, a motto. It is
+    # personal in exactly the way a dotfile is, and shipping it would give every user someone
+    # else's character instead of prompting them to make their own.
+    "framework/my_mindbot.json",
     "framework/.env", "framework/.env.bak", "framework/spend.jsonl",
     "framework/outbox", "framework/studio", "framework/observations",
     "framework/voice_out", "framework/firm_runs", "framework/_audit_facts.json",
