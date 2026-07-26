@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>The Office — MindBot</title>
+<meta name="description" content="Running it unattended — the scheduled shift, and every guard around it.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="the-office-the-framework-working-its-own-board-while-your-machine-is-off">The Office — the framework working its own board while your machine is off</h1>
+<p><strong>Status: drafted, not installed.</strong> This is the design and the exact workflow file. Installing it
+is a deliberate act, and it should be — a scheduled job that commits to your repo unattended,
+forever, is not something to switch on by accident.</p>
+<p>That's the same gate the framework applies to itself. The agent drafts; a human commits.</p>
+<hr />
+<h2 id="what-it-is">What it is</h2>
+<p>Every 6 hours, on GitHub's machines, with your computer off:</p>
+<ol>
+<li><strong>Clocks in</strong> — <code>whoami</code>, <code>verify</code> the chain, read the <code>board</code></li>
+<li><strong>Works the board</strong> — <code>autopilot</code> claims tasks and drafts, N councilors in parallel</li>
+<li><strong>Refills the board</strong> — <code>reflect --propose 3</code>, so it doesn't empty its queue and idle forever</li>
+<li><strong>Summarizes</strong> — <code>digest</code>, <code>budget</code>, <code>review</code></li>
+<li><strong>Notarizes</strong> — anchors the Merkle root covering that shift</li>
+<li><strong>Scans for secrets</strong> — the last gate before anything leaves</li>
+<li><strong>Files the paperwork</strong> — commits drafts, board, ledger and anchor back to <code>main</code></li>
+</ol>
+<p>You wake up to a shift's work in <code>framework/outbox/</code>, and a ledger entry for every step.</p>
+<h2 id="what-it-does-not-do">What it does <em>not</em> do</h2>
+<p><strong>Nothing changes about the constitution.</strong> It cannot: the send / post / publish / charge code
+paths do not exist. "Unattended" here means unattended <strong>drafting</strong>. Running in CI changes where
+the work happens, not what it's allowed to do — which is precisely why it's safe to leave
+running, and why this is worth doing at all.</p>
+<h2 id="what-it-costs">What it costs</h2>
+<p><strong>$0 by default.</strong> With no <code>OPENROUTER_API_KEY</code> repo secret, every model call degrades to
+template mode: the loop still runs, claims tasks, and produces scaffolded drafts — real
+structure, no real thinking.</p>
+<p>To give it a mind you add the secret yourself (below). Then these caps apply, and they're all
+opt-<strong>out</strong>, because an unattended loop that can silently spend is the most dangerous thing in
+this repo:</p>
+<table>
+<thead>
+<tr>
+<th>Guard</th>
+<th>Value</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MINDBOT_BUDGET_RUN</code></td>
+<td><code>$0.25</code></td>
+<td>per-shift ceiling, checked <em>before</em> each call</td>
+</tr>
+<tr>
+<td><code>MINDBOT_BUDGET_DAY</code></td>
+<td><code>$1.00</code></td>
+<td>four shifts a day cannot exceed a dollar</td>
+</tr>
+<tr>
+<td><code>MINDBOT_BUDGET_TOTAL</code></td>
+<td><code>$20.00</code></td>
+<td>lifetime backstop</td>
+</tr>
+<tr>
+<td><code>MINDBOT_FREE</code></td>
+<td>on</td>
+<td>free models only, unless a human ticks "paid" on a manual run</td>
+</tr>
+<tr>
+<td><code>MINDBOT_NO_SONIC</code></td>
+<td>on</td>
+<td>never wakes the billed GPU fleet</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A scheduled run can never opt into paid models.</strong> That decision requires a person ticking a box
+on a manual dispatch, every single time.</p>
+<hr />
+<h2 id="before-you-install-it-three-things-id-want-you-to-know">Before you install it — three things I'd want you to know</h2>
+<ol>
+<li><strong>Your key is compromised.</strong> <code>sk-or-v1-8035…</code> was pasted into a chat. Rotate it <em>before</em> it
+   goes anywhere near a repo secret.</li>
+<li><strong>You said you have about $5.</strong> With free models pinned this stays at $0, but if you ever tick
+   "paid", four shifts a day against a $1/day cap drains it in five days. The cap protects you
+   from a runaway loop, not from steady intended spend.</li>
+<li><strong>Template mode is not a failure mode, it's the honest default.</strong> A free-model office produces
+   real scaffolding and real ledger history. Read a few shifts' drafts before deciding it's worth
+   money.</li>
+</ol>
+<h2 id="installing-it">Installing it</h2>
+<p>Rotate your key first. Then:</p>
+<pre><code class="language-bash">gh secret set OPENROUTER_API_KEY --repo TheMindExpansionNetwork/mindbot-framework
+</code></pre>
+<p>That prompts you to paste it — the value goes straight from your terminal to GitHub, and I never
+see it. <strong>Skip this step entirely to run the office for free in template mode.</strong></p>
+<p>Then save the file below as <code>.github/workflows/office.yml</code>, commit, and push:</p>
+<pre><code class="language-bash">git add .github/workflows/office.yml
+git commit -m &quot;install: the office&quot;
+git push
+</code></pre>
+<p>Run it once by hand before trusting the schedule:</p>
+<pre><code class="language-bash">gh workflow run &quot;the office&quot; --repo TheMindExpansionNetwork/mindbot-framework
+</code></pre>
+<p>To stop it at any time: <code>gh workflow disable "the office" --repo TheMindExpansionNetwork/mindbot-framework</code></p>
+<blockquote>
+<p><strong>GitHub disables scheduled workflows after 60 days of repo inactivity.</strong> The office commits on
+every shift, so it keeps itself alive — but if you ever pause it, re-enable it manually.</p>
+</blockquote>
+<hr />
+<h2 id="the-workflow-file">The workflow file</h2>
+<pre><code class="language-yaml">name: the office
+
+# The framework working its own board, on GitHub's machines, with your computer switched off.
+# Every output lands in framework/outbox/ and waits for a human. See docs/THE_OFFICE.md.
+
+on:
+  schedule:
+    - cron: &quot;0 */6 * * *&quot;       # every 6 hours
+  workflow_dispatch:
+    inputs:
+      rounds:
+        description: &quot;pulses across the swarm&quot;
+        default: &quot;6&quot;
+      workers:
+        description: &quot;concurrent councilors&quot;
+        default: &quot;3&quot;
+      paid:
+        description: &quot;allow paid models (requires the secret; still budget-capped)&quot;
+        type: boolean
+        default: false
+
+# One office at a time. Two concurrent shifts would claim from the same board and race each
+# other's commits — the ledger lock protects the chain, not your git history.
+concurrency:
+  group: the-office
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUTF8: &quot;1&quot;
+  PYTHONIOENCODING: &quot;utf-8&quot;
+  MINDBOT_NO_SONIC: &quot;1&quot;         # never wake the billed GPU fleet from an unattended loop
+  MINDBOT_BUDGET_RUN: &quot;0.25&quot;
+  MINDBOT_BUDGET_DAY: &quot;1.00&quot;
+  MINDBOT_BUDGET_TOTAL: &quot;20.00&quot;
+
+jobs:
+  work:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with: { python-version: &quot;3.11&quot; }
+
+      - name: Install
+        working-directory: framework
+        run: pip install -e .
+
+      - name: Clock in — who am I, and am I within my rules?
+        working-directory: framework
+        run: |
+          python -m mindbot_pipeline.cli whoami
+          python -m mindbot_pipeline.cli verify
+          python -m mindbot_pipeline.cli board
+
+      - name: Work the board
+        working-directory: framework
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          # Free models unless a human explicitly ticked &quot;paid&quot; on a MANUAL run. A scheduled
+          # run can never opt into paid models — that decision requires a person, every time.
+          MINDBOT_FREE: ${{ (github.event_name == 'workflow_dispatch' &amp;&amp; inputs.paid == true) &amp;&amp; '' || '1' }}
+        run: |
+          python -m mindbot_pipeline.cli autopilot \
+            --rounds  &quot;${{ inputs.rounds  || 6 }}&quot; \
+            --workers &quot;${{ inputs.workers || 3 }}&quot;
+
+      - name: Refill the board — propose the next tasks
+        working-directory: framework
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MINDBOT_FREE: ${{ (github.event_name == 'workflow_dispatch' &amp;&amp; inputs.paid == true) &amp;&amp; '' || '1' }}
+        # Without this the office empties its board and idles forever. Self-direction is what
+        # makes it a standing operation rather than a one-shot script.
+        run: python -m mindbot_pipeline.cli reflect --propose 3 || echo &quot;reflect degraded — board unchanged&quot;
+
+      - name: Summarize the shift
+        working-directory: framework
+        run: |
+          python -m mindbot_pipeline.cli digest || true
+          python -m mindbot_pipeline.cli budget
+          python -m mindbot_pipeline.cli review || true
+
+      - name: Notarize the shift
+        working-directory: framework
+        # Anchor BEFORE committing, so the root published in this commit covers the work in it.
+        run: python -m mindbot_pipeline.cli notarize --note &quot;office shift&quot;
+
+      - name: Secret scan — the last gate before anything leaves
+        working-directory: framework
+        run: python -m mindbot_pipeline.cli scan
+
+      - name: File the paperwork
+        run: |
+          git config user.name  &quot;mindbot[the-office]&quot;
+          git config user.email &quot;noreply@github.com&quot;
+          git add -A
+          git diff --staged --quiet &amp;&amp; { echo &quot;quiet shift — nothing to file&quot;; exit 0; }
+          git commit -m &quot;office: shift complete — drafts, board, ledger, anchor&quot;
+          # Rebase before pushing: the night shift commits to this branch too, and losing a
+          # shift's drafts to a non-fast-forward is worse than a slightly noisy history.
+          git pull --rebase --strategy-option=theirs origin main || true
+          git push
+
+      - name: Attest what the shift did
+        if: always()
+        working-directory: framework
+        run: python -m mindbot_pipeline.cli attest
+</code></pre>
+<hr />
+<h2 id="reading-the-shift-in-the-morning">Reading the shift in the morning</h2>
+<pre><code class="language-bash">git pull
+mindbot review          # every draft the office produced
+mindbot board           # what it claimed, what's still open
+mindbot budget          # what it spent (0.0000 in template mode)
+mindbot attest          # the shift, cryptographically
+</code></pre>
+<p>Every draft is a file. Nothing was sent. That's the point.</p>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

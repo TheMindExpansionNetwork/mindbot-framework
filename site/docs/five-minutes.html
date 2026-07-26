@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>MindBot in 5 minutes — MindBot</title>
+<meta name="description" content="Install, meet it, make something, check the receipt.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="mindbot-in-5-minutes">MindBot in 5 minutes</h1>
+<p>No account. No signup. No telemetry. Runs on your machine, on models you choose, with your own
+key — or free.</p>
+<p><em>This doubles as the walkthrough-video script: every step is one command with visible output.</em></p>
+<hr />
+<h2 id="1-install-60-seconds">1 · Install (60 seconds)</h2>
+<pre><code class="language-bash">git clone https://github.com/TheMindExpansionNetwork/mindbot-framework
+cd mindbot-framework/framework
+pip install -e .
+mindbot doctor
+</code></pre>
+<p>Nothing else installs. The core is Python 3.10+ standard library only — there is no dependency
+tree to audit, which matters in a project whose whole pitch is auditability.</p>
+<h2 id="2-meet-it">2 · Meet it</h2>
+<pre><code class="language-bash">mindbot whoami
+</code></pre>
+<p>It reports what it is, what it can do (read from its own live command tree), what it has done
+(read from its ledger), and — unusually — <strong>what it cannot do</strong>. Seven limits ship in the code,
+and a test fails the build if anyone trims them.</p>
+<h2 id="3-make-something-real">3 · Make something real</h2>
+<pre><code class="language-bash">mindbot studio &quot;a python script that renames photos by the date they were taken&quot;
+</code></pre>
+<p>Watch what happens. It is <em>not</em> one model call:</p>
+<pre><code>  ┌─ STUDIO · CODE · Forge
+  ├─ plan         769 chars
+  ├─ implement   7786 chars
+  ├─ critique #1  6/10  revise  → 3 fix(es)     ← a DIFFERENT counselor reviews it
+  ├─ critique #2  8/10  accept       ← kept
+  ├─ execute     PASS                           ← the script was actually RUN
+  └─ 2026-07-25_code_rename-photos.py   6→8/10 over 2 round(s)
+</code></pre>
+<p>Five kinds, each with its own pipeline:</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>What it does differently</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td>plans → implements → <strong>actually executes it in a subprocess</strong></td>
+</tr>
+<tr>
+<td><code>build</code></td>
+<td>designs → generates HTML → parses it, rejects external CDNs</td>
+</tr>
+<tr>
+<td><code>research</code></td>
+<td>poses its own questions first, <em>then</em> answers them</td>
+</tr>
+<tr>
+<td><code>decide</code></td>
+<td>lists options → commits to a recommendation and the cost of being wrong</td>
+</tr>
+<tr>
+<td><code>write</code></td>
+<td>drafts → critiqued for filler, unsupported claims, model-voice</td>
+</tr>
+</tbody>
+</table>
+<p>Force one with <code>--kind</code>, choose the seat with <code>--seat</code>, or pull real work off the board with
+<code>--batch 3</code>.</p>
+<blockquote>
+<p><strong>Why it keeps the <em>best</em> draft, not the last one:</strong> measured on a live run, a code artifact
+scored 6/10, was revised against three critic notes, and came back <strong>4/10</strong> — the revision
+broke working code while "addressing feedback". Models over-correct. The loop tracks the
+high-water mark and ships that.</p>
+</blockquote>
+<h2 id="4-the-part-nobody-else-has">4 · The part nobody else has</h2>
+<pre><code class="language-bash">mindbot attest
+</code></pre>
+<pre><code>  🔐 PROOF-OF-AUTONOMY
+     chain           ● intact — unbroken
+     merkle root     534adde10a889a75…
+     anchors         11 published, all roots re-match
+     standing        ● EXTERNALLY VERIFIED
+     autonomous sends / posts / charges          0
+</code></pre>
+<p>Every action is hash-chained. The chain's fingerprint is published to a third party <strong>before</strong>
+you read this. So "it didn't send anything while you slept" is a number you can check, not a
+promise you have to take.</p>
+<p><strong>That includes the critique loop.</strong> You can prove a piece of work was reviewed three times and
+show what changed each round. No other framework can show you that.</p>
+<pre><code class="language-bash">mindbot prove 224      # prove ONE action happened, revealing nothing about the others
+</code></pre>
+<h2 id="5-your-key-or-none-at-all">5 · Your key, or none at all</h2>
+<pre><code class="language-bash">mindbot start
+</code></pre>
+<p>Opens Mission Control and walks you through pasting an <a href="https://openrouter.ai/keys">OpenRouter</a>
+key. <strong>You don't need one to try it</strong> — without a key everything runs in template mode, which
+produces real scaffolding and says so plainly at the top of every artifact.</p>
+<p>On a tight budget:</p>
+<pre><code class="language-bash">echo &quot;MINDBOT_FREE=1&quot; &gt;&gt; .env      # free models only
+mindbot budget                     # spend vs ceiling, always visible
+</code></pre>
+<p><code>MINDBOT_FREE</code> <strong>overrides</strong> a pinned paid model. That precedence is deliberate: a control named
+FREE that doesn't guarantee free is worse than no control at all. Ceilings are checked <em>before</em>
+each call, never tallied after the invoice arrives.</p>
+<hr />
+<h2 id="the-8-commands-that-matter">The 8 commands that matter</h2>
+<pre><code class="language-bash">mindbot whoami       # what I am and what I can't do
+mindbot board        # the task queue
+mindbot studio &quot;…&quot;   # make something (typed pipeline + critique loop)
+mindbot attest       # cryptographic standing
+mindbot budget       # spend vs ceiling
+mindbot review       # every draft waiting for you
+mindbot scan         # secrets check before you push
+mindbot mod list     # capability-scoped plugins
+</code></pre>
+<p><code>mindbot --help</code> has all 65.</p>
+<h2 id="nothing-leaves-without-you">Nothing leaves without you</h2>
+<p>Output lands in <code>framework/outbox/</code> and <code>framework/studio/</code>. MindBot <strong>cannot</strong> send an email,
+publish a post, or charge a card — not "is configured not to". Those code paths do not exist.
+You read the drafts; you decide what leaves.</p>
+<hr />
+<p><strong>Next:</strong> <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/NOTES.md"><code>../NOTES.md</code></a> how it's built and why · <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/AGENTS.md"><code>../AGENTS.md</code></a> if
+you're pointing your own agent at it · <a href="the-office.html"><code>THE_OFFICE.md</code></a> to run it unattended</p>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

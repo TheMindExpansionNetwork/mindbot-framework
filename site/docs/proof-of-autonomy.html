@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Proof of autonomy — MindBot</title>
+<meta name="description" content="How the chain, the Merkle root and the anchors actually work.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="proof-of-autonomy-the-thing-no-autonomous-agent-has-shipped">Proof-of-Autonomy — the thing no autonomous agent has shipped</h1>
+<p><strong>The unsolved problem with autonomous agents isn't capability — it's trust.</strong> When an agent
+runs unattended for hours, you have to <em>take it on faith</em> that it didn't do something it
+shouldn't have. Nobody can <strong>prove</strong> otherwise. Logs can be edited. "It's safe, trust us."</p>
+<p>MindBot ships the answer: <strong>a tamper-evident, cryptographically verifiable record of its entire
+autonomous life, plus a compliance attestation it generates itself.</strong> You don't <em>trust</em> that it
+behaved. You <strong>verify</strong> it.</p>
+<h2 id="the-hole-a-hash-chain-alone-leaves-and-how-we-close-it">⚠️ The hole a hash chain alone leaves — and how we close it</h2>
+<p>Be honest about this, because it's the flaw in every "tamper-evident log" claim:</p>
+<blockquote>
+<p>A hash chain proves nobody <strong>edited</strong> history. It does <strong>not</strong> prove nobody <strong>replaced</strong> it.
+Delete the ledger, start a fresh chain, and a chain-only verifier reports <strong>INTACT</strong> — because
+the new history is perfectly self-consistent. <em>Self-attestation is a promise with extra steps.</em></p>
+</blockquote>
+<p><strong>THE NOTARY</strong> (<code>mindbot notarize</code>) closes it with three properties that, together, we haven't
+seen in any agent framework:</p>
+<ol>
+<li><strong>Merkle root</strong> — every entry hash is a leaf; pairs hash upward into one 32-byte root that
+   commits to the <em>entire</em> history at a point in time.</li>
+<li><strong>External anchoring</strong> — that root is written to <code>collaboration/ANCHORS.jsonl</code>, which is
+   <strong>committed and pushed</strong>. GitHub becomes the notary: a third party holding a timestamped,
+   immutable record of what our history looked like at seq N. <strong>To forge the past you'd now have
+   to rewrite a public repo's commit history too.</strong></li>
+<li><strong>Inclusion proofs</strong> (<code>mindbot prove &lt;seq&gt;</code>) — prove <strong>one</strong> action happened, with ~log₂(n)
+   sibling hashes, <strong>without revealing any other entry</strong>. Real audits need selective disclosure;
+   handing someone your whole log file is not that.</li>
+</ol>
+<p><strong>Proven adversarially.</strong> <code>tests/test_notary.py</code> runs the actual attack: nuke the ledger, rebuild
+a clean fake, then assert that (a) chain verification is <em>fooled</em> — <code>intact == True</code> — and
+(b) the notary <strong>catches it</strong>. Truncation is caught too. 8 tests, all green.</p>
+<pre><code>  NOTARY AUDIT: ● ALL ANCHORS MATCH   (1 anchor(s), 120 entries)
+   ✓ seq 119    anchored 2026-07-24 21:55  — matches published root
+
+  INCLUSION PROOF — seq 42   ● PROOF VALID
+   claim:  2026-06-22 09:55 [autoloop] autoloop_done: 0 pulses, 0 produced work
+   path:   7 sibling hashes (of 120 entries)     ← proves 1 of 120, reveals nothing else
+</code></pre>
+<p>The attestation now separates the two questions explicitly:
+<code>chain_intact</code> (<strong>edited?</strong>) vs <code>notarized</code> + <code>anchors_match</code> (<strong>replaced?</strong>). Only both
+together yield <strong>✅ EXTERNALLY VERIFIED</strong>.</p>
+<h2 id="how-it-works-stdlib-hashlib-no-chain-no-token-no-nonsense">How it works (stdlib <code>hashlib</code>, no chain, no token, no nonsense)</h2>
+<ul>
+<li><strong>The ledger is hash-chained.</strong> Every entry carries <code>seq</code>, <code>prev</code> (the SHA-256 of the entry
+  before it), and its own <code>hash</code>. Each action is cryptographically bound to all the history
+  before it — exactly like git commits or a blockchain, but for the <em>agent's behavior</em>.</li>
+<li><strong>Any tamper breaks the chain.</strong> Edit an entry → its hash no longer matches. Delete or insert
+  one → the <code>prev</code> links no longer line up. <code>mindbot verify</code> walks the chain and reports the
+  exact <code>seq</code> where it broke. <em>(Proven by 4 adversarial tests: honest chain verifies; edits,
+  deletions, and truncations are each caught.)</em></li>
+<li><strong>The head is a fingerprint.</strong> The final hash summarizes the whole history. Publish it, and
+  anyone who later gets the ledger can confirm it's the same unaltered record.</li>
+</ul>
+<h2 id="the-attestation-mindbot-attest">The attestation — <code>mindbot attest</code></h2>
+<p>Walks the <em>verified</em> chain and issues a signed-style compliance certificate:</p>
+<pre><code>   PROOF-OF-AUTONOMY · MindBot compliance attestation
+   status:            ✅ VERIFIED CLEAN
+   chain intact:      True
+   actions recorded:  N  (seq 1–N)
+   autonomous external actions (sends/charges):  0
+   head hash:         b9a4df33…c147126
+</code></pre>
+<p>It certifies, mathematically: <strong>the record is complete and unaltered, and the agent performed
+ZERO autonomous sends / charges / publishes</strong> — the human stayed the final approver on
+everything that touches the world. The cert is written to <code>collaboration/ATTESTATION.json</code> +
+<code>.txt</code> and served at <code>GET /api/attest</code>.</p>
+<h2 id="why-this-is-different">Why this is different</h2>
+<p>Other frameworks ask you to trust a prompt ("you are a safe agent") and a sandbox. Those are
+<em>hopes</em>. This is a <strong>receipt</strong>. It turns the constitution from a promise into a <em>provable
+property</em>: not "we tried to make it safe," but "here is cryptographic proof of exactly what it
+did and didn't do." That's the artifact a regulator, a customer, an insurer, or a court will
+one day require of an autonomous agent — and MindBot generates it by construction, today.</p>
+<h2 id="run-it">Run it</h2>
+<pre><code class="language-bash">mindbot verify     # is the chain intact?  → ● INTACT / ● BROKEN (at seq N)
+mindbot attest     # issue the compliance certificate (+ writes the cert files)
+</code></pre>
+<p><em>The seam between human and machine is the show — and now it's notarized.</em> 🔐🌒</p>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

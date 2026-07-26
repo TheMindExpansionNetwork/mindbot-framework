@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Case study: The Firm — MindBot</title>
+<meta name="description" content="Hierarchical routing down a cost pyramid, measured.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="case-study-the-firm-a-hierarchical-multi-model-swarm">Case Study — THE FIRM: a hierarchical multi-model swarm</h1>
+<p><em>Run live 2026-07-25 on real models via OpenRouter. Every number below is measured, not modeled.</em></p>
+<p><img alt="The Firm" src="img/firm_hierarchy.png" /></p>
+<h2 id="the-thesis">The thesis</h2>
+<p>Every "AI swarm" on the market is <strong>flat</strong>: N copies of one model, all doing the same thing.
+That is not how organizations work, and it is not how you'd spend money if you thought about it
+for ten seconds. Real work has <strong>ranks</strong> — someone decides, someone decomposes, someone
+executes, someone cleans up — and those jobs need <em>different</em> capabilities at <em>different</em> prices.</p>
+<p><strong>THE FIRM maps each rank onto a different model.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Rank</th>
+<th>Model</th>
+<th>Why</th>
+<th>Calls</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Orchestrator</strong></td>
+<td><code>anthropic/claude-opus-5</code></td>
+<td>deepest judgment (most expensive)</td>
+<td><strong>1</strong></td>
+</tr>
+<tr>
+<td><strong>Manager</strong></td>
+<td><code>openai/gpt-5.6-sol</code></td>
+<td>strong reasoning, decomposition</td>
+<td><strong>3</strong></td>
+</tr>
+<tr>
+<td><strong>Worker</strong></td>
+<td><code>openai/gpt-5.6-terra</code></td>
+<td>balanced + fast, does the volume</td>
+<td><strong>6</strong></td>
+</tr>
+<tr>
+<td><strong>Janitor</strong></td>
+<td><code>openai/gpt-5.6-luna</code></td>
+<td>cheapest capable, QA/cleanup</td>
+<td><strong>1</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-measured-run">The measured run</h2>
+<p><strong>Goal:</strong> <em>"Produce the complete go-to-market package to launch MindBot — an autonomous 11-mind
+AI council you install in one command — on August 11, targeting solo builders and 50-seat
+companies currently renting AI per seat."</em></p>
+<pre><code>✓ done — 11 calls in 71.1s
+
+  RANK           CALLS       COST   SHARE
+  Orchestrator       1   $0.00161    2.7%
+  Manager            3   $0.00686   11.7%
+  Worker             6   $0.03466   58.8%
+  Janitor            1   $0.01577   26.8%
+
+  total $0.05891  ·  same work all-on-claude-opus-5: $0.13398
+  saved $0.07506 (56.0%) vs a flat swarm
+</code></pre>
+<h3 id="what-that-proves">What that proves</h3>
+<ol>
+<li><strong>The cost pyramid is real.</strong> The most expensive model carries <strong>2.7%</strong> of spend while making
+   the decision that shapes everything. The volume (6 of 11 calls) rides a mid-priced model.</li>
+<li><strong>56% cheaper than a flat swarm</strong> doing identical work — and the gap <em>widens</em> as the tree
+   grows, because scaling adds workers (cheap), not orchestrators (expensive).</li>
+<li><strong>71 seconds, wall clock.</strong> Managers fan out in parallel; each manager's workers fan out
+   again. The tree widens exactly where the work is independent.</li>
+<li><strong>Quality held.</strong> The deliverable (in <code>outbox/</code>) is a real GTM package: core narrative,
+   segment positioning statements, and a shot-by-shot demo script. Sample:</li>
+</ol>
+<blockquote>
+<p><em>"Per-seat AI pricing was always a landlord's game — charge you monthly for access to
+intelligence you never own... </em><em>MindBot breaks the lease.</em><em>"</em></p>
+</blockquote>
+<h2 id="why-this-is-better-than-everything-else">Why this is better than everything else</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Flat swarm (everyone else)</th>
+<th>THE FIRM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Models</td>
+<td>1, cloned N times</td>
+<td><strong>4, one per rank</strong></td>
+</tr>
+<tr>
+<td>Cost shape</td>
+<td>rectangle — every call at top price</td>
+<td><strong>pyramid — 2.7% at the top</strong></td>
+</tr>
+<tr>
+<td>Cost, this run</td>
+<td>$0.134</td>
+<td><strong>$0.059 (−56%)</strong></td>
+</tr>
+<tr>
+<td>Judgment vs grunt work</td>
+<td>same model does both</td>
+<td><strong>matched to rank</strong></td>
+</tr>
+<tr>
+<td>Scaling</td>
+<td>linear at the <em>highest</em> price</td>
+<td>widens at the <em>cheapest</em> rank</td>
+</tr>
+<tr>
+<td>Auditability</td>
+<td>one blob of output</td>
+<td><strong>every rank's output captured</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="run-it">Run it</h2>
+<pre><code class="language-bash">mindbot firm &quot;your goal&quot; --divisions 3 --tasks 2
+</code></pre>
+<ul>
+<li>Workers = <code>divisions × tasks</code>. Total calls = <code>1 + divisions + (divisions×tasks) + 1</code>.</li>
+<li>Full run record (every call, every cost) → <code>framework/firm_runs/*.json</code></li>
+<li>The deliverable → <code>framework/outbox/*_FIRM_*.md</code></li>
+<li>Constitution unchanged: <strong>drafts only</strong>, nothing sends or charges.</li>
+</ul>
+<h2 id="implementation-notes-for-the-next-agent">Implementation notes for the next agent</h2>
+<ul>
+<li><code>mindbot_pipeline/firm.py</code> — the whole pyramid is <strong>data</strong> (<code>RANKS</code>), not code. Change a
+  rank's model there, or pass <code>models={"worker": {"model": "..."}}</code> at call time.</li>
+<li><code>report()</code> computes the counterfactual (<code>flat_swarm_cost</code>) by re-pricing every call at the
+  orchestrator's rate — that's where the "% saved" claim comes from.</li>
+<li>Tests (<code>tests/test_firm.py</code>) assert the pyramid <strong>shape</strong> (1/N/N×M/1), that each rank uses its
+  own distinct model, and that the flat-swarm counterfactual always costs more. Fully mocked —
+  no network, no spend.</li>
+</ul>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

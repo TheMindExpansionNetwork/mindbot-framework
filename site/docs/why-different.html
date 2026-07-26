@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Why this is different — MindBot</title>
+<meta name="description" content="The six self-* properties, each a command you can run.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="why-mindbot-is-different-the-six-self-properties">Why MindBot is different — the six self-* properties</h1>
+<p>Most agent frameworks are a loop that calls a model and runs tools. MindBot is built around one
+idea other frameworks don't chase: <strong>an agent collective that runs, funds, improves, and directs
+itself — safely.</strong> Six properties, each a real command you can run today, not a slide:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Property</th>
+<th>What it means</th>
+<th>Run it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Self-running</strong></td>
+<td>claims work and produces drafts with no human in the loop</td>
+<td><code>mindbot yolo</code> / <code>mindbot autopilot</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Self-organizing</strong></td>
+<td>many councilors work the board <em>concurrently</em>; refills itself when dry</td>
+<td><code>mindbot swarm --workers 11</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Self-improving</strong></td>
+<td>writes + <strong>tests</strong> + proposes its OWN code; red tests auto-revert</td>
+<td><code>mindbot evolve</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Self-directing</strong></td>
+<td>reviews what it's done and proposes its next high-leverage goals</td>
+<td><code>mindbot reflect</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Self-funding</strong></td>
+<td>earns via Stripe → pays for its own NVIDIA compute (the flywheel)</td>
+<td><code>mindbot commerce</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Self-monitoring</strong></td>
+<td>a readiness self-check + an operational log + trophies from real progress</td>
+<td><code>mindbot health</code> / <code>mindbot trophies</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-one-that-almost-no-one-does-self-improving-3">The one that almost no one does: self-improving (#3)</h2>
+<p>Other frameworks draft <em>text</em> for a human to implement. MindBot runs a <strong>jailed coding harness</strong>
+where <strong>tests are the judge</strong>: it writes real code, runs the real suite, and <strong>keeps the change
+only if it stays green</strong> (red → auto-revert). Then it drafts the verified diff to the outbox for
+a human to commit. <em>It doesn't tell you what to build — it builds it, proves it, and asks you to
+merge.</em> Even a weak free model attempting this <strong>cannot break the repo</strong> — the test gate + revert
+guarantee it. (Verified live: a free-model run failed honestly and left zero trace.)</p>
+<h2 id="what-keeps-all-six-safe-the-constitution">What keeps all six SAFE — the constitution</h2>
+<p>Autonomy here is a <em>direction</em>, not a blank check. The safety is in the plumbing, not promises:
+- <strong>Agent drafts, human sends.</strong> Every external action (money, posts, publishes, merges to
+  <code>main</code>) stops at the outbox / a human gate. Nothing transmits or charges on its own.
+- <strong>Tests are the judge.</strong> No red build is ever kept.
+- <strong>Cost-safe by default.</strong> Unattended loops force free models + <code>MINDBOT_NO_SONIC</code> — they
+  <em>physically cannot</em> reach the billed GPU fleet (locked by a test).
+- <strong>The ledger never lies.</strong> Append-only; a status claim without a ledger line is fiction.</p>
+<h2 id="the-result">The result</h2>
+<p>An eleven-seat council you can <code>pip install</code>, point at a folder, and walk away from — it works
+tasks, improves its own code, proposes its next moves, funds its own compute, and leaves an
+honest trail — while a human stays the final approver on anything that touches the world. It also
+runs <strong>as a Hermes skill pack</strong> and over <strong>MCP</strong>, so any agent ecosystem can drive it.</p>
+<p><em>The seam between human and machine is the show — and the safeguard.</em> 🌒</p>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

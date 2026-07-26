@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Autonomy readiness — MindBot</title>
+<meta name="description" content="What has to be true before you leave it running.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="autonomy-readiness-report-is-the-full-system-ready-to-run-itself">Autonomy Readiness Report — is the full system ready to run itself?</h1>
+<p><em>Verdict (2026-06-17): </em><em>YES — the autonomous loop is ready to run unattended, cost-safe and
+observable.</em><em> One human-gated item remains for live money (a Stripe key). Details below.</em></p>
+<p>The four things any unattended system needs — and the proof each is in place:</p>
+<h2 id="1-it-runs-without-a-human">1. It runs without a human ✅</h2>
+<ul>
+<li><strong>On demand:</strong> <code>mindbot pulse</code> (one cycle) · <code>mindbot yolo</code> (never-stop, refills its own
+  board) · <code>mindbot swarm --workers N</code> (N councilors pulse concurrently).</li>
+<li><strong>Scheduled:</strong> <code>deploy/windows_task.ps1</code> (Win Task Scheduler) and <code>deploy/crontab.vps</code>
+  (Linux cron) run the loop on a clock — 15-min pulse, nightly yolo, dawn dream, 7am report.</li>
+<li><strong>Verified live:</strong> yolo 4 rounds → 4 real drafts; swarm 4 workers → 8 parallel drafts.</li>
+</ul>
+<h2 id="2-its-cost-safe-never-surprise-bills">2. It's cost-safe (never surprise-bills) ✅</h2>
+<ul>
+<li><code>MINDBOT_FREE=1</code> → free models only. <code>MINDBOT_NO_SONIC=1</code> → never wakes the billed GPU fleet.</li>
+<li>Both deploy schedulers now <strong>set these for every job</strong> (was a gap; fixed).</li>
+<li><strong>Locked by a test:</strong> <code>TestCostGuard</code> proves <code>MINDBOT_NO_SONIC=1</code> makes <code>_sonic_url()</code> return
+  <code>""</code> even with a fleet URL configured — the loop physically cannot reach the paid endpoint.</li>
+</ul>
+<h2 id="3-its-observable-you-can-see-it-fail">3. It's observable (you can see it fail) ✅</h2>
+<ul>
+<li><strong>Operational log:</strong> <code>mindbot_pipeline/logs/mindbot.log</code> (rotating) records every pulse +
+  every error. <code>MINDBOT_DEBUG=1</code> adds DEBUG + console echo. The "no model reachable" silent
+  failure is now logged loudly.</li>
+<li><strong>The ledger</strong> (<code>collaboration/ledger.jsonl</code>) records <em>what</em> happened, append-only, honest.</li>
+<li><strong>Self-check:</strong> <code>mindbot health</code> → <code>ready</code> flag (not paused · claimable work · no hard
+  errors) + board depth, pulse count, compute-fund balance, recent errors. Run it before a swarm.</li>
+</ul>
+<h2 id="4-its-resilient-one-failure-cant-take-it-down">4. It's resilient (one failure can't take it down) ✅</h2>
+<ul>
+<li>A pulse <strong>never raises</strong> (paused/idle/no-model/verify-fail all handled).</li>
+<li>A swarm worker <strong>survives a crashing pulse</strong> (try/except + log) and keeps going — locked by
+  <code>TestSwarmResilience</code>.</li>
+<li>yolo <strong>refills</strong> the board with evergreen work when it runs dry; <code>mindbot pause</code> stops
+  everything cleanly (a flag every loop checks).</li>
+<li>Concurrent board/state writes are <strong>lock-guarded</strong> — no double-claims, no torn JSON.</li>
+</ul>
+<h2 id="the-constitution-still-holds-autonomy-acting">The constitution still holds (autonomy ≠ acting) ✅</h2>
+<p>Every draft stops in <code>outbox/</code>. Money/sends/publishes are human-gated. The agent proposes; the
+operator disposes. Real Stripe links can be <em>created</em> (test mode by default; live needs an
+explicit <code>MINDBOT_STRIPE_LIVE=1</code>), but <strong>no charge or transfer happens autonomously.</strong></p>
+<h2 id="run-it-right-now-cost-safe-0">Run it right now (cost-safe, $0)</h2>
+<pre><code class="language-bash">export MINDBOT_FREE=1 MINDBOT_NO_SONIC=1
+mindbot health          # green &quot;● READY&quot;?
+mindbot swarm --workers 4    # or: mindbot yolo
+tail -f framework/mindbot_pipeline/logs/mindbot.log   # watch it work
+</code></pre>
+<p>Schedule it: <code>powershell -f framework/deploy/windows_task.ps1</code> (Windows) or
+<code>crontab framework/deploy/crontab.vps</code> (Linux). Then just read the 7am report and merge <code>staging</code>.</p>
+<h2 id="what-still-needs-a-human-honest-gaps">What still needs a human (honest gaps)</h2>
+<ul>
+<li><strong>[NEED: human] Live money</strong> — create a Stripe account + key (<code>framework/.env</code>). Then the
+  earn loop is live. See <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/FIRST_DOLLAR.md">FIRST_DOLLAR.md</a>. <em>(The system is 100% ready for it.)</em></li>
+<li><strong>[optional] Modal redeploy</strong> — the cloud cron app (<code>mindbotz-autonomous</code>) predates this
+  session's logging/health; redeploy to pick them up (needs Modal creds + is billed). The
+  <strong>local</strong> scheduled loop is fully current and $0.</li>
+<li><strong>[background] Framework deep-audit</strong> (<code>wf_c3a8fc85-bc9</code>) is still processing; its findings
+  land as tasks #34. The code is independently verified by 66 tests + live runs in the meantime.</li>
+</ul>
+<h2 id="test-coverage-of-the-autonomy-surfaces">Test coverage of the autonomy surfaces</h2>
+<p>66 tests green, including: smoke (every module imports), swarm concurrency + resilience, health
+shape, cost guard, commerce + storefront, MCP tools, server routes. The suite is the judge.</p>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

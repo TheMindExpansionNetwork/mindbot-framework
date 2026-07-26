@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Test report — MindBot</title>
+<meta name="description" content="20/20 subsystem checks, 177 tests — including what it does NOT establish.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="test-report">Test Report</h1>
+<p><strong>Build:</strong> MindBot v0.3.0 · <strong>Date:</strong> 2026-07-25 · <strong>Platform:</strong> Windows 10 Pro (19045), Python 3.11
+<strong>Reproduce:</strong> <code>python framework/_full_audit.py</code></p>
+<p>Result: <strong>20 / 20 system checks passed · 146 / 146 unit tests passed · 0 secrets across 280 tracked files.</strong></p>
+<p>Every number in this document was produced by the run below, not written by hand. Where a check
+is weak or a claim is unproven, it says so.</p>
+<hr />
+<h2 id="1-unit-tests">1 · Unit tests</h2>
+<pre><code>Ran 146 tests in 4.6s — OK
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Suite</th>
+<th style="text-align: right;">Tests</th>
+<th>What it protects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_redact.py</code></td>
+<td style="text-align: right;">14</td>
+<td>secrets can never enter the append-only ledger</td>
+</tr>
+<tr>
+<td><code>test_budget.py</code></td>
+<td style="text-align: right;">11</td>
+<td>spend ceilings hold at the single model chokepoint</td>
+</tr>
+<tr>
+<td><code>test_mods.py</code></td>
+<td style="text-align: right;">10</td>
+<td>plugins cannot exceed their declared capabilities</td>
+</tr>
+<tr>
+<td><code>test_stamp.py</code></td>
+<td style="text-align: right;">10</td>
+<td>a "Created with MindBot" stamp cannot be forged</td>
+</tr>
+<tr>
+<td><code>test_notary.py</code></td>
+<td style="text-align: right;">8</td>
+<td>Merkle roots, inclusion proofs, anchor auditing</td>
+</tr>
+<tr>
+<td><code>test_identity.py</code></td>
+<td style="text-align: right;">8</td>
+<td>the self-model stays derived and honest</td>
+</tr>
+<tr>
+<td><code>test_firm.py</code></td>
+<td style="text-align: right;">3</td>
+<td>hierarchical routing and cost accounting</td>
+</tr>
+<tr>
+<td><code>test_concurrency.py</code></td>
+<td style="text-align: right;">2</td>
+<td>the hash chain survives real concurrent processes</td>
+</tr>
+<tr>
+<td>others</td>
+<td style="text-align: right;">80</td>
+<td>council, provenance, autonomy, commerce, CLI, smoke</td>
+</tr>
+</tbody>
+</table>
+<p>Two suites are worth calling out because they cost real wall-clock time and are the ones that
+have actually caught bugs:</p>
+<p><strong><code>test_concurrency.py</code></strong> spawns real OS subprocesses that hammer the ledger simultaneously. It
+exists because a probe with 3 concurrent writers once produced <strong>17 duplicate sequence numbers,
+3 lost entries, and a chain broken at seq 2</strong>. After the cross-process lock: 150/150 entries, 0
+duplicates, chain intact at 6 concurrent processes.</p>
+<p><strong><code>test_stamp.py</code></strong> is written adversarially — each test is an attack (edit a published field,
+invent a Merkle root, rewrite history after issuing). A badge that always reads VALID is
+decoration, and decoration would undercut the only claim this project makes.</p>
+<hr />
+<h2 id="2-proof-of-autonomy">2 · Proof-of-autonomy</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ledger chain intact</td>
+<td>✅ 359 entries, unbroken</td>
+</tr>
+<tr>
+<td>Externally verified</td>
+<td>✅ 11 anchors, all roots re-match</td>
+</tr>
+<tr>
+<td>Autonomous external actions</td>
+<td>✅ <strong>0</strong></td>
+</tr>
+<tr>
+<td>Inclusion proof verifies</td>
+<td>✅ 9 sibling hashes of 359</td>
+</tr>
+</tbody>
+</table>
+<p>Current Merkle root: <code>534adde10a889a7501648ba4db988552fda2156118a3367650a323631ae24b17</code></p>
+<p>The anchor audit is the check that matters. Chain verification alone reports INTACT on a ledger
+that was deleted and rebuilt from scratch — the hashes are internally consistent because the
+attacker computed them. Re-deriving the root at each <em>previously published</em> sequence is what
+catches wholesale replacement:</p>
+<pre><code>✓ seq 224    anchored 2026-07-24 23:30  — matches published root
+✓ seq 282    anchored 2026-07-25 00:00  — matches published root
+✓ seq 304    anchored 2026-07-25 00:39  — matches published root
+✓ seq 350    anchored 2026-07-25 01:03  — matches published root
+</code></pre>
+<p><strong>Honest limit:</strong> anchors are only third-party evidence once <code>ANCHORS.jsonl</code> is committed and
+pushed. Before that push they are a local file the same process could rewrite, and <code>attest()</code>
+reports them as self-attested rather than externally verified.</p>
+<hr />
+<h2 id="3-budget-governor">3 · Budget governor</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Enforced by default</td>
+<td>✅ caps <code>{run: $2.00, day: $10.00, total: $100.00}</code></td>
+</tr>
+<tr>
+<td>Free models priced at zero</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Unknown models priced pessimistically</td>
+<td>✅ <code>$5.00 / $25.00</code> per Mtok</td>
+</tr>
+</tbody>
+</table>
+<p>Pricing an unfamiliar model at the <em>most expensive</em> rate we know is deliberate: an optimistic
+default would let a new slug quietly blow through a ceiling that everyone believed was holding.
+The check runs <strong>before</strong> the call, so an over-budget request is never billed.</p>
+<hr />
+<h2 id="4-mods-capability-system">4 · Mods (capability system)</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hello-world</code> discovered, static audit clean</td>
+<td>✅ declares <code>outbox.write</code>, <code>board.read</code></td>
+</tr>
+<tr>
+<td>AST audit finds no undeclared capability</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Calling an undeclared capability</td>
+<td>✅ <strong>denied and recorded</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The denial test invokes <code>api.ask(...)</code> from a mod that never declared <code>model</code>. It raises
+<code>CapabilityDenied</code>, the call does not happen, and the attempt lands in the ledger. A mod can
+lower its own spend cap but never raise it (<code>min()</code> clamp against <code>DEFAULT_MOD_SPEND_CAP</code>).</p>
+<hr />
+<h2 id="5-secret-redaction">5 · Secret redaction</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Catches provider key shapes</td>
+<td>✅ 8 providers + JWT, PEM, bearer, connection strings</td>
+</tr>
+<tr>
+<td>No false positives on our own hashes</td>
+<td>✅ Merkle roots and git SHAs pass clean</td>
+</tr>
+<tr>
+<td>Ledger write path scrubs</td>
+<td>✅ masked, and the redaction itself disclosed</td>
+</tr>
+<tr>
+<td>Repo scan</td>
+<td>✅ <strong>0 findings across 280 tracked files</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The false-positive result is the one that took work. A naive name-based rule reported <strong>22 hits
+across this tree</strong> — <code>max_tokens=200</code>, <code>tokenizer=tok</code>, <code>modal.Secret.from_name(...)</code>,
+<code>.env.example</code> placeholders — all wrong. A scanner that cries wolf gets muted, which is worse
+than having none. Value-shape guards took it to zero without losing a single real detection.</p>
+<hr />
+<h2 id="6-identity">6 · Identity</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Capabilities introspected from the live CLI</td>
+<td>✅ 64 commands, 11 counselors</td>
+</tr>
+<tr>
+<td>States plainly that it is not conscious</td>
+<td>✅ 7 shipped limits</td>
+</tr>
+</tbody>
+</table>
+<p><code>capabilities()</code> reads the actual command tree and <code>history()</code> reads the actual ledger, so the
+self-report cannot claim an ability the software does not have. <code>test_identity.py</code> pins the
+limits so a future edit cannot quietly delete them.</p>
+<hr />
+<h2 id="7-interfaces">7 · Interfaces</h2>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP API</td>
+<td>✅ 19/19 routes return serializable JSON</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td>✅ 64 commands registered</td>
+</tr>
+<tr>
+<td><code>mindbot doctor</code></td>
+<td>✅ all clear</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="defects-found-and-fixed-during-this-pass">Defects found and fixed during this pass</h2>
+<p>Both were found <em>by</em> the audit, which is the point of running one.</p>
+<p><strong>1 · Test runs polluted the production anchor log.</strong> Issuing a stamp anchors by design, so the
+first <code>test_stamp.py</code> run appended 11 rows to the real <code>ANCHORS.jsonl</code> (11 → 22) and inflated the
+action counts the stamp itself reports. Fixed by redirecting the ledger and anchor log to a
+temporary directory for the whole module (<code>setUpModule</code>); the polluted rows were rolled back and
+the stamp re-minted. Verified: a full re-run leaves the anchor count unchanged.</p>
+<p><strong>2 · A concurrency test that passed on Windows and failed on Linux.</strong> Found within minutes of
+the nightly matrix running for the first time — which is the entire argument for building it.
+<code>test_swarm_runs_concurrently_and_stops_on_rounds</code> mocked an instant pulse and then asserted that
+more than one worker thread had been seen. With a no-op pulse, worker 1 burns through all 8
+rounds and sets the stop flag before a 2-core Linux runner has scheduled workers 2–4. The
+assertion was correct; the test simply never created the condition it claimed to check — it was
+measuring thread-startup latency, not the swarm. Replaced the hope with a <code>threading.Barrier</code>:
+every worker must arrive inside <code>pulse()</code> before any may return, so the swarm cannot satisfy it
+sequentially, and a real regression now times out and fails loudly. Verified stable over 10
+consecutive local runs.</p>
+<p><strong>3 · Audit script crashed parsing clean scan output.</strong> <code>mindbot scan</code> pads its output with blank
+lines, so indexing line <code>[1]</code> raised <code>IndexError</code> on a <em>passing</em> scan — the audit reported FAIL
+while the underlying fact was <code>scan_clean: true</code>. A checker that fails when everything is fine
+trains you to ignore it. Fixed to take the first non-empty line and strip ANSI codes.</p>
+<hr />
+<h2 id="what-this-report-does-not-establish">What this report does not establish</h2>
+<ul>
+<li><strong>No live-model integration run.</strong> The council, firm, and imagery paths were exercised in
+  template mode. Real OpenRouter calls cost money and were deliberately not made in this pass.</li>
+<li>~~<strong>Windows only.</strong>~~ <strong>Closed 2026-07-25.</strong> The nightly matrix
+  (<code>.github/workflows/nightly.yml</code>) now runs this same audit on Linux, macOS and Windows across
+  Python 3.10–3.13 — 12 combinations, all green — so <code>fcntl.flock</code> is executed rather than
+  assumed. Latest result: <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/NIGHTLY.md"><code>NIGHTLY.md</code></a>.</li>
+<li><strong>Not a security audit.</strong> No adversarial review by a third party, no dependency CVE scan, no
+  fuzzing. The forgery tests cover the threat model we designed against, which is not the same as
+  the threat model an attacker will use.</li>
+<li><strong>Single-machine scale.</strong> The ledger is a local append-only file. Nothing here demonstrates
+  behaviour across multiple hosts writing to shared storage.</li>
+</ul>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

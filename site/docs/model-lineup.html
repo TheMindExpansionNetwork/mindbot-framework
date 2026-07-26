@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Model lineup — MindBot</title>
+<meta name="description" content="Which model sits in which seat, and what each one costs.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="model-lineup-verified-live-2026-07-25">Model Lineup — verified live 2026-07-25</h1>
+<p><em>Every model below was called for real against OpenRouter with our key and confirmed working.
+Prices are USD per 1M tokens. Re-verify before launch — this catalog moves fast.</em></p>
+<h2 id="the-headline-finds">The headline finds</h2>
+<table>
+<thead>
+<tr>
+<th>Find</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>nvidia/nemotron-3-ultra-550b-a55b:free</code></strong></td>
+<td>A frontier-class <strong>550B, FREE</strong>, ~0.8s. The autonomous loop now thinks with a serious brain at <strong>$0</strong>. <code>models.free_models()</code> RANKS this first.</td>
+</tr>
+<tr>
+<td><strong><code>deepseek/deepseek-v4-flash</code></strong> — $0.09/$0.19, 1M ctx</td>
+<td>~9× cheaper than GLM-5.2. Now Sprocket's workhorse tier.</td>
+</tr>
+<tr>
+<td><strong><code>google/gemini-3.1-flash-image</code></strong></td>
+<td>Excellent cinematic stills, ~10s each. Used for every promo scene.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="text-all-verified">Text (all verified)</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>$ in/out per M</th>
+<th>ctx</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>anthropic/claude-opus-5</code></td>
+<td>5.00 / 25.00</td>
+<td>1M</td>
+<td><strong>orchestration</strong>, synthesis, the hardest calls</td>
+</tr>
+<tr>
+<td><code>anthropic/claude-sonnet-5</code></td>
+<td>2.00 / 10.00</td>
+<td>1M</td>
+<td>strong all-rounder, cheaper than Opus</td>
+</tr>
+<tr>
+<td><code>openai/gpt-5.6-sol</code></td>
+<td>5.00 / 30.00</td>
+<td>1.05M</td>
+<td>top-end reasoning</td>
+</tr>
+<tr>
+<td><code>openai/gpt-5.6-terra</code></td>
+<td>2.50 / 15.00</td>
+<td>1.05M</td>
+<td>balanced</td>
+</tr>
+<tr>
+<td><code>openai/gpt-5.6-luna</code></td>
+<td>1.00 / 6.00</td>
+<td>1.05M</td>
+<td><strong>best value of the 5.6 line</strong></td>
+</tr>
+<tr>
+<td><code>x-ai/grok-4.5</code></td>
+<td>2.00 / 6.00</td>
+<td>500k</td>
+<td>bold/fast voice</td>
+</tr>
+<tr>
+<td><code>z-ai/glm-5.2</code></td>
+<td>0.80 / 2.50</td>
+<td>1M</td>
+<td>solid cheap workhorse</td>
+</tr>
+<tr>
+<td><code>deepseek/deepseek-v4-flash</code></td>
+<td><strong>0.09 / 0.19</strong></td>
+<td>1M</td>
+<td><strong>cheapest capable</strong> — default workhorse</td>
+</tr>
+<tr>
+<td><code>meta-llama/llama-4-scout</code></td>
+<td>0.10 / 0.30</td>
+<td>1.3M</td>
+<td>light tier, huge context</td>
+</tr>
+<tr>
+<td><code>moonshotai/kimi-k3</code></td>
+<td>3.00 / 15.00</td>
+<td>1M</td>
+<td>long-form</td>
+</tr>
+</tbody>
+</table>
+<p>⚠️ <strong><code>google/gemini-3.6-flash</code> truncates on short <code>max_tokens</code></strong> — it spends budget on internal
+reasoning before emitting. Give it ≥600 tokens or use <code>gpt-5.6-luna</code> for short structured output.</p>
+<h2 id="image-generation-two-different-endpoint-shapes">Image generation — TWO DIFFERENT ENDPOINT SHAPES ⚠️</h2>
+<p><strong>This is the #1 gotcha.</strong> <code>GET /api/v1/models</code> only lists <strong>chat</strong> models — an image or TTS
+model absent from that list is NOT missing, it just lives on a different route. Implemented in
+<code>mindbot_pipeline/imagery.py</code>, which picks the right shape per model and falls back on failure.</p>
+<p><strong>Shape A — dedicated endpoint</strong> (<code>microsoft/mai-image-2.5-pro</code>):</p>
+<pre><code>POST /api/v1/images   {&quot;model&quot;,&quot;prompt&quot;,&quot;aspect_ratio&quot;?,&quot;n&quot;?}
+  -&gt; {&quot;data&quot;:[{&quot;b64_json&quot;: &quot;...&quot;}]}
+</code></pre>
+<p><code>aspect_ratio</code> ∈ 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, auto · <code>n</code> 1–1 · <code>input_references</code> 0–1</p>
+<p><strong>Shape B — chat with modalities</strong> (the Gemini/GPT image line):</p>
+<pre><code>POST /api/v1/chat/completions   {&quot;model&quot;, &quot;modalities&quot;:[&quot;image&quot;,&quot;text&quot;], &quot;messages&quot;:[...]}
+  -&gt; choices[0].message.images[0].image_url.url   (a data: URI)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Shape</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>microsoft/mai-image-2.5-pro</code></td>
+<td>A</td>
+<td>endpoint verified; <strong>Azure 429s it hard</strong> (<code>westcentralus</code> rate limit) — retry/fallback required</td>
+</tr>
+<tr>
+<td><code>google/gemini-3.1-flash-image</code></td>
+<td>B</td>
+<td>✅ <strong>workhorse</strong> — ~10s, excellent cinematic quality</td>
+</tr>
+<tr>
+<td><code>google/gemini-2.5-flash-image</code></td>
+<td>B</td>
+<td>✅ cheapest</td>
+</tr>
+<tr>
+<td><code>google/gemini-3-pro-image</code>, <code>openai/gpt-5-image</code></td>
+<td>B</td>
+<td>available</td>
+</tr>
+</tbody>
+</table>
+<h2 id="audio-tts-endpoint-verified-providers-blocked">Audio / TTS — endpoint verified, providers blocked</h2>
+<p><strong><code>POST /api/v1/audio/speech</code></strong> is the right route — body <code>{model, input, voice}</code>. Proof it's
+correct: omitting <code>voice</code> returns OpenRouter's <strong>own ZodError</strong> demanding a <code>voice</code> string
+(schema accepted), while every valid-looking body returns <em>"Provider returned 400"</em> — i.e. the
+route is fine, the <strong>provider</strong> is rejecting.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qwen/qwen-audio-3.0-tts-flash</code></td>
+<td>route OK; provider 400s on every voice tried (alloy/Cherry/Ethan)</td>
+</tr>
+<tr>
+<td><code>openai/gpt-audio(-mini)</code></td>
+<td>not on <code>/audio/speech</code>; on chat it needs <code>"stream": true</code>, then upstream <strong>429 quota</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Working alternative in production:</strong> Windows SAPI (<code>System.Speech.Synthesis</code>) — free, offline,
+instant. Two voices (David/Zira) × rate variation = 4+ distinct characters. See <code>apps/promo/</code>.</p>
+<h2 id="comfyui-cloud-mcp-connected">ComfyUI Cloud (MCP) — CONNECTED ✅</h2>
+<p>Authenticated via OAuth, production, 36 tools. Verified working:
+<code>get_server_info</code> · <code>search_templates</code> · <code>upload_file</code> · <code>partner_generate</code> · <code>wait_for_job</code> ·
+<code>get_output</code>.</p>
+<ul>
+<li><strong>Video that works today:</strong> <code>partner_generate(type="video", model="byteplus/seedance-2.0-t2v")</code>
+  with <code>params.model = "Seedance 2.0 Mini"</code> (cheap/fast tier). Returns a real 720p H.264 clip
+  <strong>with native audio</strong>. Used for the promo hero shot.</li>
+<li><strong>Gotcha:</strong> <code>api_seedance2_0_r2v</code> (image→video) exposes <strong>no slots</strong> via
+  <code>get_template_schema</code>, so <code>slot_overrides</code> bounces with <code>validation.reference</code>. Use the
+  <code>partner_generate</code> text-to-video path, or wire a LoadImage node with <code>submit_workflow</code>.</li>
+<li>Paid nodes are <strong>spend-gated</strong>: call once, then re-call with <code>confirm: true</code>.</li>
+</ul>
+<h2 id="how-to-change-what-the-framework-uses">How to change what the framework uses</h2>
+<ul>
+<li><strong>Whole council onto one model:</strong> <code>mindbot model &lt;slug&gt;</code> (writes <code>MINDBOT_MODEL</code>).</li>
+<li><strong>Per-seat defaults:</strong> <code>OPENROUTER_SLUGS</code> in <code>mindbot_pipeline/models.py</code>.</li>
+<li><strong>Free-only + ranked:</strong> set <code>MINDBOT_FREE=1</code>; ranking lives in <code>free_models()</code> <code>_PREFER</code>.</li>
+<li><strong>Sprocket tiers:</strong> <code>lib/router.ts</code> → <code>TIERS</code>.</li>
+</ul>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

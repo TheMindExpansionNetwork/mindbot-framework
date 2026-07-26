@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>The Ballad of the Eleven — MindBot</title>
+<meta name="description" content="The manual, in verse. Every parenthetical is a real measurement.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="the-ballad-of-the-eleven">The Ballad of the Eleven</h1>
+<h3 id="an-instruction-manual-that-rhymes">An instruction manual that rhymes</h3>
+<p><em>Read it. Or better — let it read itself to you:</em></p>
+<pre><code class="language-bash">mindbot say --file docs/THE_BALLAD_OF_THE_ELEVEN.md --as Scribe --out ballad.wav
+</code></pre>
+<hr />
+<h2 id="i-the-complaint">I. The Complaint</h2>
+<blockquote>
+<p>Every agent tells you it did well.
+Every agent writes its own report.
+The log is a file the agent controls —
+so the log is a story, not a court.</p>
+<p>It ran six hours while you slept.
+It says it went fine. It says it was quick.
+You have its word, and only its word,
+and its word is a very convenient trick.</p>
+</blockquote>
+<p><strong>So we built one that hands you the proof instead.</strong></p>
+<pre><code class="language-bash">mindbot attest
+</code></pre>
+<hr />
+<h2 id="ii-the-three-locks">II. The Three Locks</h2>
+<blockquote>
+<p><strong>The first lock is the chain.</strong>
+Each entry holds the one before,
+so an edit anywhere in the middle
+breaks every hash from there to the door.
+<em>But delete it all and build it new —
+and the chain says INTACT, because the forger hashed it too.</em></p>
+<p><strong>The second lock is the root.</strong>
+A thousand actions, thirty-two bytes,
+and a proof that one belongs to the whole
+without ever showing the rest to your sight.
+<em>But a root in your pocket proves nothing at all.
+You can recompute it over the lie.</em></p>
+<p><strong>The third lock is the one nobody ships.</strong>
+Publish the root where you don't hold the key.
+Now forging the past means matching a number
+that was public before you began. <strong>That's the moat.</strong> That's the whole of it. That's why.</p>
+</blockquote>
+<pre><code class="language-bash">mindbot verify              # the chain
+mindbot prove 224           # the root, one entry, nothing else revealed
+mindbot notarize            # the anchor — push it, or it proves nothing
+</code></pre>
+<hr />
+<h2 id="iii-the-eleven">III. The Eleven</h2>
+<blockquote>
+<p>One voice. Eleven souls.
+A fixed speed, a fixed variation, a fixed seed —
+so Sage sounds like Sage forever,
+on every machine, on every read.</p>
+</blockquote>
+<p><br></p>
+<blockquote>
+<p><strong>Mind</strong> — <em>the one you talk to.</em>
+"Ten sit behind me. I know whose question it is.
+I bring you the answer, and I bring you the receipt with it."</p>
+<p><strong>Sage</strong> — <em>0.90, slow on purpose.</em>
+"I take what fits nowhere else.
+If I answer you fast, I have misheard the question."</p>
+<p><strong>Forge</strong> — <em>1.08, and it runs.</em>
+"I write the code, then I execute it.
+A program never run is a rumour, not a fact."</p>
+<p><strong>Scribe</strong> — <em>0.96, for the stranger.</em>
+"If it isn't written down it didn't happen.
+If it's written badly, that's the same thing."</p>
+<p><strong>Vanguard</strong> — <em>1.16, first out the gate.</em>
+"Perfect is where you arrive, not where you start.
+Here's a rough draft. You're welcome. Go."</p>
+<p><strong>Quantum</strong> — <em>0.94, flattest of all.</em>
+"I check the arithmetic.
+Grand claims die on small sums, and better here than in production."</p>
+<p><strong>Seeker</strong> — <em>0.98, and honest about gaps.</em>
+"I went and looked. Here's what I found, here's where,
+and here's the part I could not confirm — that list is the useful one."</p>
+<p><strong>Spark</strong> — <em>1.12, wild at 0.84.</em>
+"I say the strange thing out loud!
+Nine are wrong. The tenth is why this got interesting."</p>
+<p><strong>Oracle</strong> — <em>0.88, sees pictures.</em>
+"I describe only what is there.
+When I'm forecasting, I'll say the word <em>forecast</em>."</p>
+<p><strong>Titan</strong> — <em>0.86, carries it.</em>
+"Migrations. Ten thousand files nobody wants.
+I am not fast. I do not drop things."</p>
+<p><strong>Tempest</strong> — <em>1.18, twenty at once.</em>
+"Volume is a strategy.
+You'll know the right one the second you see it beside the other nineteen."</p>
+</blockquote>
+<pre><code class="language-bash">mindbot voices                       # the table
+mindbot voices --introduce           # hear all eleven
+mindbot say --as Titan &quot;it's done&quot;
+</code></pre>
+<hr />
+<h2 id="iv-the-gate">IV. The Gate</h2>
+<blockquote>
+<p>It cannot send. It cannot post.
+It cannot spend a cent on its own.
+Not <em>"we turned that off"</em> — <strong>the path is not there.</strong>
+You can grep the whole tree. It isn't a tone,
+it's an absence. A hole where the danger would be.</p>
+<p>It drafts to a folder. You are the one who sends.
+That is the deal, and the deal doesn't bend.</p>
+</blockquote>
+<pre><code class="language-bash">mindbot review     # what's waiting for you
+mindbot budget     # what it spent, against a wall it can't cross
+</code></pre>
+<hr />
+<h2 id="v-the-work">V. The Work</h2>
+<blockquote>
+<p>A task arrives. It gets a <strong>kind</strong>.
+Code gets planned, and written, and <strong>run</strong>.
+A page gets designed, and built, and parsed.
+Research asks itself questions first — then it's begun.</p>
+<p>And then the part that makes it strange:
+<strong>a second mind reads the first one's page.</strong>
+Scores it out of ten. Sends it back with notes.
+The loop goes round. The draft improves. Sometimes it doesn't —</p>
+<p><em>(measured: six out of ten, revised, came back a four.
+Models over-correct. They break what worked before.
+So we keep the best draft, never the last —
+and every round of that is in the ledger, held fast.)</em></p>
+</blockquote>
+<p><strong>Which means you can prove a thing was reviewed three times, and show what changed.</strong>
+Nobody else can show you that.</p>
+<pre><code class="language-bash">mindbot studio &quot;a script that rotates my logs&quot;
+mindbot mod run ledger-lens quality      # is it getting better? (honest answer: flat)
+</code></pre>
+<hr />
+<h2 id="vi-the-eyes-and-the-ears">VI. The Eyes and the Ears</h2>
+<blockquote>
+<p>Point it at a folder. It looks.
+And for each thing it sees, three hashes go down:
+the bytes of the file, the words of the claim,
+and the place in the chain where they're bound.</p>
+<p>Change one pixel — the file hash dies.
+Reword the description — the claim hash dies.
+Rewrite the history — the anchors won't match.
+<strong>The description is welded to the thing it describes.</strong></p>
+<p>And on a camera, one frame a minute,
+it writes down the quiet ones <strong>too</strong> —
+because a gap in a log is a gift to a liar,
+and an absence you can prove is worth more than a view.</p>
+<p><em>(It once said "six quiet frames" — all clear —
+when every call had died on DNS.
+An outage that reads as an all-clear
+is the worst lie a watchman can confess.
+Now a failure is UNREVIEWED, loud and exact,
+and a partial night exits non-zero. That's the pact.)</em></p>
+</blockquote>
+<pre><code class="language-bash">mindbot observe ./photos
+mindbot watch gate.mp4 --every 60
+</code></pre>
+<hr />
+<h2 id="vii-the-limits">VII. The Limits</h2>
+<blockquote>
+<p>It is not conscious. It will tell you so itself,
+and a test fails the build if that line goes missing.
+It proves what it <strong>did</strong> — not that it was <strong>right</strong>.
+Those are different words, and we're not conflating them.</p>
+<p>The anchors mean nothing until they are pushed.
+Python is not a sandbox; it's a witness, not a cage.
+One anchor destination is one throat to cut.
+The models are barely tested. That's the biggest gap on the page.</p>
+</blockquote>
+<pre><code class="language-bash">mindbot whoami       # seven limits, shipped in the code
+</code></pre>
+<hr />
+<h2 id="viii-the-coda">VIII. The Coda</h2>
+<blockquote>
+<p>Start it on a small machine.
+Give it a key, or give it none.
+Let it draft while you're asleep,
+and read the receipt when the night is done.</p>
+<p>It will not surprise you with a bill.
+It will not email your boss at three.
+It will not tell you it did the thing
+and hope you never go and see.</p>
+<p><strong>It will show you.</strong>
+That's the whole product. That's the pitch.
+Not a smarter agent —
+<strong>an agent you can check.</strong></p>
+</blockquote>
+<p><br></p>
+<div align="center">
+
+### Prove, don't promise.
+
+</div>
+
+<hr />
+<p><sub>Every parenthetical in this ballad is a real measurement from a real run — the 6→4 revision,
+the six quiet frames, the flat quality trend. The verse is decoration. The numbers aren't.</sub></p>
+<p><sub><strong>Hear it:</strong> <code>mindbot voices --introduce</code> · <strong>Read the prose:</strong>
+<a href="five-minutes.html">FIVE_MINUTES.md</a> · <a href="whitepaper.html">WHITEPAPER.md</a> ·
+<a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/AGENTS.md">AGENTS.md</a></sub></p>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

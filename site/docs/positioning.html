@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Positioning — MindBot</title>
+<meta name="description" content="The slogan, the competitive argument, objection handling, and words we refuse to use.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="positioning-the-slogan-and-the-argument-underneath-it">Positioning — the slogan, and the argument underneath it</h1>
+<p>Language for the launch. Every claim here maps to something runnable; if a line can't survive
+<code>mindbot attest</code>, it doesn't ship.</p>
+<hr />
+<h2 id="the-slogan">The slogan</h2>
+<blockquote>
+<h1 id="prove-dont-promise">Prove, don't promise.</h1>
+</blockquote>
+<p>Three syllables and a comma, and it does four jobs at once: it names the category (proof), names
+the competition's whole posture (promises), works as an imperative to the <em>builder</em> as much as to
+the buyer, and is short enough to sit under a logo.</p>
+<p><strong>Use it as the lockup line.</strong> Everything below is support.</p>
+<h3 id="the-one-liner-the-version-people-repeat">The one-liner (the version people repeat)</h3>
+<blockquote>
+<p><strong>Every autonomous agent tells you what it did. This one hands you the proof.</strong></p>
+</blockquote>
+<p>This is the strongest sentence we have, and it should lead anywhere you have more than five
+words. It doesn't attack anyone, it's verifiable, and it makes the listener notice something they
+already quietly knew — that they've been taking agents at their word.</p>
+<h3 id="the-elevator-paragraph">The elevator paragraph</h3>
+<blockquote>
+<p>An agent runs for six hours while you sleep and reports success. You have its word — the log it
+wrote is a file it controls. MindBot hash-chains every action, publishes a Merkle root to a
+third party before you read it, and enforces spend ceilings <em>before</em> each call rather than
+reporting them after. It cannot send, post, or charge; those code paths don't exist. You don't
+trust it. You check it.</p>
+</blockquote>
+<h3 id="alternates-by-context">Alternates, by context</h3>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Line</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Developer / HN</td>
+<td><strong>Your agent's log is a file it controls.</strong></td>
+</tr>
+<tr>
+<td>Enterprise / compliance</td>
+<td><strong>Receipts, not reassurance.</strong></td>
+</tr>
+<tr>
+<td>Cost-conscious</td>
+<td><strong>The budget is a wall, not a report.</strong></td>
+</tr>
+<tr>
+<td>Safety-adjacent</td>
+<td><strong>The human holds the pen.</strong></td>
+</tr>
+<tr>
+<td>The sleep test</td>
+<td><strong>Run it overnight. Audit it at breakfast.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Retired:</strong> "56% cheaper than a flat swarm." It's true and measured, but leading with cost picks a
+fight we win on the wrong axis — and every competitor can undercut a price claim next quarter.
+Nobody can undercut a published Merkle root. Keep the number as <em>support</em>, never as the headline.</p>
+<hr />
+<h2 id="why-this-is-actually-better-the-argument">Why this is actually better — the argument</h2>
+<p>Not "we have more features." One structural difference, and the features fall out of it.</p>
+<h3 id="the-gap-everyone-has">The gap everyone has</h3>
+<p>Every agent framework asks you to trust its own account of itself. The observability story is
+always some version of: <em>the agent writes logs, you read the logs.</em> But the agent controls the
+logs. That's not an audit trail, it's an autobiography.</p>
+<p>This isn't a knock on any specific project — it's the default architecture of the entire category.
+Which is exactly why it's a position worth taking.</p>
+<h3 id="what-we-do-instead">What we do instead</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Typical framework</th>
+<th>MindBot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Action record</strong></td>
+<td>app-controlled log file</td>
+<td>hash-chained; any edit breaks the chain</td>
+</tr>
+<tr>
+<td><strong>Integrity</strong></td>
+<td>none, or a checksum you also hold</td>
+<td>Merkle root <strong>published to a third party</strong> before the fact</td>
+</tr>
+<tr>
+<td><strong>Selective disclosure</strong></td>
+<td>show the whole log or nothing</td>
+<td>prove one entry in ~log₂(n) hashes, revealing nothing else</td>
+</tr>
+<tr>
+<td><strong>Spend control</strong></td>
+<td>usage reported after the call</td>
+<td>ceiling checked <strong>before</strong> the call, at one chokepoint</td>
+</tr>
+<tr>
+<td><strong>Unknown model pricing</strong></td>
+<td>assume cheap / unlisted</td>
+<td>priced at the <strong>most expensive</strong> known rate</td>
+</tr>
+<tr>
+<td><strong>Plugin trust</strong></td>
+<td>trust the author</td>
+<td>manifest of capabilities, AST-audited against it, every call ledgered</td>
+</tr>
+<tr>
+<td><strong>External actions</strong></td>
+<td>configurable guardrails</td>
+<td><strong>the code paths don't exist</strong></td>
+</tr>
+<tr>
+<td><strong>Stated limits</strong></td>
+<td>marketing copy</td>
+<td>7 shipped limits with a failing test if trimmed</td>
+</tr>
+<tr>
+<td><strong>Attribution badge</strong></td>
+<td>an image URL anyone can paste</td>
+<td>bound to a published Merkle root; forgery requires matching a public value</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-three-layer-argument-the-part-to-actually-explain">The three-layer argument (the part to actually explain)</h3>
+<p>Most people stop at layer one and think they're done. Walk them down:</p>
+<ol>
+<li><strong>Hash chain</strong> catches edits and deletions. <strong>Its blind spot:</strong> delete the ledger, rebuild it
+   from scratch, and verification says <code>INTACT</code> — because the forger computed those hashes too.</li>
+<li><strong>Merkle root</strong> compresses all history to 32 bytes. <strong>Its blind spot:</strong> a fingerprint you keep
+   locally proves nothing; you can recompute it over the forgery.</li>
+<li><strong>External anchor</strong> — publish the root, timestamped, somewhere you don't control. Now forging
+   history means producing a ledger matching a value that was public <em>before you started</em>.</li>
+</ol>
+<p>Layer three is the one nobody ships, and it's the only one that closes the loop. <strong>That's the
+moat.</strong> Not eleven counselors, not the cost pyramid — those are good, but they're features anyone
+can copy in a sprint. A published anchor log with real history behind it compounds daily and
+cannot be backfilled.</p>
+<h3 id="why-the-honesty-is-a-feature-not-modesty">Why the honesty is a feature, not modesty</h3>
+<p>The README puts its limits on the front page: anchors aren't third-party evidence until pushed,
+provenance isn't correctness, Python isn't a sandbox, spend estimates are approximate.</p>
+<p>That reads as confidence, and it's strategically load-bearing. A framework selling verifiability
+that oversells itself has refuted its own pitch in the first paragraph. Every honest limit makes
+the <em>unqualified</em> claims more credible — and the unqualified ones are strong: 0 autonomous sends
+across 995 recorded actions, 146 tests, 0 secrets in 280 files, every number reproducible with one
+command.</p>
+<p><strong>The rule:</strong> if we can't prove it, we don't claim it. If we claim it, <code>mindbot attest</code> backs it.</p>
+<hr />
+<h2 id="objections-and-honest-answers">Objections, and honest answers</h2>
+<p><strong>"Isn't this just logging with extra steps?"</strong>
+Logging tells you what the app chose to record. This tells you what it recorded <em>and</em> that nothing
+has been changed since — including by us. Different guarantee, not a fancier log.</p>
+<p><strong>"Who actually needs cryptographic proof from an agent?"</strong>
+Anyone who has to answer "what did it do while unattended?" to someone who isn't obligated to
+believe them — regulated industries, agencies billing clients for agent hours, security review,
+incident post-mortems. And the number is only going up as agents get more independent.</p>
+<p><strong>"Can't you just fake the whole ledger?"</strong>
+You'd need a ledger whose Merkle root matches a value already published and timestamped in a repo
+you don't control. Possible if you compromise the anchor destination — which is why anchors go to
+a third party and why we say plainly that anchors are only evidence <em>once pushed</em>.</p>
+<p><strong>"Does this slow the agent down?"</strong>
+One SHA-256 and an fsync per action, under an OS-level file lock. Immeasurable next to a model
+call.</p>
+<p><strong>"Why should I believe your test numbers?"</strong>
+Don't. Run <code>python framework/_full_audit.py</code> — it prints them, and the nightly CI reruns the whole
+thing across 12 platform/version combinations on GitHub's machines.</p>
+<hr />
+<h2 id="words-to-avoid">Words to avoid</h2>
+<ul>
+<li><strong>"Sentient" / "conscious" / "self-aware"</strong> — the one claim that could never be checked, in a
+  project where everything else is measured. <code>test_identity.py</code> fails the build over this.</li>
+<li><strong>"Fully autonomous"</strong> unqualified — it drafts; a human sends. Say <em>"runs unattended,"</em> which is
+  true, or <em>"autonomous with a human gate,"</em> which is the actual product.</li>
+<li><strong>"Secure" / "sandboxed"</strong> — capability scoping guarantees <em>evidence</em>, not containment.</li>
+<li><strong>"Guaranteed savings"</strong> — the firm's cost reporting is a measured counterfactual on one run.</li>
+</ul>
+<p>See also: <a href="why-different.html"><code>WHY_DIFFERENT.md</code></a> for the six self-* properties, and
+<a href="test-report.html"><code>TEST_REPORT.md</code></a> for what the numbers do and don't establish.</p>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>

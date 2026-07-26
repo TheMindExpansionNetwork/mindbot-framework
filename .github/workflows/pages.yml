@@ -32,18 +32,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sanity-check the site
-        # Cheap guards for the two failures that actually happen: a missing asset (so the page
-        # loads with broken images) and an unreplaced placeholder.
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Rebuild the doc pages from source
+        # The rendered pages are committed, but rebuilding here means a doc edited without
+        # re-running the builder still reaches the site — and the build fails loudly if a
+        # source listed in PAGES has gone missing.
         run: |
-          test -f site/index.html || { echo "no site/index.html"; exit 1; }
-          missing=0
-          for f in $(grep -oE '(src|href)="(assets|demo)/[^"]+"' site/index.html \
-                     | sed -E 's/.*"(.*)"/\1/' | sort -u); do
-            if [ ! -f "site/$f" ]; then echo "MISSING: site/$f"; missing=1; fi
-          done
-          [ "$missing" = "0" ] || exit 1
-          ! grep -q "TODO\|FIXME\|lorem ipsum" site/index.html || { echo "placeholder text"; exit 1; }
+          pip install --quiet markdown
+          python site/_build.py
+
+      - name: Check every local link resolves
+        # The usual Pages failure is not a broken build. It is a page that deploys perfectly
+        # and quietly serves a 404 image or a dead link that nobody notices for a month.
+        # This walks EVERY href and src on EVERY page and fails the deploy instead.
+        run: |
+          python - <<'PY'
+          import pathlib, re, sys
+          site = pathlib.Path("site")
+          bad, checked = [], 0
+          for f in site.rglob("*.html"):
+              s = f.read_text(encoding="utf-8", errors="ignore")
+              for m in re.finditer(r'(?:href|src)="((?!https?:|#|mailto:|data:)[^"]+)"', s):
+                  href = m.group(1).split("#")[0]
+                  if not href:
+                      continue
+                  checked += 1
+                  if not (f.parent / href).resolve().exists():
+                      bad.append(f"{f.relative_to(site)}  ->  {href}")
+          print(f"{len(list(site.rglob('*.html')))} pages, {checked} local links, {len(bad)} broken")
+          for b in bad[:20]:
+              print("   ", b)
+          sys.exit(1 if bad else 0)
+          PY
+          ! grep -rq "TODO\|FIXME\|lorem ipsum" site/*.html || { echo "placeholder text"; exit 1; }
           echo "site OK — $(du -sh site | cut -f1)"
 
       - uses: actions/configure-pages@v5

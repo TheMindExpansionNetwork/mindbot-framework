@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Verifiable Autonomy — MindBot</title>
+<meta name="description" content="The white paper. Why three integrity layers are needed and why the third is the one nobody ships.">
+<link rel="icon" href="../assets/logo.png">
+<style>
+:root{--bg:#0B0B14;--bg2:#12102A;--panel:#151429;--line:#282348;--ink:#F2EEFF;
+  --muted:#8F88C4;--accent:#6E5BFF;--green:#32E6A0;--amber:#FFC857}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(110% 60% at 78% -10%,var(--bg2),var(--bg)) fixed;color:var(--ink);
+  font:17px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+img{max-width:100%;height:auto;border-radius:12px}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,11,20,.85);
+  border-bottom:1px solid var(--line)}
+nav .in{max-width:860px;margin:auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:16px}
+nav img{width:26px;border-radius:0} nav b{letter-spacing:.14em;font-size:13px}
+nav .r{margin-left:auto;display:flex;gap:18px;font-size:13.5px}
+nav .r a{color:var(--muted)} nav .r a:hover{color:var(--ink);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:56px 22px 96px}
+h1{font-size:clamp(2.1rem,6vw,3.3rem);letter-spacing:-.035em;line-height:1.05;margin:0 0 26px}
+h2{font-size:1.62rem;letter-spacing:-.02em;margin:52px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;margin:32px 0 10px;color:#D6D0FA}
+h4{font-size:1.02rem;margin:22px 0 8px;color:var(--muted)}
+p,li{margin-bottom:14px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li::marker{color:var(--accent)}
+strong{color:#fff} em{color:#D6D0FA}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:22px 0;color:#D6D0FA}
+blockquote p:last-child{margin-bottom:0}
+code{background:#0A0918;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--green)}
+pre{background:#0A0918;border:1px solid var(--line);border-radius:12px;padding:18px;
+  overflow-x:auto;margin:20px 0}
+pre code{background:none;border:0;padding:0;color:#C9C2FF;font-size:13px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel);color:var(--muted);font-size:12.5px;letter-spacing:.05em;
+  text-transform:uppercase;font-weight:700}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+summary{cursor:pointer;font-weight:600}
+.back{display:inline-block;margin-bottom:30px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:70px;padding:36px 22px 60px;text-align:center;
+  color:var(--muted);font-size:13.5px}
+footer .s{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:10px}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a href="../index.html"><img src="../assets/logo.png" alt=""></a>
+  <b>MINDBOT</b>
+  <div class="r">
+    <a href="index.html">Docs</a>
+    <a href="../demo/chain-check.html">Game</a>
+    <a href="../demo/guide.html">Guide</a>
+    <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">GitHub</a>
+  </div>
+</div></nav>
+<main>
+<a class="back" href="index.html">← all docs</a>
+<h1 id="verifiable-autonomy">Verifiable Autonomy</h1>
+<h3 id="making-an-ai-agents-account-of-itself-checkable-by-someone-who-doesnt-trust-it">Making an AI agent's account of itself checkable by someone who doesn't trust it</h3>
+<p><strong>MindBot</strong> · v0.3.0 · 2026-07-25
+The Mind Expansion Network</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>Autonomous agents are trusted on their own testimony. An agent runs unattended, writes a log, and
+reports success — but the log is a file the agent controls, so every guarantee in the stack
+reduces to the agent vouching for itself. This is not a flaw in any particular framework; it is
+the default architecture of the category.</p>
+<p>We describe a system in which an agent's account of its own behaviour is <strong>externally
+verifiable</strong>: every action is hash-chained, the chain's Merkle root is published to a third party
+before the claim is read, spend ceilings are enforced <em>before</em> each model call rather than
+reported after, and the code paths for sending, publishing, and charging <strong>do not exist</strong>. We
+show that three integrity layers are required — each covering a blind spot of the one below —
+and that the third, external anchoring, is the one nobody ships and the only one that closes the
+loop.</p>
+<p>We report a working implementation: 177 tests, a nightly audit across 12 platform/version
+combinations, and two applications — a self-critiquing work pipeline and a multimodal
+observation system that binds a model's description to the exact bytes it described.</p>
+<hr />
+<h2 id="1-the-problem">1. The problem</h2>
+<p>Consider an agent that runs for six hours overnight. In the morning it reports success.</p>
+<p>Did it call the model 40 times or 4,000? Did a plugin read your credentials? Did it email
+someone? You have its log — a file it wrote, that it could have written differently, or not at
+all. The observability story across the category is some version of <em>the agent writes logs, you
+read the logs</em>. That is not an audit trail. It is an autobiography.</p>
+<p>This matters more as agents act more independently. "What did it do while unattended?" is a
+question with real stakes in regulated work, in agencies billing for agent hours, in security
+review, and in incident post-mortems — and it is currently unanswerable to anyone who is not
+already inclined to believe you.</p>
+<h2 id="2-three-layers-and-why-two-are-not-enough">2. Three layers, and why two are not enough</h2>
+<h3 id="21-hash-chain">2.1 Hash chain</h3>
+<p>Each ledger entry binds the SHA-256 of its predecessor (<code>seq</code>, <code>prev</code>, <code>hash</code>). Edit or delete
+any entry and every subsequent hash stops validating.</p>
+<p><strong>Blind spot.</strong> Delete the ledger, rebuild it from scratch, and verification reports <code>INTACT</code> —
+because the forger computed those hashes too. A chain proves internal consistency, not history.</p>
+<h3 id="22-merkle-root">2.2 Merkle root</h3>
+<p>All history compresses to one 32-byte fingerprint, with RFC 6962-style inclusion proofs: ~log₂(n)
+sibling hashes prove one entry belongs to the tree while revealing nothing about the others.</p>
+<p><strong>Blind spot.</strong> A fingerprint you hold locally proves nothing. You can recompute it over the
+forgery.</p>
+<h3 id="23-external-anchoring">2.3 External anchoring</h3>
+<p>The root is written to an append-only anchor log, committed, and <strong>pushed to a repository you do
+not control</strong>. A third party now holds a timestamped copy that predates any later edit.</p>
+<p>Forging history now requires producing a ledger whose Merkle root matches a value that was public
+<em>before you started</em>. That is the property the first two layers cannot provide alone, and it
+compounds daily: an anchor log with real history behind it cannot be backfilled.</p>
+<pre><code>ACTION ──▶ hash-chained entry ──▶ Merkle root ──▶ anchored &amp; pushed
+           tamper-EVIDENT         one fingerprint    a third party
+           (edit → chain breaks)  for all history    holds it
+</code></pre>
+<p><strong>Honest limit.</strong> Anchors are third-party evidence <em>only once pushed</em>. Before that they are a
+local file the same process could rewrite, and the implementation reports them as self-attested
+rather than verified. A system arguing for verifiability cannot overstate its own.</p>
+<h2 id="3-prevention-over-cure-an-immutable-log-is-a-hazard">3. Prevention over cure: an immutable log is a hazard</h2>
+<p>Every property that makes an append-only, publicly-anchored ledger trustworthy makes a leaked
+secret permanent. You cannot delete the entry (later hashes depend on it), edit it (verification
+would correctly report tampering), or rewrite history (anchors would stop matching).</p>
+<p>So redaction runs on the <strong>write path</strong>, unconditionally, before any entry lands.</p>
+<p>The engineering difficulty was false positives, not detection. A naive name-based rule flagged
+<strong>22 real lines</strong> in our own tree — <code>max_tokens=200</code>, <code>tokenizer=tok</code>,
+<code>modal.Secret.from_name(...)</code>, <code>.env.example</code> placeholders. A scanner that cries wolf gets muted,
+which is worse than none. Value-shape guards took it to zero without losing a detection.</p>
+<p>Pattern <em>order</em> is load-bearing: a generic <code>sk-</code> shape swallows <code>sk-ant-</code> and <code>sk-or-</code> keys and
+mislabels the provider — and the label is what tells an operator which key to rotate.</p>
+<h2 id="4-bounded-by-construction">4. Bounded by construction</h2>
+<p><strong>Spend.</strong> All model calls funnel through one chokepoint where the ceiling is checked <em>before</em>
+the request leaves. An unrecognised model is priced at the most expensive rate known; an
+optimistic default would let a new slug walk through a ceiling everyone believed was holding.</p>
+<p>Precedence is a safety decision: a <code>MINDBOT_FREE</code> guard <strong>overrides</strong> a pinned paid model. The
+failure is asymmetric — wrongly forcing a free model costs one run's quality; wrongly honouring a
+paid pin in an unattended loop costs money that isn't there. A control named FREE that does not
+guarantee free is worse than no control.</p>
+<p><strong>External action.</strong> There is no send, post, publish, or pay path. Not "disabled" — absent. Work
+lands in an outbox; a person decides what leaves. The claim is a number readable off the ledger:
+<code>0</code> autonomous external actions across ~995 recorded actions.</p>
+<p><strong>Plugins.</strong> A mod declares its capabilities; its source is walked as an AST and checked against
+that declaration before it loads; undeclared calls raise <code>CapabilityDenied</code> and the <em>attempt</em> is
+ledgered. A mod can lower its own spend cap, never raise it. Python cannot be fully sandboxed
+in-process — this raises the cost of misbehaviour and guarantees evidence. It is not containment.</p>
+<h2 id="5-application-i-a-work-pipeline-that-criticises-itself">5. Application I: a work pipeline that criticises itself</h2>
+<p>The original loop treated every task identically — claim, pick a persona, one model call, write
+markdown. A poem, a market analysis, and a Python script took the same path. That is a
+persona-rotating text generator, and no better model fixes a missing loop.</p>
+<p>The <strong>Studio</strong> adds typed pipelines (a <code>code</code> task plans, implements, then <em>executes its own
+output in a subprocess</em>; a <code>build</code> task parses its HTML) and a <strong>critique loop</strong> in which a
+different counselor scores the draft against explicit per-kind criteria and returns concrete
+fixes.</p>
+<p>Two findings worth recording:</p>
+<p><strong>Models over-correct.</strong> A code artifact scored 6/10, was revised against three critic notes, and
+came back <strong>4/10</strong> — the revision broke working code while "addressing feedback". The loop now
+keeps the high-water mark, not the last draft.</p>
+<p><strong>Every round is ledgered.</strong> This yields a claim we have not seen elsewhere: a tamper-evident
+record of <em>revision history</em>. You can prove a piece of work was reviewed three times and show
+what changed each round.</p>
+<h2 id="6-application-ii-observation-bound-to-bytes">6. Application II: observation bound to bytes</h2>
+<p>Any model can describe an image. None can prove afterwards that it did, or that the file you hold
+is the file it saw.</p>
+<p>For each image or audio file, three hashes enter the ledger: <code>sha256(file bytes)</code>,
+<code>sha256(observation text)</code>, and a chain position. Change one pixel and the file hash stops
+matching; reword the description and the observation hash stops matching; rewrite history and the
+anchors stop matching. Selective disclosure follows from the Merkle structure — proving one
+observation while revealing nothing about the rest, which matters when the folder is evidence or
+medical imaging.</p>
+<p>Extended to video by frame sampling. The design decision that mattered:</p>
+<blockquote>
+<p><strong>A failed observation is still recorded, and never counted as a quiet one.</strong></p>
+</blockquote>
+<p>An early run reported "6 quiet frames" — all clear — when every model call had died on a
+transient DNS error. <strong>An outage indistinguishable from an all-clear is the worst failure a
+monitoring system can have.</strong> Failed frames are now <code>UNREVIEWED</code>, coverage is reported, and an
+incomplete run exits non-zero so a scheduled job cannot treat a partial review as a clean one.</p>
+<h2 id="7-on-unreliable-channels-structure-beats-schema">7. On unreliable channels, structure beats schema</h2>
+<p>Three output formats were measured for frame classification:</p>
+<ol>
+<li><strong>Sentinel phrase</strong> — the model paraphrased it; every empty frame alarmed.</li>
+<li><strong>Strict JSON schema</strong> — advertised and mostly honoured, but truncated mid-object ~50% of the
+   time on image inputs, returning <code>{\n\n\n"notable": false</code> with <code>finish_reason: "stop"</code>.
+   Neither a larger token ceiling nor reduced reasoning effort fixed it.</li>
+<li><strong>Line-oriented</strong> — <code>NOTABLE: yes|no</code> on line 1.</li>
+</ol>
+<p>The decisive property is <strong>truncation behaviour</strong>. Truncated JSON is worth nothing: lose the
+closing brace and the entire payload is unparseable, including the one field you needed.
+Line-oriented output degrades gracefully. On an unreliable channel, put the critical bit first
+and make it independently parseable.</p>
+<p>A related finding: reasoning tokens are spent <em>before</em> the answer. A 2048-token ceiling returned
+<strong>zero</strong> characters of content on a code task — reasoning consumed the entire allowance. Budget
+for both.</p>
+<h2 id="8-implementation-and-validation">8. Implementation and validation</h2>
+<p>Python 3.10+, standard library only in the core: in a project whose pitch is auditability, there
+is no dependency tree to audit.</p>
+<ul>
+<li><strong>177 unit tests.</strong> The concurrency suite spawns real OS subprocesses because it had to: three
+  concurrent writers once produced <strong>17 duplicate sequence numbers, 3 lost entries, and a chain
+  broken at seq 2</strong>. With cross-process locking: 150/150 entries, zero duplicates, intact at six
+  processes.</li>
+<li><strong>Nightly matrix</strong>, 12 platform × version combinations. It earned its keep on the first run by
+  catching a concurrency test that passed on Windows and failed on a 2-core Linux runner — the
+  test asserted concurrency but never <em>forced</em> it, so it was measuring thread-startup latency.</li>
+<li><strong>Zero secrets</strong> across 344 tracked files, enforced pre-push.</li>
+</ul>
+<h2 id="9-limitations">9. Limitations</h2>
+<ul>
+<li><strong>Provenance is not correctness.</strong> The system proves what happened, not that the reasoning was
+  sound. It does not attempt the latter.</li>
+<li><strong>Anchors require a push</strong> to be third-party evidence.</li>
+<li><strong>A single anchor destination is a single point of trust.</strong> Two independent destinations would
+  be strictly better and are not yet implemented.</li>
+<li><strong>Python is not a sandbox.</strong></li>
+<li><strong>No live-model integration test.</strong> The machinery around the models is well covered; the models
+  are not. This is the largest remaining gap.</li>
+<li><strong>No third-party security review.</strong> The adversarial tests cover the threat model we designed
+  against, which is not the threat model an attacker will use.</li>
+<li><strong>Single-machine scale.</strong> The ledger is a local append-only file.</li>
+</ul>
+<h2 id="10-conclusion">10. Conclusion</h2>
+<p>The contribution is not cryptographic novelty — hash chains, Merkle trees and inclusion proofs are
+decades old. It is their application to the specific problem of <strong>an agent's testimony about
+itself</strong>, combined with the discipline of shipping the limits alongside the claims.</p>
+<p>A framework selling verifiability that overstates its own guarantees has refuted its pitch in the
+first paragraph. Every unqualified claim here is reproducible with one command; everything else is
+labelled.</p>
+<blockquote>
+<p><strong>Prove, don't promise.</strong></p>
+</blockquote>
+<hr />
+<h3 id="reproduce">Reproduce</h3>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/TheMindExpansionNetwork/mindbot-framework/main/vps-install.sh | bash
+mindbot attest &amp;&amp; mindbot verify &amp;&amp; python framework/_full_audit.py
+</code></pre>
+<h3 id="references">References</h3>
+<ul>
+<li>Merkle, R. (1987). <em>A Digital Signature Based on a Conventional Encryption Function.</em></li>
+<li>Laurie, B., Langley, A., Kasper, E. (2013). <em>Certificate Transparency.</em> RFC 6962.</li>
+<li>Implementation: <a href="proof-of-autonomy.html"><code>docs/PROOF_OF_AUTONOMY.md</code></a>,
+  <a href="test-report.html"><code>docs/TEST_REPORT.md</code></a>, <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework/blob/main/NOTES.md"><code>NOTES.md</code></a></li>
+<li>Demonstration: <a href="https://github.com/TheMindExpansionNetwork/mindbot-observe">mindbot-observe</a></li>
+</ul>
+</main>
+<footer>
+  <div class="s">Prove, don't promise.</div>
+  <a href="../index.html">mindbot</a> · <a href="index.html">docs</a> ·
+  <a href="https://github.com/TheMindExpansionNetwork/mindbot-framework">source</a>
+</footer>
+</body>
+</html>
