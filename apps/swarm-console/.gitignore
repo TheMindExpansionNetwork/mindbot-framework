@@ -1,0 +1,7 @@
+# nothing secret should ever live here — the endpoint URL is passed via env (SONIC_URL)
+__pycache__/
+*.pyc
+.env
+*.zip
+.DS_Store
+.claude/

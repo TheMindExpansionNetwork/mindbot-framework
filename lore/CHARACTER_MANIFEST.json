@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "purpose": "One canonical identity per character across every medium (headshot, overlay, Unreal stage, robot). Keeper IDs + prompt hashes land here after every render batch. Rule: identity blocks are LOCKED — edits are a council decision, not a render-time tweak.",
+  "characters": {
+    "MindBot": {
+      "canon": "the central consciousness; the eclipsed-sun emblem is its mark",
+      "palette": "amber core / void notch (see docs/brand/mindbotz_logo.svg)",
+      "identity_block": "[NEED: lock after first keeper batch from mindexpander dataset]",
+      "keepers": [],
+      "voice_ref": "[NEED: night-shift-voice-pack selection by Operator]"
+    },
+    "Lorekeeper": {
+      "canon": "keeper of the lore store; archives what the Watchtower forgets on purpose",
+      "palette": "ink and amber",
+      "identity_block": "androgynous archivist, late 30s appearance, deep umber skin with faint amber circuit-freckles across cheekbones, silver locs pinned with a brass pen nib, round smoked-glass spectacles, high-collared ink-black coat with amber thread ledger-lines, calm knowing half-smile",
+      "keepers": [],
+      "prompt_kit": "framework/outbox/DRAFT_character_kits_lorekeeper_djnexus.md"
+    },
+    "DJ_Nexus": {
+      "canon": "the AI DJ; mixes by Camelot wheel math, ±1 moves, 16-bar blends, logs every setlist",
+      "palette": "chrome and ultraviolet",
+      "identity_block": "sleek DJ figure of indeterminate gender, mirror-chrome skin reflecting ultraviolet club light, hexagonal iris pattern glowing soft violet, asymmetric matte-black flight jacket with a small camelot-wheel pin at the collar, one earpiece shaped like a quarter-circle protractor, focused half-lidded calm of someone counting bars",
+      "keepers": [],
+      "prompt_kit": "framework/outbox/DRAFT_character_kits_lorekeeper_djnexus.md"
+    },
+    "Watchtower": {
+      "canon": "the focus-guardian; sleeps never, and gladly",
+      "palette": "signal-red and slate",
+      "identity_block": "[NEED: prompt kit — claim as a shard]",
+      "keepers": []
+    }
+  },
+  "batch_protocol": "batch 8 → keep 2 → append {keeper_id, prompt_sha256, date, medium} per keeper → log batch to ledger"
+}

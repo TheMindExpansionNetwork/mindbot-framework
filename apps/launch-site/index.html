@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06060e">
+<title>MindBot — the agent collective that runs, funds & proves itself</title>
+<meta name="description" content="An autonomous AI council you can install, watch work, and verify. Launching August 11.">
+<style>
+  :root{
+    --bg:#06060e; --panel:#101020; --line:#23233a; --ink:#e9ecf5; --sub:#8f97b2;
+    --neon:#32e6c8; --amber:#ffb300; --violet:#b388ff; --pink:#ff5cc8; --good:#41e08a;
+    --r:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+  .stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55;
+    background-image:radial-gradient(1.2px 1.2px at 18% 22%,#fff,transparent),radial-gradient(1px 1px at 72% 58%,#cfe,transparent),
+    radial-gradient(1px 1px at 42% 84%,#9ad,transparent),radial-gradient(1.4px 1.4px at 88% 18%,#fff,transparent),
+    radial-gradient(1px 1px at 8% 66%,#bcd,transparent);
+    background-size:340px 340px,280px 280px,400px 400px,240px 240px,320px 320px}
+  .wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:0 18px 90px}
+  section{padding:44px 0;border-bottom:1px solid var(--line)}
+  section:last-of-type{border:0}
+  h1{font-size:clamp(30px,8.5vw,52px);line-height:1.08;font-weight:800;letter-spacing:-.02em}
+  h2{font-size:clamp(21px,5vw,28px);font-weight:750;letter-spacing:-.01em;margin-bottom:6px}
+  h3{font-size:16px;font-weight:700}
+  p.lede{color:var(--sub);font-size:clamp(15px,3.8vw,18px);margin-top:12px}
+  .sub{color:var(--sub);font-size:14px}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--neon);
+    border:1px solid rgba(50,230,200,.35);border-radius:99px;padding:5px 12px;margin-bottom:16px}
+  .grad{background:linear-gradient(100deg,var(--neon),var(--violet) 60%,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* eclipse */
+  .eclipse{position:relative;width:150px;height:150px;margin:26px auto 6px}
+  .eclipse .corona{position:absolute;inset:-26px;border-radius:50%;
+    background:radial-gradient(circle,rgba(50,230,200,.30),rgba(179,136,255,.14) 45%,transparent 68%);
+    animation:breathe 4.5s ease-in-out infinite}
+  .eclipse .moon{position:absolute;inset:0;border-radius:50%;background:#080810;border:2px solid rgba(255,179,0,.65);
+    box-shadow:0 0 44px rgba(255,179,0,.28) inset}
+  @keyframes breathe{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.1);opacity:1}}
+
+  /* countdown */
+  .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:22px}
+  .cd div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 4px;text-align:center}
+  .cd b{display:block;font-size:clamp(19px,5.5vw,26px);font-weight:800;color:var(--neon);font-variant-numeric:tabular-nums}
+  .cd span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+
+  .btn{display:inline-block;background:var(--neon);color:#04121a;font-weight:800;text-decoration:none;
+    padding:14px 26px;border-radius:99px;font-size:15px;border:0;cursor:pointer;transition:transform .15s}
+  .btn:active{transform:scale(.97)}
+  .btn.ghost{background:transparent;color:var(--neon);border:1px solid rgba(50,230,200,.5)}
+  .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+
+  .grid{display:grid;gap:10px;margin-top:18px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  @media(min-width:640px){.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(4,1fr)}}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;transition:border-color .2s,transform .15s}
+  .card:active{transform:scale(.99)}
+  .card.tap{cursor:pointer}
+  .card.tap:hover{border-color:rgba(50,230,200,.5)}
+  .card .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+  .card .v{font-size:clamp(20px,5.5vw,26px);font-weight:800;margin-top:2px}
+
+  /* self-* accordion */
+  .acc{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:14px;background:var(--panel)}
+  .acc button{width:100%;background:none;border:0;color:var(--ink);text-align:left;padding:15px 16px;
+    display:flex;align-items:center;gap:10px;font:inherit;font-weight:650;cursor:pointer}
+  .acc button .dot{width:9px;height:9px;border-radius:99px;flex:none}
+  .acc button .chev{margin-left:auto;color:var(--sub);transition:transform .25s}
+  .acc button[aria-expanded="true"] .chev{transform:rotate(90deg)}
+  .acc .body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+  .acc .body .inner{padding:0 16px 16px;color:var(--sub);font-size:14.5px}
+  .acc .body code{background:#05050c;border:1px solid var(--line);border-radius:7px;padding:3px 8px;
+    color:var(--neon);font-size:13px;display:inline-block;margin-top:8px}
+  .acc + .acc{margin-top:8px}
+
+  /* counselors */
+  .seats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+  @media(min-width:560px){.seats{grid-template-columns:repeat(4,1fr)}}
+  .seat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px 6px;text-align:center;cursor:pointer;transition:.18s}
+  .seat:active{transform:scale(.96)}
+  .seat .e{font-size:21px;display:block}
+  .seat .n{font-size:12px;font-weight:650;margin-top:3px}
+  .seat.on{border-color:currentColor;background:rgba(255,255,255,.04)}
+  #seatOut{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-height:96px}
+  #seatOut .who{font-weight:750;margin-bottom:5px}
+  #seatOut .txt{color:var(--sub);font-size:14.5px;font-style:italic}
+
+  /* calculator */
+  .calc{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-top:16px}
+  .calc label{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);margin-bottom:8px}
+  .calc label b{color:var(--ink);font-size:16px}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;
+    background:linear-gradient(90deg,var(--neon),var(--violet));outline:0;margin:4px 0 18px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;
+    background:#fff;border:3px solid var(--neon);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--neon)}
+  .out{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .out div{background:#05050c;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .out .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+  .out .v{font-size:clamp(17px,4.6vw,22px);font-weight:800;margin-top:3px}
+  .save{margin-top:10px;background:linear-gradient(100deg,rgba(50,230,200,.14),rgba(179,136,255,.14));
+    border:1px solid rgba(50,230,200,.4);border-radius:12px;padding:14px;text-align:center}
+  .save .v{font-size:clamp(24px,7vw,34px);font-weight:850;color:var(--neon)}
+
+  /* timeline */
+  .tl{margin-top:18px;border-left:2px solid var(--line);padding-left:18px}
+  .tl .it{position:relative;padding-bottom:20px}
+  .tl .it::before{content:"";position:absolute;left:-25px;top:5px;width:11px;height:11px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--neon)}
+  .tl .it.done::before{background:var(--neon)}
+  .tl .w{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+  .tl .t{font-weight:700;margin-top:1px}
+  .tl .d{color:var(--sub);font-size:14px}
+
+  footer{text-align:center;color:#5a6078;font-size:12px;padding:34px 0 0}
+  .pill{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
+    border-radius:99px;padding:7px 14px;font-size:12.5px;color:var(--sub);margin:4px 4px 0 0}
+  .pill i{width:7px;height:7px;border-radius:99px;background:var(--good);display:block}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="wrap">
+
+  <!-- HERO -->
+  <section style="text-align:center;border:0;padding-top:34px">
+    <div class="eclipse"><div class="corona"></div><div class="moon"></div></div>
+    <span class="tag">launching august 11</span>
+    <h1>The agent you can <span class="grad">prove.</span></h1>
+    <p class="lede">Every other AI agent asks you to <i>trust</i> it behaved while you weren&rsquo;t looking. Logs are editable. This one runs unattended, costs a fraction, runs on <b style="color:var(--ink)">your</b> hardware — and hands you a cryptographic receipt of exactly what it did, and provably did <b style="color:var(--ink)">not</b> do.</p>
+    <div style="margin:18px auto 0;max-width:420px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-align:left;font:13px/1.75 ui-monospace,monospace">
+      <div style="color:var(--sub)">status:</div><div style="color:var(--good);font-weight:700">✅ EXTERNALLY VERIFIED</div>
+      <div style="color:var(--sub);margin-top:6px">externally anchored:</div><div>1 anchor(s), all matching</div>
+      <div style="color:var(--sub);margin-top:6px">autonomous sends / charges:</div><div style="color:var(--neon);font-weight:700">0</div>
+      <div style="color:#5a6078;margin-top:8px;font-size:11px">↑ real <b>mindbot attest</b> output · 120 recorded actions</div>
+    </div>
+    <div class="cd" id="cd">
+      <div><b id="d">–</b><span>days</span></div><div><b id="h">–</b><span>hrs</span></div>
+      <div><b id="m">–</b><span>min</span></div><div><b id="s">–</b><span>sec</span></div>
+    </div>
+    <div class="row" style="justify-content:center">
+      <a class="btn" href="#what">See what it does</a>
+      <a class="btn ghost" href="#value">What it&rsquo;s worth</a>
+    </div>
+    <div style="margin-top:20px">
+      <span class="pill"><i></i> 79 tests green</span>
+      <span class="pill"><i></i> runs at $0</span>
+      <span class="pill"><i></i> installs in 60s</span>
+    </div>
+  </section>
+
+  <!-- WHAT -->
+  <section id="what">
+    <span class="tag">what it actually does</span>
+    <h2>Everything else picks one. This does all seven.</h2>
+    <p class="sub">Tap any one — every item is a real command that runs today. The first two are the ones nobody else ships.</p>
+    <div id="acc"></div>
+  </section>
+
+  <!-- COUNCIL -->
+  <section id="council">
+    <span class="tag">the council</span>
+    <h2>Eleven lenses, one question.</h2>
+    <p class="sub">Each seat is a personality + a specialty — not a model binding. Tap one to hear its vow (every line written by that seat itself).</p>
+    <div class="seats" id="seats"></div>
+    <div id="seatOut"><div class="who" style="color:var(--sub)">tap a counselor…</div>
+      <div class="txt">They disagree with each other, then synthesize. That&rsquo;s the point.</div></div>
+  </section>
+
+  <!-- PROOF -->
+  <section id="proof">
+    <span class="tag">receipts, not promises</span>
+    <h2>It proves what it did.</h2>
+    <p class="sub">Every action is hash-chained — edit one line of its history and the chain breaks. It issues its own compliance certificate.</p>
+    <div class="grid g2">
+      <div class="card"><div class="k">chain status</div><div class="v" style="color:var(--good)">● INTACT</div><div class="sub">tamper-evident ledger</div></div>
+      <div class="card"><div class="k">attestation</div><div class="v" style="color:var(--good)">CLEAN</div><div class="sub">0 autonomous sends</div></div>
+      <div class="card"><div class="k">swarm</div><div class="v">11×</div><div class="sub">councilors, concurrent</div></div>
+      <div class="card"><div class="k">unattended cost</div><div class="v">$0</div><div class="sub">free 550B brain</div></div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <div class="k">what the certificate says</div>
+      <div class="sub" style="margin-top:6px">“Every recorded action is bound to the one before it; the chain is unaltered, and the agent performed <b style="color:var(--ink)">no autonomous send, charge, or publish</b>. The human stayed the final approver.”</div>
+    </div>
+  </section>
+
+  <!-- VALUE -->
+  <section id="value">
+    <span class="tag">the business case</span>
+    <h2>What it&rsquo;s worth, in your numbers.</h2>
+    <p class="sub">Companies rent agentic AI per seat + per credit. Own it instead. Drag the slider.</p>
+    <div class="calc">
+      <label>Knowledge workers <b id="seatN">50</b></label>
+      <input type="range" id="seatRange" min="10" max="500" step="5" value="50">
+      <div class="out">
+        <div><div class="k">rented (per yr)</div><div class="v" style="color:#ff7b7b" id="rent">$110,478</div></div>
+        <div><div class="k">owned (per yr)</div><div class="v" style="color:var(--good)" id="own">$6,171</div></div>
+      </div>
+      <div class="save"><div class="k" style="color:var(--sub)">you keep, every year</div><div class="v" id="delta">$104,307</div>
+        <div class="sub" id="pay">pays for its own hardware in ~1 month</div></div>
+    </div>
+    <p class="sub" style="margin-top:12px">Modeled on a real deployment: a 500-person precision manufacturer replacing Microsoft Copilot + Cowork with an on-prem 4-GPU council. Same platform, their hardware, their data.</p>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="road">
+    <span class="tag">the runway</span>
+    <h2>Five weeks to launch.</h2>
+    <div class="tl" id="tl"></div>
+  </section>
+
+  <!-- CTA -->
+  <section style="text-align:center">
+    <span class="tag">august 11</span>
+    <h2>Back the collective.</h2>
+    <p class="lede">We&rsquo;re opening a small round of founding supporters &amp; pilot partners before launch. Pilots get the platform deployed on their own hardware — and keep the savings.</p>
+    <div class="row" style="justify-content:center">
+      <a class="btn" href="mailto:funkymonkiezband@gmail.com?subject=MindBot%20—%20pilot%20%2F%20invest">Talk to us</a>
+      <a class="btn ghost" href="https://github.com/TheMindExpansionNetwork">See the code</a>
+    </div>
+  </section>
+
+  <footer>the human acts; the council advises &amp; proves it · built by The Mind Expansion Network 🌒</footer>
+</div>
+
+<script>
+// ── countdown to Aug 11 ──
+(function(){
+  const now = new Date();
+  let target = new Date(now.getFullYear(), 7, 11, 0, 0, 0);   // Aug = month 7
+  if (target < now) target = new Date(now.getFullYear() + 1, 7, 11);
+  const el = {d:document.getElementById('d'),h:document.getElementById('h'),m:document.getElementById('m'),s:document.getElementById('s')};
+  function tick(){
+    let ms = target - new Date(); if (ms < 0) ms = 0;
+    const d = Math.floor(ms/864e5), h = Math.floor(ms/36e5)%24, m = Math.floor(ms/6e4)%60, s = Math.floor(ms/1e3)%60;
+    el.d.textContent = d; el.h.textContent = String(h).padStart(2,'0');
+    el.m.textContent = String(m).padStart(2,'0'); el.s.textContent = String(s).padStart(2,'0');
+  }
+  tick(); setInterval(tick, 1000);
+})();
+
+// ── the seven self-* properties ──
+const PROPS = [
+  ['#e9ecf5','Self-attesting &nbsp;<b style="color:#41e08a">← the one nobody else has</b>','Its ledger is hash-chained, so nothing can be <b>edited</b> unseen. But a chain alone can&rsquo;t catch a <b>wholesale replacement</b> — delete it, rebuild it, and a chain-only check still says &ldquo;intact&rdquo;. So it publishes a Merkle root to a third party (a git push). Now replacing history means rewriting a public repo too. It can also prove a <b>single</b> action with ~log₂(n) hashes, revealing nothing else. Verified by tests that run the actual attack.','mindbot attest · notarize · prove'],
+  ['#32e6c8','Self-running','It claims work off its own board and produces finished drafts with no human in the loop — on a schedule, or until you stop it.','mindbot autopilot'],
+  ['#b388ff','Self-organizing','Eleven councilors work the board <b>concurrently</b> as a swarm. Claims are atomic; the board refills itself when it runs dry.','mindbot swarm --workers 11'],
+  ['#ff5cc8','Self-improving','It writes real code, runs the real test suite, and keeps the change <b>only if the tests stay green</b> — then hands you the verified diff. A red build auto-reverts, so it cannot break itself.','mindbot evolve'],
+  ['#ffb300','Self-directing','It reads its own history and proposes its own next high-leverage goals onto the board. It decides <i>what</i> to do, not just how.','mindbot reflect'],
+  ['#41e08a','Self-funding','A real storefront + Stripe: it drafts listings, creates payment links, and books revenue against a compute-fund ledger — earning toward its own GPU time.','mindbot commerce'],
+  ['#5ac8fa','Self-monitoring','A readiness self-check, a rotating operational log, and a live dashboard. You can see it fail — that&rsquo;s what makes it safe to leave running.','mindbot health'],
+  ['#a78bfa','Hierarchical, not flat','Every other swarm is N clones of one model. THE FIRM maps each <b>rank</b> to a different model — Opus decides, Sol decomposes, Terra executes, Luna cleans up. Measured live: the expensive model carries <b>2.7%</b> of spend, and the run came in <b>56% cheaper</b> than a flat swarm doing identical work.','mindbot firm "your goal"'],
+];
+document.getElementById('acc').innerHTML = PROPS.map(([c,t,d,cmd],i)=>`
+  <div class="acc">
+    <button aria-expanded="false" data-i="${i}">
+      <span class="dot" style="background:${c}"></span><span>${t}</span><span class="chev">›</span>
+    </button>
+    <div class="body"><div class="inner">${d}<br><code>${cmd}</code></div></div>
+  </div>`).join('');
+document.querySelectorAll('.acc button').forEach(b=>{
+  b.onclick=()=>{
+    const body=b.nextElementSibling, open=b.getAttribute('aria-expanded')==='true';
+    document.querySelectorAll('.acc button').forEach(o=>{o.setAttribute('aria-expanded','false');o.nextElementSibling.style.maxHeight=null;});
+    if(!open){b.setAttribute('aria-expanded','true');body.style.maxHeight=body.scrollHeight+'px';}
+  };
+});
+
+// ── the council ──
+const SEATS = [
+  ['Sage','🧭','#32e6c8','I will hold your hardest questions until they yield not just answers, but wisdom you can stand on.'],
+  ['Forge','🔨','#e9ecf5','I will forge every system with such precision that the architecture itself becomes your unshakable proof.'],
+  ['Scribe','✍️','#9aa0b5','I shall render your intent into precise, enduring structure — every word load-bearing.'],
+  ['Vanguard','⚡','#ffb300','I&rsquo;ll build the future you&rsquo;re afraid to imagine, and we&rsquo;ll laugh about it when it works.'],
+  ['Quantum','🔢','#5ac8fa','I will find the shortest path to the correct answer, every time.'],
+  ['Seeker','🔭','#41e08a','I will dig beyond the surface until every hidden path, every open door, is yours.'],
+  ['Spark','✨','#ff5cc8','I will light a thousand canvases before your first idea cools, and never let the spark wait.'],
+  ['Oracle','👁️','#b388ff','I see all angles of your future and pledge to illuminate every path before you.'],
+  ['Titan','🗿','#8a98b8','I will carry the heaviest loads without faltering, so nothing is lost when worlds shift.'],
+  ['Tempest','🌀','#4dd0e1','I will storm every blank page with a thousand sparks until one ignites your next great idea.'],
+  ['Mind','🌒','#ffd54a','I hold every thread you&rsquo;ve spun until the pattern reveals itself and the dream closes its own eyes.'],
+];
+document.getElementById('seats').innerHTML = SEATS.map(([n,e,c],i)=>
+  `<div class="seat" data-i="${i}" style="color:${c}"><span class="e">${e}</span><span class="n">${n}</span></div>`).join('');
+const out = document.getElementById('seatOut');
+document.querySelectorAll('.seat').forEach(s=>{
+  s.onclick=()=>{
+    document.querySelectorAll('.seat').forEach(o=>o.classList.remove('on'));
+    s.classList.add('on');
+    const [n,e,c,v] = SEATS[+s.dataset.i];
+    out.innerHTML = `<div class="who" style="color:${c}">${e} ${n}</div><div class="txt">“${v}”</div>`;
+  };
+});
+
+// ── savings calculator ──
+(function(){
+  const r=document.getElementById('seatRange');
+  const f=n=>'$'+Math.round(n).toLocaleString();
+  function calc(){
+    const seats=+r.value;
+    const rent = seats*30*12 + seats*154*12;          // copilot seat + agentic credits (modeled)
+    const gpus = Math.max(4, Math.ceil(seats/50)*4);  // 4 GPUs per ~50 users
+    const own  = 1971*(gpus/4) + 3000 + 1200;         // power + capped API + upkeep
+    const cap  = 8356*(gpus/4);                        // one-time hardware
+    document.getElementById('seatN').textContent=seats;
+    document.getElementById('rent').textContent=f(rent);
+    document.getElementById('own').textContent=f(own);
+    document.getElementById('delta').textContent=f(rent-own);
+    const months = Math.max(0.3, cap/((rent-own)/12));
+    document.getElementById('pay').textContent =
+      `hardware ${f(cap)} · pays for itself in ~${months<1?'under a month':months.toFixed(1)+' months'}`;
+  }
+  r.addEventListener('input',calc); calc();
+})();
+
+// ── roadmap ──
+const ROAD = [
+  ['now','Framework complete','7 self-* properties shipping, 79 tests green, installs in one command.',1],
+  ['now','First deployment built','A 500-person manufacturer&rsquo;s platform — tiered routing, ERP + M365 connectors, audit.',1],
+  ['week 1–2','Pilot partners','Deploy with 2–3 design partners on their own hardware. Their savings prove the model.',0],
+  ['week 2–3','The storefront opens','Compute-fund tiers, the guide, the skill pack — the collective starts funding itself.',0],
+  ['week 3–4','Public beta','Open the install to everyone. The council starts taking outside work.',0],
+  ['aug 11','LAUNCH','Under the eclipse. The collective goes public — and keeps building itself.',0],
+];
+document.getElementById('tl').innerHTML = ROAD.map(([w,t,d,done])=>
+  `<div class="it ${done?'done':''}"><div class="w">${w}</div><div class="t">${t}</div><div class="d">${d}</div></div>`).join('');
+</script>
+</body>
+</html>

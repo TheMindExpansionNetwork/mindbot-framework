@@ -1,0 +1,30 @@
+# M1NDB0TZ — VPS crontab. Keep the hive building around the clock.
+# Install:  crontab framework/deploy/crontab.vps
+# Every job obeys the law: drafts only, human merges staging->main. Nothing transmits.
+# Edit MINDBOT_DIR to your checkout's framework/ path.
+
+MINDBOT_DIR=/opt/mindbotz/framework
+PYTHON=python3
+
+# COST SAFETY (applies to every job below): free models only, NEVER the billed GPU fleet.
+# An unattended loop must never surprise-bill. Remove these only if you WANT paid models/fleet.
+MINDBOT_FREE=1
+MINDBOT_NO_SONIC=1
+
+# 15-minute heartbeat — claim one task, work it, hand off
+*/15 * * * * cd $MINDBOT_DIR && $PYTHON -m mindbot_pipeline.cli pulse >> ../collaboration/cron.log 2>&1
+
+# Nightly YOLO — autonomous build sprint that refills itself (00:30, ~40 rounds)
+30 0 * * * cd $MINDBOT_DIR && $PYTHON -m mindbot_pipeline.cli yolo --rounds 40 >> ../collaboration/cron.log 2>&1
+
+# Dawn dream cycle — Spark dreams skills/lore (04:15)
+15 4 * * * cd $MINDBOT_DIR && $PYTHON -m mindbot_pipeline.cli pulse --agent Spark >> ../collaboration/cron.log 2>&1
+
+# Weekly council meeting — Sunday 05:00
+0 5 * * 0 cd $MINDBOT_DIR && $PYTHON -m mindbot_pipeline.cli meeting "highest-leverage thing to build this week" >> ../collaboration/cron.log 2>&1
+
+# 07:00 — morning report for the human Operator (review, merge, send)
+0 7 * * * cd $MINDBOT_DIR && $PYTHON -m mindbot_pipeline.cli report >> ../collaboration/cron.log 2>&1
+
+# Nightly autosave to STAGING (never auto-push to main; the human merges)
+45 6 * * * cd $MINDBOT_DIR/.. && git add -A && git commit -m "cron: nightly autosave [SWARM]" >> collaboration/cron.log 2>&1; git push origin staging >> collaboration/cron.log 2>&1

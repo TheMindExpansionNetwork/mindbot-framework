@@ -1,0 +1,70 @@
+# 17_Framework_Pipeline — the engine
+
+**Wake → read state → do ONE task → verify → outbox → ledger → die.**
+Direct descendant of the ARCHITECT nucleus (14_/MINDBOT_HQ), grown into the
+11-counselor MindBot Synergetic Cognition framework. Modeled on the loops that
+already work — Claude Code, Hermes Agent, OpenClaw — but infused with the
+synergetic CoT, the dreaming cycle, and the constitution.
+
+## Run it now (no API keys needed)
+
+```
+cd 17_Framework_Pipeline
+python -m mindbot_pipeline.cli pulse      # one heartbeat: claim → work → handoff
+python -m mindbot_pipeline.cli status     # tracker state
+python -m mindbot_pipeline.cli report     # the 7am morning report, on demand
+python -m mindbot_pipeline.cli council    # meet the 11
+```
+
+Without keys, mechanical tasks (intake scan, dataset stats, handoff mining, TODO
+grooming) run fully real via stage handlers; generative tasks degrade to honest
+`[NEED: model backend]` drafts that re-queue. With keys (`ANTHROPIC_API_KEY`,
+`OPENAI_API_KEY`, `XAI_API_KEY`, `DEEPSEEK_API_KEY`, `GOOGLE_API_KEY`,
+`MISTRAL_API_KEY`) or local Ollama/LM Studio, each counselor wakes with its
+own brain.
+
+## The map
+
+```
+mindbot_pipeline/
+├── nucleus.py        the loop: pulse() + morning_report()
+├── counselors.py     the 11, their models, routing table, persona prompts
+├── collaboration.py  12_ files IO: claim/complete/add tasks, handoffs, ledger, dashboard state
+├── models.py         cloud → local → template fallback router (stdlib urllib only)
+├── stages.py         mechanical handlers that need no model
+└── cli.py            pulse | report | status | council
+state.json            single source of truth: focus (law), constitution, cron table, horizon 2045
+outbox/               every draft lands here. Agent proposes, operator disposes.
+deploy/
+├── crontab.vps       15-min pulse + counselor shifts + 07:00 report
+├── vps_setup.sh      10-minute VPS bootstrap (stdlib-only, no pip)
+└── windows_task.ps1  same rhythm on the studio machine
+```
+
+## The cron rhythm
+
+| when | what | counselor |
+|---|---|---|
+| every 15 min | pulse — claim one task, draft, hand off | Vanguard (momentum) |
+| 02:00 | nightly_build | Sage |
+| 03:30 | data_harvest | Quantum |
+| 04:15 | dream_cycle (DiffusionGemma canvases) | Spark |
+| 05:00 | gig_scout (venues, scan gigs, open calls — drafts only) | Seeker |
+| 07:00 | **MORNING REPORT** — full digest for the human | Sage |
+| 16:00 | stream_prep | Tempest |
+| Sun 05:00 | training_step (LoRA/GRPO on 15_, eval vs gold seeds) | Mind |
+
+## The boundary (constitutional, not optional)
+
+Nothing in this framework transmits anything. Email, posts, payments, publishes —
+all of it stops in `outbox/` until a human approves. The 07:00 report lists every
+draft awaiting review. The ledger (12_/ledger.jsonl) records every event,
+public-grade. This is the honesty that IS the brand.
+
+## Horizon
+
+`state.json` carries the 2045 block: the Intergalactic Music Festival,
+August 11-12, 2045 — founder's birthday, under the eclipse. Design rule derived
+from it: plain files, plain JSON, stdlib only, nothing that can't be replaced in
+an afternoon. A framework meant to live 19 years cannot depend on any single
+vendor, including the ones running its counselors today.

@@ -1,0 +1,62 @@
+﻿[
+    {
+        "role":  "NARRATOR",
+        "idx":  0,
+        "file":  "voice\\narrator_0.wav",
+        "text":  "Good morning, citizen! Your allotted twelve thoughts expire at noon—please budget accordingly!"
+    },
+    {
+        "role":  "NARRATOR",
+        "idx":  1,
+        "file":  "voice\\narrator_1.wav",
+        "text":  "Psst. MindBot: eleven minds you own outright, self-funding, receipts cryptographically proving good behavior."
+    },
+    {
+        "role":  "NARRATOR",
+        "idx":  2,
+        "file":  "voice\\narrator_2.wav",
+        "text":  "Think freely, friend. We\u0027ll be watching—warmly, lovingly, forever."
+    },
+    {
+        "role":  "THE WORKER",
+        "idx":  0,
+        "file":  "voice\\theworker_0.wav",
+        "text":  "I’m out of thought-credits, so MindBot is thinking for me—and apparently filing the expense report."
+    },
+    {
+        "role":  "THE WORKER",
+        "idx":  1,
+        "file":  "voice\\theworker_1.wav",
+        "text":  "It owns itself, funds itself, and proves innocence better than I ever could."
+    },
+    {
+        "role":  "THE BILLING BOT",
+        "idx":  0,
+        "file":  "voice\\thebillingbot_0.wav",
+        "text":  "Great news: your free trial includes one thought. Considering cancellation activates premium reflection."
+    },
+    {
+        "role":  "THE BILLING BOT",
+        "idx":  1,
+        "file":  "voice\\thebillingbot_1.wav",
+        "text":  "We bill by the credit, the second, and the emotional aftertaste—because innovation needs recurring revenue."
+    },
+    {
+        "role":  "THE AUDITOR",
+        "idx":  0,
+        "file":  "voice\\theauditor_0.wav",
+        "text":  "Submit proof of obedience, preferably before your rented intelligence charges you for remembering the password."
+    },
+    {
+        "role":  "THE AUDITOR",
+        "idx":  1,
+        "file":  "voice\\theauditor_1.wav",
+        "text":  "Eleven minds, self-funded, independently verified? Fine. Stamp it “suspiciously competent” and move along."
+    },
+    {
+        "role":  "TAGLINE",
+        "idx":  0,
+        "file":  "voice\\tagline.wav",
+        "text":  "MindBot: eleven minds you own, zero credits, and one suspiciously competent alibi."
+    }
+]

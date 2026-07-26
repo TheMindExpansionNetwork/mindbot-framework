@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S0N1C // SWARM CONSOLE</title>
+<style>
+  :root{
+    --bg:#04060c; --panel:#0a1018; --line:#16233a; --ink:#cfe7ff; --dim:#5f7da6;
+    --cyan:#36e6ff; --green:#46ff9c; --amber:#ffcf6b; --red:#ff6b7d; --violet:#b388ff;
+    --glow:0 0 18px rgba(54,230,255,.25);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 700px at 70% -10%,#0a1426 0,var(--bg) 60%);
+    color:var(--ink);font:14px/1.55 ui-monospace,"Cascadia Code",Menlo,monospace;min-height:100vh}
+  header{display:flex;align-items:center;gap:14px;padding:18px 22px;border-bottom:1px solid var(--line)}
+  .eye{font-size:26px;filter:drop-shadow(0 0 10px var(--cyan))}
+  h1{font-size:18px;letter-spacing:5px;margin:0;color:var(--cyan);text-shadow:var(--glow)}
+  .sub{color:var(--dim);letter-spacing:1px;font-size:11px}
+  .pill{margin-left:auto;font-size:11px;padding:4px 11px;border:1px solid var(--line);
+    border-radius:20px;color:var(--dim)}
+  .pill.live{color:var(--green);border-color:#1c5} .pill.cold{color:var(--amber)}
+  .tabs{display:flex;gap:6px;padding:14px 22px 0}
+  .tab{padding:8px 16px;border:1px solid var(--line);border-bottom:none;border-radius:9px 9px 0 0;
+    background:var(--panel);color:var(--dim);cursor:pointer;letter-spacing:2px;font-size:12px}
+  .tab.on{color:var(--cyan);border-color:#244;box-shadow:var(--glow);background:#0c1622}
+  main{padding:0 22px 40px}
+  .view{display:none;border:1px solid var(--line);border-radius:0 12px 12px 12px;
+    background:linear-gradient(180deg,#0b1320,#080d15);padding:20px}
+  .view.on{display:block}
+  textarea,input,select{width:100%;background:#060b13;color:var(--ink);border:1px solid var(--line);
+    border-radius:8px;padding:11px;font:inherit;outline:none}
+  textarea:focus,input:focus{border-color:var(--cyan);box-shadow:var(--glow)}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin:12px 0}
+  .row>div{flex:1;min-width:120px}
+  label{display:block;color:var(--dim);font-size:11px;letter-spacing:1px;margin-bottom:5px}
+  button.go{background:linear-gradient(90deg,#0e2b3a,#103a2c);color:var(--cyan);
+    border:1px solid #2a6;border-radius:9px;padding:11px 22px;letter-spacing:2px;cursor:pointer;
+    font:inherit;text-shadow:var(--glow);white-space:nowrap}
+  button.go:hover{box-shadow:var(--glow)} button.go:disabled{opacity:.5;cursor:wait}
+  .out{margin-top:16px;white-space:pre-wrap;background:#060b13;border:1px solid var(--line);
+    border-radius:8px;padding:14px;min-height:50px}
+  .meta{color:var(--dim);font-size:12px;margin-top:8px}
+  .meta b{color:var(--green)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
+  .card{border:1px solid var(--line);border-radius:10px;padding:12px;background:#070d16;
+    min-height:108px;transition:.2s}
+  .card.run{border-color:var(--amber)} .card.done{border-color:#1c5}
+  .card .nm{color:var(--violet);letter-spacing:2px;font-size:12px}
+  .card .tx{font-size:12.5px;margin-top:7px;color:var(--ink)}
+  .card .mt{color:var(--dim);font-size:11px;margin-top:8px}
+  canvas{width:100%;height:240px;margin-top:14px;background:#060b13;border:1px solid var(--line);border-radius:8px}
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12.5px}
+  th,td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);letter-spacing:1px;font-weight:400} td:first-child,th:first-child{text-align:left}
+  .note{color:var(--dim);font-size:11.5px;margin-top:10px;line-height:1.6}
+  .spin{color:var(--amber)}
+  footer{color:var(--dim);text-align:center;font-size:11px;padding:18px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<header>
+  <span class="eye">👁</span>
+  <div>
+    <h1>S0N1C // SWARM CONSOLE</h1>
+    <div class="sub">DiffusionGemma-26B · denoised in parallel · served on Modal</div>
+  </div>
+  <span id="status" class="pill">connecting…</span>
+</header>
+
+<div class="tabs">
+  <div class="tab on" data-v="chat">CHAT</div>
+  <div class="tab" data-v="swarm">SWARM</div>
+  <div class="tab" data-v="stress">STRESS</div>
+</div>
+
+<main>
+  <!-- CHAT -->
+  <section class="view on" id="v-chat">
+    <label>prompt</label>
+    <textarea id="c-prompt" rows="3">Explain, in two sentences, why a diffusion language model can be faster than a normal one.</textarea>
+    <div class="row">
+      <div><label>max tokens</label><input id="c-max" type="number" value="200"></div>
+      <div style="flex:0"><button class="go" id="c-go">SEND ▸</button></div>
+    </div>
+    <div class="out" id="c-out">—</div>
+    <div class="meta" id="c-meta"></div>
+  </section>
+
+  <!-- SWARM -->
+  <section class="view" id="v-swarm">
+    <label>question for the whole swarm</label>
+    <textarea id="s-prompt" rows="2">What is the single most important next move for an honest, self-funding AI collective?</textarea>
+    <div class="row">
+      <div><label>agents (1–8)</label><input id="s-n" type="number" value="8" min="1" max="8"></div>
+      <div><label>max tokens each</label><input id="s-max" type="number" value="140"></div>
+      <div style="flex:0"><button class="go" id="s-go">LAUNCH SWARM ▸</button></div>
+    </div>
+    <div class="meta" id="s-meta"></div>
+    <div class="grid" id="s-grid"></div>
+  </section>
+
+  <!-- STRESS -->
+  <section class="view" id="v-stress">
+    <div class="row">
+      <div><label>concurrency sweep</label><input id="t-levels" value="1,2,4,8"></div>
+      <div><label>max tokens / req</label><input id="t-max" type="number" value="200"></div>
+      <div style="flex:0"><button class="go" id="t-go">RUN STRESS TEST ▸</button></div>
+    </div>
+    <div class="meta" id="t-meta">Fires concurrency·2 requests per level. Watch tokens/sec climb as the GPU batches canvases.</div>
+    <canvas id="t-chart" width="900" height="240"></canvas>
+    <table id="t-table"><thead><tr>
+      <th>concurrency</th><th>reqs</th><th>wall (s)</th><th>req/s</th><th>tokens/s</th><th>p50 ms</th><th>p95 ms</th>
+    </tr></thead><tbody></tbody></table>
+    <div class="note" id="t-note"></div>
+  </section>
+</main>
+
+<footer>the loop is the magic · agent drafts, human sends · the book never lies · 🌒</footer>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+let MODEL="sonic";
+
+// tabs
+$$(".tab").forEach(t=>t.onclick=()=>{
+  $$(".tab").forEach(x=>x.classList.remove("on")); t.classList.add("on");
+  $$(".view").forEach(v=>v.classList.remove("on")); $("#v-"+t.dataset.v).classList.add("on");
+});
+
+// status
+fetch("/api/config").then(r=>r.json()).then(c=>{
+  MODEL=c.model||"sonic";
+  const s=$("#status");
+  if(c.has_url){ s.textContent="endpoint wired · "+MODEL; s.className="pill live"; }
+  else { s.textContent="SONIC_URL not set"; s.className="pill cold"; }
+}).catch(()=>{ $("#status").textContent="server offline"; });
+
+// CHAT
+$("#c-go").onclick=async()=>{
+  const b=$("#c-go"); b.disabled=true; $("#c-out").innerHTML='<span class="spin">denoising…</span>'; $("#c-meta").textContent="";
+  try{
+    const r=await (await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({prompt:$("#c-prompt").value,max_tokens:+$("#c-max").value})})).json();
+    if(r.ok){ $("#c-out").textContent=r.text.trim();
+      $("#c-meta").innerHTML=`<b>${r.completion_tokens}</b> tokens in <b>${(r.ms/1000).toFixed(1)}s</b> · <b>${r.tokens_per_s}</b> tok/s`; }
+    else { $("#c-out").textContent="✗ "+(r.error||"error"); }
+  }catch(e){ $("#c-out").textContent="✗ "+e; } finally{ b.disabled=false; }
+};
+
+// SWARM
+$("#s-go").onclick=async()=>{
+  const b=$("#s-go"); b.disabled=true;
+  const n=Math.max(1,Math.min(8,+$("#s-n").value));
+  const grid=$("#s-grid"); grid.innerHTML="";
+  for(let i=0;i<n;i++){ const d=document.createElement("div"); d.className="card run";
+    d.innerHTML='<div class="nm">agent '+(i+1)+'</div><div class="tx spin">denoising…</div>'; grid.appendChild(d); }
+  $("#s-meta").innerHTML='<span class="spin">swarm denoising in parallel…</span>';
+  try{
+    const r=await (await fetch("/api/swarm",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({prompt:$("#s-prompt").value,n:n,max_tokens:+$("#s-max").value})})).json();
+    grid.innerHTML="";
+    r.agents.forEach(a=>{ const d=document.createElement("div"); d.className="card done";
+      d.innerHTML=`<div class="nm">${a.name}</div><div class="tx">${a.ok?a.text.trim():"✗ "+(a.error||"")}</div>`+
+        `<div class="mt">${a.ok?a.completion_tokens+" tok · "+(a.ms/1000).toFixed(1)+"s":""}</div>`;
+      grid.appendChild(d); });
+    $("#s-meta").innerHTML=`<b>${r.ok}/${r.agents.length}</b> agents answered in <b>${r.wall_s}s</b> wall (concurrent) · aggregate <b>${r.tokens_per_s}</b> tok/s`;
+  }catch(e){ $("#s-meta").textContent="✗ "+e; } finally{ b.disabled=false; }
+};
+
+// STRESS
+$("#t-go").onclick=async()=>{
+  const b=$("#t-go"); b.disabled=true;
+  const levels=$("#t-levels").value.split(",").map(x=>parseInt(x.trim())).filter(Boolean);
+  const mt=+$("#t-max").value; const rows=[]; const tb=$("#t-table tbody"); tb.innerHTML="";
+  for(const c of levels){
+    $("#t-meta").innerHTML=`<span class="spin">stress: concurrency ${c} …</span>`;
+    try{
+      const m=await (await fetch("/api/bench",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({concurrency:c,requests:c*2,max_tokens:mt})})).json();
+      rows.push(m);
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${m.concurrency}</td><td>${m.ok}/${m.requests}</td><td>${m.wall_s}</td>`+
+        `<td>${m.req_per_s}</td><td><b style="color:var(--green)">${m.tokens_per_s}</b></td>`+
+        `<td>${m.lat_p50_ms}</td><td>${m.lat_p95_ms}</td>`;
+      tb.appendChild(tr); draw(rows);
+    }catch(e){ $("#t-meta").textContent="✗ "+e; }
+  }
+  const best=rows.reduce((a,x)=>x.tokens_per_s>a.tokens_per_s?x:a,{tokens_per_s:0});
+  $("#t-meta").innerHTML="stress test complete.";
+  $("#t-note").innerHTML=`Peak <b style="color:var(--green)">${best.tokens_per_s} tok/s</b> at concurrency ${best.concurrency}. `+
+    `Single-stream is latency-bound (the canvas denoises whole), but throughput scales with concurrency until the server's max_num_seqs saturates — the diffusion-swarm advantage, measured.`;
+  b.disabled=false;
+};
+
+function draw(rows){
+  const cv=$("#t-chart"), x=cv.getContext("2d"); const W=cv.width,H=cv.height;
+  x.clearRect(0,0,W,H);
+  const max=Math.max(1,...rows.map(r=>r.tokens_per_s)); const pad=42, bw=(W-pad*2)/rows.length;
+  x.strokeStyle="#16233a"; x.beginPath(); x.moveTo(pad,H-28); x.lineTo(W-10,H-28); x.stroke();
+  rows.forEach((r,i)=>{
+    const h=(r.tokens_per_s/max)*(H-70); const bx=pad+i*bw+bw*0.2, by=H-28-h, w=bw*0.6;
+    const g=x.createLinearGradient(0,by,0,H-28); g.addColorStop(0,"#46ff9c"); g.addColorStop(1,"#0e3a2c");
+    x.fillStyle=g; x.fillRect(bx,by,w,h);
+    x.fillStyle="#46ff9c"; x.font="12px monospace"; x.textAlign="center";
+    x.fillText(r.tokens_per_s,bx+w/2,by-6);
+    x.fillStyle="#5f7da6"; x.fillText("c="+r.concurrency,bx+w/2,H-10);
+  });
+  x.fillStyle="#5f7da6"; x.textAlign="left"; x.fillText("tokens / sec",pad,18);
+}
+</script>
+</body>
+</html>

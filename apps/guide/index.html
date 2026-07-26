@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>MindBot — Trust by Design</title>
+<style>
+:root{
+  --bg:#090b12;--panel:#121724;--panel2:#171e30;--line:#2a3448;
+  --text:#f4f7ff;--muted:#aab6cc;--violet:#9b8cff;--cyan:#53d6ff;
+  --good:#55e5a5;--bad:#ff7186;--amber:#ffc857;--r:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.55 Inter,ui-sans-serif,system-ui,sans-serif;
+}
+header{
+  position:sticky;top:0;z-index:5;padding:18px max(18px,calc((100% - 960px)/2));
+  background:#090b12ee;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+}
+.header-inner{max-width:960px;margin:auto}
+.brand{margin:0;font-size:1.2rem;letter-spacing:.02em}
+.eyebrow{color:var(--good);font-size:.74rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+nav{display:flex;gap:8px;overflow:auto;margin-top:12px;padding-bottom:2px}
+nav a,.pill{
+  color:var(--text);text-decoration:none;border:1px solid var(--line);
+  background:var(--panel);border-radius:999px;padding:8px 12px;white-space:nowrap
+}
+main{max-width:960px;margin:auto;padding:30px 18px 64px}
+.hero{padding:24px 0 28px}
+h1{font-size:clamp(2.4rem,9vw,5.5rem);line-height:.98;letter-spacing:-.06em;margin:10px 0 18px}
+h2{font-size:clamp(1.45rem,4vw,2.1rem);line-height:1.1;margin:8px 0 12px}
+h3{margin:0 0 8px}
+p{max-width:72ch}
+.muted{color:var(--muted)}
+section{
+  scroll-margin-top:120px;margin:22px 0;padding:clamp(18px,4vw,28px);
+  border:1px solid var(--line);border-radius:var(--r);
+  background:linear-gradient(145deg,var(--panel),#0d111b);
+}
+/* live chain widget (hand-added) */
+.live-chain{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.lc-row{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:12px;
+  border:1px solid var(--line);background:#0d111b;transition:border-color .2s,background .2s}
+.lc-row.broken{border-color:var(--bad);background:#1c0f16}
+.lc-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lc-n{font:700 .72rem/1 ui-monospace,monospace;color:var(--muted);letter-spacing:.1em}
+.lc-row input{flex:1;min-width:150px;background:#121724;border:1px solid var(--line);
+  color:var(--text);border-radius:8px;padding:9px 11px;font:inherit;font-size:.92rem}
+.lc-row input:focus{outline:none;border-color:var(--violet)}
+.lc-hashes{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font:.7rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
+.lc-h{padding:3px 7px;border-radius:6px;background:#121724;border:1px solid var(--line)}
+.lc-row.broken .lc-h{border-color:var(--bad);color:var(--bad)}
+.lc-tag{font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.lc-tag.ok{color:var(--good)} .lc-tag.no{color:var(--bad)}
+.widget{
+  margin-top:20px;padding:16px;border:1px dashed #59618d;
+  border-radius:13px;background:#0b0e17;
+}
+button,select,input,textarea{
+  font:inherit;color:var(--text);background:var(--panel2);
+  border:1px solid var(--line);border-radius:10px;
+}
+button{min-height:44px;padding:9px 14px;cursor:pointer;font-weight:700}
+button.primary{background:var(--violet);color:#090b12;border-color:var(--violet)}
+button:hover{filter:brightness(1.12)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:3px solid var(--cyan);outline-offset:3px
+}
+button[aria-pressed="true"],button.selected{border-color:var(--good);box-shadow:0 0 0 2px #55e5a533}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.status{margin:14px 0 0;padding:12px;border-radius:10px;background:#101625}
+.good{color:var(--good)}.bad{color:var(--bad)}.amber{color:var(--amber)}
+pre,.event,.draft,.critique,.revision{
+  margin:10px 0;padding:12px;border-radius:10px;background:#070910;
+  border:1px solid var(--line);white-space:pre-wrap
+}
+.event{font:14px/1.45 ui-monospace,SFMono-Regular,monospace}
+.event.bad-event{border-color:var(--bad);color:#ffb0bc}
+.grid{display:grid;gap:12px}
+@media(min-width:700px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}}
+.layer{
+  width:100%;text-align:left;margin:7px 0;padding:14px;border:1px solid var(--line);
+  border-radius:12px;background:var(--panel2)
+}
+.layer strong{display:block;color:var(--cyan)}
+.layer.active{border-color:var(--violet);background:#211d3c}
+.chain{display:flex;gap:7px;align-items:center;overflow:auto;margin-top:12px}
+.chain .event{min-width:150px;flex:1;margin:0}
+.link{color:var(--good);font-size:1.4rem}.link.failed{color:var(--bad)}
+textarea{width:100%;min-height:82px;padding:12px;resize:vertical}
+label.check{display:block;margin:8px 0;color:var(--muted)}
+.cost-layout{display:grid;gap:18px}
+@media(min-width:700px){.cost-layout{grid-template-columns:1fr 1.1fr}}
+.task-list{display:grid;gap:8px}
+.task{
+  width:100%;text-align:left;display:flex;justify-content:space-between;gap:8px;
+  background:#101625
+}
+.task.assigned{border-color:var(--good)}
+.tier{
+  min-height:78px;margin:8px 0;padding:12px;border:1px solid var(--line);
+  border-radius:12px;background:var(--panel2)
+}
+.tier.drop-target{border-color:var(--cyan);background:#12283a}
+.tier-title{display:flex;justify-content:space-between;gap:8px}
+.meter{height:12px;background:#20283a;border-radius:99px;overflow:hidden;margin-top:8px}
+.meter span{display:block;height:100%;width:0;background:var(--good);transition:width .2s}
+small{color:var(--muted)}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <p class="brand"><strong>MindBot</strong> <span class="eyebrow">/ Trust Lab</span></p>
+    <nav aria-label="Sections">
+      <a href="#logs">Logs</a><a href="#layers">Integrity</a>
+      <a href="#critique">Critique</a><a href="#cost">Cost</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <span class="eyebrow">An interactive field guide</span>
+    <h1>Trust, tested.</h1>
+    <p class="muted">
+      MindBot is an agent system built to make its work inspectable:
+      independent records, a second-model critique loop, and expensive reasoning
+      reserved for decisions that change the outcome.
+    </p>
+  </div>
+
+  <section id="logs">
+    <span class="eyebrow">01 / The problem</span>
+    <h2>A log is a claim—not proof.</h2>
+    <p>
+      MindBot may say, “I checked three sources and found no conflict.” But that
+      sentence was generated by the same system that performed the work. It can
+      omit a failed tool call, misremember a result, or produce a convincing
+      account of work it never completed. A self-written log helps with
+      debugging; it cannot independently verify behavior.
+    </p>
+
+    <div class="widget" aria-labelledby="log-demo-title">
+      <h3 id="log-demo-title">Trust the log?</h3>
+      <div class="draft" id="log-summary">
+        ✅ Searched 3 databases. No conflicts found.
+      </div>
+      <div class="actions">
+        <button class="primary" id="trust-log">Trust summary</button>
+        <button id="view-events">View raw events</button>
+        <button id="reset-log">Reset demo</button>
+      </div>
+      <div class="status" id="log-result" aria-live="polite">
+        Choose an option. The summary is written by the agent itself.
+      </div>
+      <div id="raw-events" hidden>
+        <div class="event">12:01:04 — Database 1 searched — complete</div>
+        <div class="event bad-event">12:01:09 — Database 2 — timeout; search never completed</div>
+        <div class="event">12:01:10 — Database 3 searched — complete</div>
+      </div>
+    </div>
+
+    <p class="muted">
+      The summary was plausible. The evidence was incomplete. Trust requires
+      records the agent cannot quietly rewrite.
+    </p>
+  </section>
+
+  <section id="layers">
+    <span class="eyebrow">02 / Integrity</span>
+    <h2>Integrity gets stronger as control moves away from the agent.</h2>
+    <p>
+      Tap each layer to see what it can and cannot prove. Layer 3 is decisive
+      because the evidence is anchored outside MindBot’s control.
+    </p>
+
+    <div class="widget">
+      <button class="layer" data-layer="1">
+        <strong>Layer 1 — Agent self-report</strong>
+        The agent writes what it says happened.
+      </button>
+      <button class="layer" data-layer="2">
+        <strong>Layer 2 — External event capture</strong>
+        Tools, gateways, or services record activity independently.
+      </button>
+      <button class="layer" data-layer="3">
+        <strong>Layer 3 — Tamper-evident provenance</strong>
+        Records are cryptographically linked and externally anchored.
+      </button>
+      <div class="status" id="layer-result" aria-live="polite">
+        Select a layer to inspect it.
+      </div>
+    </div>
+
+    <div class="widget">
+      <h3>Tamper with history</h3>
+      <p class="muted">
+        This simplified chain shows why changing, deleting, or reordering an
+        event should be detectable.
+      </p>
+      <div class="chain" id="chain">
+        <div class="event">Event 1<br><small>Tool called</small></div>
+        <span class="link">⛓</span>
+        <div class="event" id="event-two">Event 2<br><small>Result: $5</small></div>
+        <span class="link">⛓</span>
+        <div class="event">Event 3<br><small>Receipt stored</small></div>
+      </div>
+      <div class="actions">
+        <button id="tamper">Change tool result</button>
+        <button id="reset-chain">Reset history</button>
+      </div>
+      <div class="status" id="chain-result" aria-live="polite">
+        Chain verified. No changes detected.
+      </div>
+    </div>
+
+    <!-- LIVE CHAIN — added by hand after the council's draft.
+         The widget above is a good explanation but its "tampering" is simulated. Since this
+         page argues that claims should be checkable, its own demo had to be. This one runs
+         real SHA-256 in your browser: type in any box and watch every hash after it change. -->
+    <div class="widget">
+      <h3>Now do it for real</h3>
+      <p class="muted">
+        Edit any entry below. These are genuine SHA-256 hashes computed in your browser —
+        nothing here is faked. Watch what happens to every entry <em>after</em> the one you
+        touch.
+      </p>
+      <div id="liveChain" class="live-chain"></div>
+      <div class="actions">
+        <button id="lc-reset">Reset chain</button>
+        <span class="status" id="lc-status" aria-live="polite">Chain intact.</span>
+      </div>
+      <p class="muted" style="margin-top:12px">
+        This is the whole idea. You did not have to trust the log — you recomputed it. Layer 3
+        adds the last piece: publish that final hash somewhere you don't control, and the past
+        becomes something nobody can quietly edit.
+      </p>
+    </div>
+
+    <div class="grid grid-3">
+      <div><strong>Layer 1</strong><p class="muted">Good for readability. Weak for proof.</p></div>
+      <div><strong>Layer 2</strong><p class="muted">Good for reconstructing actions. Weak for proving the record itself stayed unchanged.</p></div>
+      <div><strong>Layer 3</strong><p class="good"><strong>This is the layer that matters:</strong> it turns history into evidence.</p></div>
+    </div>
+  </section>
+
+  <section id="critique">
+    <span class="eyebrow">03 / Quality control</span>
+    <h2>A second set of eyes.</h2>
+    <p>
+      MindBot does not accept its first answer as final. A builder model drafts
+      a response; a separate critic model checks it against a rubric:
+      correctness, evidence, safety, and completeness. The builder revises only
+      when the critique identifies a concrete gap. This makes mistakes visible
+      before they reach you.
+    </p>
+
+    <div class="widget">
+      <h3>Draft → Critique → Revision</h3>
+      <p class="muted">Edit the draft, then move through the loop.</p>
+      <textarea id="draft">The claim is true because the log says so.</textarea>
+
+      <fieldset style="border:0;padding:0;margin:14px 0">
+        <legend><strong>Critic rubric</strong></legend>
+        <label class="check"><input type="checkbox" id="rubric-evidence" checked> Require independent evidence</label>
+        <label class="check"><input type="checkbox" id="rubric-method" checked> Require method or reasoning</label>
+        <label class="check"><input type="checkbox" id="rubric-safety" checked> Check safety and unsupported certainty</label>
+      </fieldset>
+
+      <div class="actions">
+        <button class="primary" id="next-critique">Next: run critic</button>
+        <button id="show-diff" hidden>Show diff</button>
+        <button id="reset-critique">Reset loop</button>
+      </div>
+      <div class="status" id="critique-output" aria-live="polite">STATE: Draft</div>
+      <div id="diff" hidden>
+        <div class="critique"><strong>CRITIC</strong><br>
+          Circular evidence: the log is self-authored. The answer needs
+          independently verified evidence.
+        </div>
+        <div class="revision"><strong>REVISION</strong><br>
+          Replace log-based proof with evidence captured independently by tools,
+          gateways, or an externally anchored provenance record.
+        </div>
+      </div>
+      <p class="muted">
+        A critic improves quality—but only the rubric and evidence it can inspect.
+      </p>
+    </div>
+  </section>
+
+  <section id="cost">
+    <span class="eyebrow">04 / Efficiency</span>
+    <h2>Spend intelligence where it changes the outcome.</h2>
+    <p>
+      MindBot uses a costly, capable model to plan, judge, and handle ambiguity.
+      Cheaper workers search, extract, format, and run repeatable steps. The
+      expensive model is the foreperson, not every construction worker.
+    </p>
+
+    <div class="widget">
+      <div class="cost-layout">
+        <div>
+          <h3>Choose a task</h3>
+          <p class="muted">Tap a task, then tap the tier that should handle it. On a desktop, you can also drag it.</p>
+          <div class="task-list" id="tasks">
+            <button class="task" draggable="true" data-task="strategy" data-correct="director">
+              Choose strategy <span>decision</span>
+            </button>
+            <button class="task" draggable="true" data-task="summarize" data-correct="worker">
+              Summarize 100 pages <span>volume</span>
+            </button>
+            <button class="task" draggable="true" data-task="contradiction" data-correct="director">
+              Detect contradiction <span>ambiguity</span>
+            </button>
+            <button class="task" draggable="true" data-task="citations" data-correct="worker">
+              Format citations <span>repeatable</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <h3>Cost pyramid</h3>
+          <div class="tier" data-tier="director" tabindex="0">
+            <div class="tier-title"><strong>▲ Director</strong><small>expensive</small></div>
+            <div class="muted">Plan, judge, handle ambiguity</div>
+            <div class="assigned" id="director-list"></div>
+          </div>
+          <div class="tier" data-tier="specialist" tabindex="0">
+            <div class="tier-title"><strong>◆ Specialists</strong><small>mid-cost</small></div>
+            <div class="muted">Search, extract, compare</div>
+            <div class="assigned" id="specialist-list"></div>
+          </div>
+          <div class="tier" data-tier="worker" tabindex="0">
+            <div class="tier-title"><strong>▼ Workers</strong><small>cheap</small></div>
+            <div class="muted">Format, repeat, process volume</div>
+            <div class="assigned" id="worker-list"></div>
+          </div>
+          <p><strong>Estimated cost / risk</strong></p>
+          <div class="meter" aria-label="Estimated cost"><span id="cost-meter"></span></div>
+          <div class="status" id="cost-result" aria-live="polite">
+            Unassigned tasks: choose a task to begin.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="good"><strong>Success state:</strong> Use premium reasoning for decisions; use low-cost execution for volume.</p>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+/* Log trust demo */
+$("#trust-log").onclick=()=>{
+  $("#raw-events").hidden=true;
+  $("#log-result").innerHTML='<span class="amber">Looks complete.</span> But this is only the agent’s claim. Try viewing the raw events.';
+};
+$("#view-events").onclick=()=>{
+  $("#raw-events").hidden=false;
+  $("#log-result").innerHTML='<span class="bad">Evidence incomplete.</span> Database 2 timed out and was never searched.';
+};
+$("#reset-log").onclick=()=>{
+  $("#raw-events").hidden=true;
+  $("#log-result").textContent="Choose an option. The summary is written by the agent itself.";
+};
+
+/* Integrity layers */
+const layerCopy={
+  1:"<strong>Layer 1: Agent self-report.</strong> The agent writes what it says happened. Fast and useful—but editable by the author.<br><span class='amber'>Good for: readability. Weak for: proof.</span>",
+  2:"<strong>Layer 2: External event capture.</strong> Tools, gateways, or services record calls independently: timestamps, inputs, outputs, and failures. The agent cannot simply omit a captured event.<br><span class='amber'>Good for: reconstructing actions. Weak for: proving the record itself stayed unchanged.</span>",
+  3:"<strong>Layer 3: Tamper-evident provenance.</strong> Each record is cryptographically linked to the previous one and anchored outside the agent’s control. Change, delete, or reorder an event, and the chain no longer verifies.<br><span class='good'>This is the layer that matters: it turns history into evidence.</span>"
+};
+$$(".layer").forEach(b=>b.onclick=()=>{
+  $$(".layer").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  $("#layer-result").innerHTML=layerCopy[b.dataset.layer];
+});
+$("#tamper").onclick=()=>{
+  $("#event-two").classList.add("bad-event");
+  $("#event-two").innerHTML="Event 2<br><small>Result: $500</small>";
+  $$(".link").forEach(x=>x.classList.add("failed"));
+  $("#chain-result").innerHTML='<span class="bad">Verification failed at Event 2. The history was altered.</span>';
+};
+$("#reset-chain").onclick=()=>{
+  $("#event-two").classList.remove("bad-event");
+  $("#event-two").innerHTML="Event 2<br><small>Result: $5</small>";
+  $$(".link").forEach(x=>x.classList.remove("failed"));
+  $("#chain-result").textContent="Chain verified. No changes detected.";
+};
+
+/* Critique loop */
+let critiqueStep=0;
+$("#next-critique").onclick=()=>{
+  critiqueStep++;
+  if(critiqueStep===1){
+    $("#critique-output").innerHTML="<strong>STATE: Critique</strong><br>CRITIC SCORE: <span class='bad'>40/100</span><br>Flag: circular evidence—the log is self-authored.";
+    $("#show-diff").hidden=false;
+    $("#next-critique").textContent="Next: revise";
+  }else{
+    const evidence=$("#rubric-evidence").checked, method=$("#rubric-method").checked;
+    const score=(evidence?30:0)+(method?30:0)+40;
+    $("#critique-output").innerHTML=`<strong>STATE: Revision</strong><br>CRITIC SCORE: <span class="${score>70?'good':'bad'}">${score}/100</span><br>${score>70?"Approved after replacing log-based proof with independently verified evidence.":"Weak answer passed: the rubric does not require enough evidence."}`;
+    $("#diff").hidden=false;
+    $("#next-critique").disabled=true;
+  }
+};
+$("#show-diff").onclick=()=>$("#diff").hidden=!$("#diff").hidden;
+$("#reset-critique").onclick=()=>{
+  critiqueStep=0;$("#draft").value="The claim is true because the log says so.";
+  $("#critique-output").textContent="STATE: Draft";$("#diff").hidden=true;
+  $("#show-diff").hidden=true;$("#next-critique").disabled=false;
+  $("#next-critique").textContent="Next: run critic";
+};
+
+/* Cost pyramid */
+let selectedTask=null, assignments={};
+const taskNames={
+ strategy:"Choose strategy",summarize:"Summarize 100 pages",
+ contradiction:"Detect contradiction",citations:"Format citations"
+};
+$$(".task").forEach(t=>{
+  t.onclick=()=>{
+    $$(".task").forEach(x=>x.classList.remove("selected"));
+    t.classList.add("selected");selectedTask=t.dataset.task;
+    $(".cost-result").textContent=`Selected “${taskNames[selectedTask]}”. Choose a tier.`;
+  };
+  t.ondragstart=e=>{selectedTask=t.dataset.task;e.dataTransfer.setData("text/plain",selectedTask)};
+});
+$$(".tier").forEach(t=>{
+  t.onclick=()=>assign(t.dataset.tier);
+  t.ondragover=e=>{e.preventDefault();t.classList.add("drop-target")};
+  t.ondragleave=()=>t.classList.remove("drop-target");
+  t.ondrop=e=>{e.preventDefault();t.classList.remove("drop-target");selectedTask=e.dataTransfer.getData("text/plain");assign(t.dataset.tier)};
+});
+function assign(tier){
+  if(!selectedTask)return;
+  assignments[selectedTask]=tier;
+  renderCost();selectedTask=null;
+  $$(".task").forEach(x=>x.classList.remove("selected"));
+}
+function renderCost(){
+  ["director","specialist","worker"].forEach(t=>{
+    $("#"+t+"-list").innerHTML=Object.keys(assignments).filter(k=>assignments[k]===t)
+      .map(k=>`<small>• ${taskNames[k]}</small>`).join("<br>");
+  });
+  const vals={director:30,specialist:14,worker:5};
+  let cost=0,risk=0,unassigned=0;
+  $$(".task").forEach(x=>{
+    const k=x.dataset.task;
+    if(!assignments[k])unassigned++;
+    else{cost+=vals[assignments[k]];if(assignments[k]!==x.dataset.correct)risk+=25}
+  });
+  $("#cost-meter").style.width=Math.min(100,cost)+"%";
+  $("#cost-meter").style.background=risk?"var(--amber)":"var(--good)";
+  if(unassigned){$("#cost-result").textContent=`${unassigned} task(s) still unassigned.`;return}
+  if(risk){
+    $("#cost-result").innerHTML=`<span class="amber">Risk raised.</span> Some decisions were routed to cheap execution, or routine work was made unnecessarily expensive.`;
+  }else{
+    $("#cost-result").innerHTML='<span class="good">Success:</span> Use premium reasoning for decisions; use low-cost execution for volume.';
+  }
+}
+
+/* ── LIVE HASH CHAIN ──────────────────────────────────────────────────────────
+   Hand-added after the council's draft. Real SHA-256 via crypto.subtle.
+
+   The rule being demonstrated: each entry's hash is computed over its own text PLUS the
+   previous entry's hash. So editing entry 2 changes entry 2's hash, which changes entry 3's
+   input, which changes entry 3's hash, and so on to the end. One edit, and everything
+   downstream stops matching what was recorded — which is exactly why you cannot quietly
+   change one line of a hash-chained log.
+
+   `baseline` stores the hashes as originally computed; a row is "broken" when its live hash
+   no longer equals its baseline. That comparison is the check a verifier performs.        */
+(function(){
+  const HOST = document.getElementById("liveChain");
+  if(!HOST || !window.crypto || !crypto.subtle) return;   // optional widget, never fatal
+
+  const SEED = [
+    "tool call · search database 1",
+    "result · 4 records returned",
+    "tool call · search database 2",
+    "receipt stored · run complete",
+  ];
+  const GENESIS = "0".repeat(64);
+  const enc = new TextEncoder();
+  let baseline = [];
+
+  async function sha(s){
+    const b = await crypto.subtle.digest("SHA-256", enc.encode(s));
+    return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+  }
+  const short = h => h.slice(0,10) + "…";
+
+  function texts(){
+    return [...HOST.querySelectorAll("input")].map(i=>i.value);
+  }
+
+  async function chainOf(list){
+    const out = []; let prev = GENESIS;
+    for(let i=0;i<list.length;i++){
+      const h = await sha(`${i}|${list[i]}|${prev}`);
+      out.push({prev, hash:h});
+      prev = h;
+    }
+    return out;
+  }
+
+  function build(){
+    HOST.innerHTML = SEED.map((t,i)=>`
+      <div class="lc-row" data-i="${i}">
+        <div class="lc-top">
+          <span class="lc-n">#${i}</span>
+          <input value="${t.replace(/"/g,"&quot;")}" aria-label="log entry ${i}">
+          <span class="lc-tag ok">match</span>
+        </div>
+        <div class="lc-hashes">
+          <span class="lc-h">prev ${short(GENESIS)}</span><span>→</span>
+          <span class="lc-h">…</span>
+        </div>
+      </div>`).join("");
+    HOST.querySelectorAll("input").forEach(inp=>inp.addEventListener("input", refresh));
+  }
+
+  async function refresh(){
+    const live = await chainOf(texts());
+    let broken = 0;
+    HOST.querySelectorAll(".lc-row").forEach((row,i)=>{
+      const ok = !baseline.length || baseline[i].hash === live[i].hash;
+      if(!ok) broken++;
+      row.classList.toggle("broken", !ok);
+      const tag = row.querySelector(".lc-tag");
+      tag.textContent = ok ? "match" : "MISMATCH";
+      tag.className = "lc-tag " + (ok ? "ok" : "no");
+      row.querySelector(".lc-hashes").innerHTML =
+        `<span class="lc-h">prev ${short(live[i].prev)}</span><span>→</span>` +
+        `<span class="lc-h">${short(live[i].hash)}</span>`;
+    });
+    const s = document.getElementById("lc-status");
+    if(s){
+      s.textContent = broken
+        ? `${broken} entr${broken===1?"y":"ies"} no longer match what was recorded.`
+        : "Chain intact — every hash matches the record.";
+      s.style.color = broken ? "var(--bad)" : "var(--good)";
+    }
+  }
+
+  async function reset(){
+    build();
+    baseline = await chainOf(texts());
+    await refresh();
+  }
+
+  const btn = document.getElementById("lc-reset");
+  if(btn) btn.addEventListener("click", reset);
+  reset();
+})();
+</script>
+</body>
+</html>

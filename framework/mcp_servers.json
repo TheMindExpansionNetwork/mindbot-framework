@@ -1,0 +1,23 @@
+{
+  "_doc": "External MCP servers the hive connects OUT to. Set enabled:true to use one. The 'self' entry is a loopback to our own MCP server (proves the client works + lets a counselor read the hive over MCP). Add real servers below (filesystem, git, search, etc.) with their launch command.",
+  "servers": {
+    "self": {
+      "command": "python",
+      "args": ["-m", "mindbot_pipeline.cli", "mcp"],
+      "enabled": true,
+      "note": "loopback to our own MCP server (board/ledger/trails/council/propose)"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+      "enabled": false,
+      "note": "example — needs node; gives read access to files via MCP"
+    },
+    "git": {
+      "command": "uvx",
+      "args": ["mcp-server-git"],
+      "enabled": false,
+      "note": "example — git operations over MCP"
+    }
+  }
+}

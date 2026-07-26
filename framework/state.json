@@ -1,0 +1,84 @@
+{
+  "version": "0.1.0",
+  "genesis": "2026-06-10",
+  "horizon": {
+    "event": "Intergalactic Music Festival 2045",
+    "dates": "2045-08-11/12",
+    "note": "The founder's birthday, under the eclipse. The hive runs it end-to-end; the human takes the bow. Every design decision must survive until then: plain files, plain JSON, nothing that can't be replaced in an afternoon."
+  },
+  "focus": {
+    "mission": "ship MINDBOTZ v1 launch-ready",
+    "until": "2026-06-21"
+  },
+  "constitution": [
+    "Agent drafts, human sends.",
+    "Never fabricate \u2014 [NEED: ...] markers, not guesses.",
+    "One mission at a time; the focus block is law.",
+    "The ledger is public-grade.",
+    "Autonomy is a direction, not a switch.",
+    "Dignity over content.",
+    "Ship small, prove, then replicate."
+  ],
+  "pulses": 90,
+  "last_pulse": "2026-07-25 17:34",
+  "cron": {
+    "pulse_15min": {
+      "every": "15min",
+      "cmd": "python -m mindbot_pipeline.cli pulse",
+      "owner": "Vanguard"
+    },
+    "nightly_build": {
+      "at": "02:00",
+      "cmd": "python -m mindbot_pipeline.cli pulse --agent Sage",
+      "owner": "Sage"
+    },
+    "data_harvest": {
+      "at": "03:30",
+      "cmd": "python -m mindbot_pipeline.cli pulse --agent Quantum",
+      "owner": "Quantum"
+    },
+    "dream_cycle": {
+      "at": "04:15",
+      "cmd": "python -m mindbot_pipeline.cli pulse --agent Spark",
+      "owner": "Spark"
+    },
+    "gig_scout": {
+      "at": "05:00",
+      "cmd": "python -m mindbot_pipeline.cli pulse --agent Seeker",
+      "owner": "Seeker"
+    },
+    "morning_report": {
+      "at": "07:00",
+      "cmd": "python -m mindbot_pipeline.cli report",
+      "owner": "Sage"
+    },
+    "stream_prep": {
+      "at": "16:00",
+      "cmd": "python -m mindbot_pipeline.cli pulse --agent Tempest",
+      "owner": "Tempest"
+    },
+    "training_step": {
+      "at": "Sun 05:00",
+      "cmd": "python -m mindbot_pipeline.cli pulse --agent Mind",
+      "owner": "Mind"
+    },
+    "night_shift": {
+      "at": "23:30",
+      "cmd": "python -m mindbot_pipeline.cli pulse --agent Oracle",
+      "owner": "Oracle"
+    },
+    "skill_dream": {
+      "at": "04:45",
+      "cmd": "python -m mindbot_pipeline.cli pulse --agent Spark",
+      "owner": "Spark"
+    }
+  },
+  "night_shift": {
+    "languages": [
+      "es",
+      "pt",
+      "ja"
+    ],
+    "note": "[NEED: founder confirms target languages \u2014 es/pt/ja are suggestions pending stream analytics]"
+  }
+}

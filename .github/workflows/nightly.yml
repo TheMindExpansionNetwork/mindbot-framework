@@ -1,0 +1,116 @@
+name: night shift
+
+# THE OVERNIGHT RUN.
+#
+# This is the honest version of "run it while I sleep": GitHub's servers do the work on a
+# schedule, every night, forever — no laptop left on, no agent session held open, and every
+# result is reproducible by anyone who reads the log.
+#
+# It closes a gap the test report names out loud. TEST_REPORT.md says the suite has only ever
+# been exercised on Windows, so POSIX file locking (fcntl.flock) — the thing that keeps the hash
+# chain sound under concurrent writers — was implemented and code-reviewed but never actually
+# RUN on Linux or macOS. A claim that has never executed on the platform it names is a claim, not
+# a result. The matrix below runs it on all three, on four Python versions, and the concurrency
+# suite spawns real subprocesses on each.
+#
+# It spends nothing: no API key is provided, so every model path degrades to template mode. That
+# is deliberate — a nightly job that quietly bills you is a nightly job you turn off.
+
+on:
+  schedule:
+    - cron: "0 7 * * *"        # 07:00 UTC — ~midnight US Pacific, i.e. overnight
+  workflow_dispatch:            # ...and a button, for when you don't want to wait
+  push:
+    branches: [main]
+    paths: ["framework/**", ".github/workflows/nightly.yml"]
+
+permissions:
+  contents: write               # needed to commit the report back; nothing else
+
+env:
+  # The CLI prints ✓/✗/emoji. Windows runners default to cp1252, where those raise
+  # UnicodeEncodeError and kill the process — turning a PASSING check into a blank FAIL for
+  # purely cosmetic reasons. Measured on windows-latest/py3.13 during the first nightly run.
+  PYTHONUTF8: "1"
+  PYTHONIOENCODING: "utf-8"
+
+jobs:
+  audit:
+    name: audit · ${{ matrix.os }} · py${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false          # one platform failing must not hide the others' results
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Full system audit
+        working-directory: framework
+        run: python _full_audit.py
+
+      - name: Concurrency — real subprocesses hammering the hash chain
+        working-directory: framework
+        # Called out separately because it is the one test that has caught real corruption:
+        # 3 concurrent writers once produced 17 duplicate seqs and broke the chain at seq 2.
+        # On Linux/macOS this is the FIRST time fcntl.flock is exercised rather than assumed.
+        run: python -m unittest discover tests -p "test_concurrency.py" -v
+
+      - name: Secret scan
+        working-directory: framework
+        run: python -m mindbot_pipeline.cli scan
+
+      - name: Stamp round-trip (issue, then verify it)
+        working-directory: framework
+        run: |
+          python -m mindbot_pipeline.cli stamp --project "nightly-${{ matrix.os }}" --note "CI audit"
+          python -m mindbot_pipeline.cli stamp --verify ../MINDBOT_STAMP.md
+
+      - name: Upload facts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-${{ matrix.os }}-py${{ matrix.python }}
+          path: framework/_audit_facts.json
+          if-no-files-found: warn
+
+  report:
+    name: write the morning report
+    needs: audit
+    # Deliberately NOT on push. The report job commits NIGHTLY.md back to main, so running it on
+    # every push means each of your pushes races a bot commit and gets rejected as non-fast-
+    # forward — which happened three times in a row while setting this up. The morning report is
+    # a nightly artifact; it belongs to the schedule (and to a manual run when you want one).
+    if: always() && github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: _nightly
+          pattern: audit-*
+
+      - name: Consolidate
+        run: python framework/_nightly_report.py _nightly NIGHTLY.md
+        env:
+          MATRIX_RESULT: ${{ needs.audit.result }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Commit the report
+        run: |
+          git config user.name  "mindbot[night-shift]"
+          git config user.email "noreply@github.com"
+          git add NIGHTLY.md
+          # No-op cleanly when nothing changed — a nightly job that creates an empty commit
+          # every single night trains you to ignore its commits.
+          git diff --staged --quiet || git commit -m "night shift: $(date -u +%Y-%m-%d) audit across 12 platform/version combos"
+          git push

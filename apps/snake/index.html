@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>DATA SERPENT — a MINDBOTZ retro snake</title>
+<style>
+  :root{--bg:#0b0d17;--cyan:#5eead4;--violet:#a78bfa;--amber:#fbbf24;--pink:#f472b6;--green:#4ade80;--dim:#93a4bd}
+  *{margin:0;box-sizing:border-box}
+  body{background:radial-gradient(900px 500px at 50% -10%,#141a2e,#0b0d17 60%);color:#e6ecf5;
+    font-family:'Courier New',monospace;min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;padding:14px;touch-action:none;-webkit-user-select:none;user-select:none}
+  h1{font-size:clamp(20px,5vw,34px);letter-spacing:6px;
+    background:linear-gradient(90deg,var(--cyan),var(--violet),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--dim);font-size:12px;letter-spacing:3px;margin:4px 0 12px}
+  #hud{display:flex;gap:22px;font-size:16px;margin-bottom:10px;letter-spacing:1px}
+  #hud b{color:var(--amber)} #hud .hi{color:var(--cyan)}
+  .wrap{position:relative}
+  canvas{border:2px solid #263350;border-radius:12px;background:#070910;box-shadow:0 0 50px #5eead422,inset 0 0 70px #00000099;max-width:94vw;height:auto}
+  .scan{position:absolute;inset:0;pointer-events:none;border-radius:12px;
+    background:repeating-linear-gradient(0deg,transparent 0 2px,#0000001f 2px 4px)}
+  #over{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;
+    background:#0b0d17ee;border-radius:12px;text-align:center;padding:20px}
+  #over h2{font-size:clamp(22px,6vw,40px);letter-spacing:4px;color:var(--cyan);text-shadow:0 0 20px #5eead266}
+  #over p{color:var(--dim);margin:12px 0;font-size:14px;line-height:1.7}
+  .btn{margin-top:8px;background:#0b3b3533;border:1px solid var(--cyan);color:var(--cyan);border-radius:10px;
+    padding:12px 26px;cursor:pointer;font-family:inherit;font-size:15px;letter-spacing:2px}
+  .btn:hover{box-shadow:0 0 20px #5eead255}
+  .foot{color:#475569;font-size:11px;margin-top:12px;text-align:center;line-height:1.6}
+  .pulse{animation:bl 1s infinite}@keyframes bl{50%{opacity:.3}}
+</style>
+</head>
+<body>
+<h1>🐍 DATA SERPENT</h1>
+<div class="sub">a MINDBOTZ retro arcade · eat the 🍓 · don't bite the thread</div>
+<div id="hud">SCORE <b id="sc">0</b> · SPEED <b id="lv">1</b> · BEST <b class="hi" id="hi">0</b></div>
+<div class="wrap">
+  <canvas id="c" width="440" height="440"></canvas>
+  <div class="scan"></div>
+  <div id="over">
+    <h2 id="ov-t">DATA SERPENT</h2>
+    <p id="ov-p">The thread sleeps. Wake it.<br>arrows / WASD / swipe to steer · SPACE = pause · M = mute</p>
+    <button class="btn" id="ov-b">▶ JACK IN</button>
+  </div>
+</div>
+<div class="foot">eat strawberries to grow & speed up · wrap the walls · self-collision ends the run<br>↑↑↓↓←→←→ B A … the serpent remembers</div>
+
+<script>
+(()=>{
+  const cv=document.getElementById('c'),x=cv.getContext('2d');
+  const N=22, S=cv.width/N;               // 22x22 grid
+  const sc=document.getElementById('sc'),lv=document.getElementById('lv'),hiEl=document.getElementById('hi');
+  const over=document.getElementById('over'),ovT=document.getElementById('ov-t'),ovP=document.getElementById('ov-p'),ovB=document.getElementById('ov-b');
+  let snake,dir,nextDir,food,score,speed,alive,timer,muted=false,running=false;
+  let hi=+(localStorage.getItem('mb_snake_hi')||0); hiEl.textContent=hi;
+
+  // WebAudio blips (no files)
+  let actx; function beep(f,d=0.06,t='square',g=0.05){ if(muted)return;
+    try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(),v=actx.createGain(); o.type=t; o.frequency.value=f;
+    o.connect(v); v.connect(actx.destination); v.gain.value=g; o.start();
+    v.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+d); o.stop(actx.currentTime+d);}catch(e){} }
+
+  function reset(){ snake=[{x:11,y:11},{x:10,y:11},{x:9,y:11}]; dir={x:1,y:0}; nextDir=dir;
+    score=0; speed=1; alive=true; placeFood(); hud(); schedule(); }
+  function hud(){ sc.textContent=score; lv.textContent=speed; hiEl.textContent=Math.max(hi,score); }
+  function placeFood(){ let p; do{ p={x:(Math.random()*N)|0,y:(Math.random()*N)|0}; }
+    while(snake.some(s=>s.x===p.x&&s.y===p.y)); food=p; }
+  function schedule(){ clearInterval(timer); timer=setInterval(tick, Math.max(60, 150 - speed*8)); }
+
+  function tick(){ if(!alive||!running) return;
+    dir=nextDir;
+    const h={x:(snake[0].x+dir.x+N)%N, y:(snake[0].y+dir.y+N)%N};
+    if(snake.some(s=>s.x===h.x&&s.y===h.y)){ return die(); }
+    snake.unshift(h);
+    if(h.x===food.x&&h.y===food.y){ score+=10; beep(660,0.07,'square',0.06);
+      if(score%50===0){ speed++; beep(880,0.1,'sawtooth',0.05); schedule(); }
+      placeFood(); hud(); }
+    else snake.pop();
+    draw();
+  }
+
+  function draw(){
+    x.fillStyle='#070910'; x.fillRect(0,0,cv.width,cv.height);
+    // subtle grid
+    x.strokeStyle='#10172a'; x.lineWidth=1;
+    for(let i=1;i<N;i++){ x.beginPath();x.moveTo(i*S,0);x.lineTo(i*S,cv.height);x.stroke();
+      x.beginPath();x.moveTo(0,i*S);x.lineTo(cv.width,i*S);x.stroke(); }
+    // food (strawberry)
+    x.font=(S-2)+'px serif'; x.textBaseline='top'; x.fillText('🍓',food.x*S+1,food.y*S+1);
+    // snake — cyan head, violet→amber body gradient, glow
+    snake.forEach((s,i)=>{
+      const t=i/Math.max(1,snake.length);
+      x.fillStyle = i===0 ? '#5eead4' : `hsl(${262 - t*120},70%,${64-Math.min(i,18)}%)`;
+      x.shadowColor = i===0 ? '#5eead4' : '#a78bfa'; x.shadowBlur = i===0?12:4;
+      const px=s.x*S+2, py=s.y*S+2, w=S-4;
+      x.beginPath(); x.roundRect(px,py,w,w, i===0?7:4); x.fill();
+    });
+    x.shadowBlur=0;
+    // head eyes
+    const hd=snake[0];
+    x.fillStyle='#0b0d17';
+    x.fillRect(hd.x*S+6,hd.y*S+6,3,3); x.fillRect(hd.x*S+S-9,hd.y*S+6,3,3);
+  }
+
+  function die(){ alive=false; running=false; clearInterval(timer);
+    beep(160,0.3,'sawtooth',0.08); hi=Math.max(hi,score); localStorage.setItem('mb_snake_hi',hi);
+    // glitch flash
+    let f=0; const g=setInterval(()=>{ x.fillStyle=f%2?'#f4729644':'#5eead444'; x.fillRect(0,0,cv.width,cv.height);
+      if(++f>6){ clearInterval(g); showOver(); } },45);
+  }
+  function showOver(){ ovT.textContent='SIGNAL LOST';
+    ovP.innerHTML=`the thread bit itself.<br>SCORE <b style="color:var(--amber)">${score}</b> · BEST ${hi}<br><span style="color:var(--dim)">the ledger remembers every run.</span>`;
+    ovB.textContent='↻ RUN AGAIN'; over.style.display='flex'; }
+
+  function start(){ over.style.display='none'; running=true; reset(); draw(); }
+  ovB.onclick=start;
+
+  // input
+  addEventListener('keydown',e=>{
+    const k=e.key.toLowerCase();
+    if(k===' '){ e.preventDefault(); if(alive){ running=!running; beep(440,0.05); } return; }
+    if(k==='m'){ muted=!muted; return; }
+    if(!running && (k==='enter')) { start(); return; }
+    const map={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]};
+    if(map[k]){ e.preventDefault(); const [dx,dy]=map[k];
+      if(dx!==-dir.x && dy!==-dir.y) nextDir={x:dx,y:dy}; }
+  });
+  let tx=0,ty=0;
+  cv.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+  cv.addEventListener('touchend',e=>{ if(!running){start();return;}
+    const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)<14&&Math.abs(dy)<14)return;
+    if(Math.abs(dx)>Math.abs(dy)){ if(dx>0&&dir.x!==-1)nextDir={x:1,y:0}; else if(dx<0&&dir.x!==1)nextDir={x:-1,y:0}; }
+    else{ if(dy>0&&dir.y!==-1)nextDir={x:0,y:1}; else if(dy<0&&dir.y!==1)nextDir={x:0,y:-1}; }
+  },{passive:true});
+  // konami → rainbow + bonus
+  const K=["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+  let kb=[]; addEventListener('keydown',e=>{ kb.push(e.key); kb=kb.slice(-10);
+    if(K.every((v,i)=>kb[i]===v)){ kb=[]; score+=42; speed++; schedule(); hud(); beep(990,0.2,'triangle',0.06); } });
+
+  draw(); // idle frame behind the menu
+})();
+</script>
+</body>
+</html>

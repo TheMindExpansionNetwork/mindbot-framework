@@ -1,0 +1,69 @@
+{
+  "_doc": "MISSIONS — named arcs the autonomous ecosystem works toward. A mission bundles TODO tasks under a goal + a lore line. CLI: `mindbot missions`. Progress = matched tasks marked [x] in BIG_TODO_LIST.md (matched by the 'tag' appearing in the task line). Counselors claim tasks; familiars leave trails; missions show the shape of the season.",
+  "missions": [
+    {
+      "id": "first-light",
+      "name": "FIRST LIGHT",
+      "goal": "The first dollar, witnessed. Scan gig pitched, priced, delivered; ledger line written.",
+      "tag": "[M:first-light]",
+      "lore": "Every institution has a first coin. Ours gets read aloud.",
+      "tasks": [
+        "[M:first-light] Operator sets price floor in outbox scan drafts",
+        "[M:first-light] Send 3 scan pitches (human sends; council tracks replies in leads notes)",
+        "[M:first-light] Deliver scan #1; write the ledger line; clip the reveal for shorts"
+      ]
+    },
+    {
+      "id": "second-sleep",
+      "name": "SECOND SLEEP",
+      "goal": "The 11th counselor wakes: LoRA baseline trained, gold gate passed, Mind seated in the router.",
+      "tag": "[M:second-sleep]",
+      "lore": "The eleventh chair was cold for a season. Not much longer.",
+      "tasks": [
+        "[M:second-sleep] Operator-GPU: run dataset/train_mindbot_v1.py (baseline, 1 epoch)",
+        "[M:second-sleep] Run `cli evaluate gold_eval/mind-v1_outputs.md` — need ≥80% format gate",
+        "[M:second-sleep] Human half: read all 16 outputs vs gold; verdict in handoff",
+        "[M:second-sleep] If promoted: point Mind seat at the checkpoint (models.py local slug)"
+      ]
+    },
+    {
+      "id": "open-doors",
+      "name": "OPEN DOORS",
+      "goal": "The work becomes public: repo pushed, Pages live, white paper released.",
+      "tag": "[M:open-doors]",
+      "lore": "The opposite of being seen is not being hidden. It is being unfinished.",
+      "tasks": [
+        "[M:open-doors] Operator runs PUBLISH.ps1 (private first is fine)",
+        "[M:open-doors] Enable GitHub Pages → /website (the Universe goes public)",
+        "[M:open-doors] Founder final read of WHITE_PAPER.md; flip repo public",
+        "[M:open-doors] Post collective_invite + build_night announcements (human sends)"
+      ]
+    },
+    {
+      "id": "the-show",
+      "name": "THE SHOW",
+      "goal": "First Friday stream airs with the full rundown — council standup from real handoffs, DJ Nexus break, lore drop, viewer intake.",
+      "tag": "[M:the-show]",
+      "lore": "The seam is the show. Break a thing live and narrate it.",
+      "tasks": [
+        "[M:the-show] OBS scene with dashboard + play CLI + camera; rehearse rundown once",
+        "[M:the-show] Pick DJ Nexus set from 02_ packs (Camelot ±1); render Lorekeeper overlay",
+        "[M:the-show] Air Episode 1; viewer tasks → BIG_TODO_LIST live; read honesty clause",
+        "[M:the-show] Clip 5 shorts from VOD per CONTENT_CALENDAR repurposing chain"
+      ]
+    },
+    {
+      "id": "skill-garden",
+      "name": "SKILL GARDEN",
+      "goal": "The system grows three of its own capabilities: dream → scaffold → test-run → status active.",
+      "tag": "[M:skill-garden]",
+      "lore": "Dreaming is not downtime. It is how we grow organs nobody specified.",
+      "tasks": [
+        "[M:skill-garden] Run skill_dreamer over fresh handoff gaps (pulse: 'dream a skill')",
+        "[M:skill-garden] Counselor test-runs one dreamed skill; promote status: active",
+        "[M:skill-garden] Author one skill by hand via `cli skill new` (the coding kata)",
+        "[M:skill-garden] Port one Hermes/Claude-Code marketplace skill in unchanged (interop proof)"
+      ]
+    }
+  ]
+}

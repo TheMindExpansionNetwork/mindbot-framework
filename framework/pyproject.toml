@@ -1,0 +1,36 @@
+# MindBot — packaging so a fresh agent can `pip install -e .` and get a real `mindbot` command.
+# The CORE is Python 3.10+ STDLIB-ONLY by design: no install_requires, nothing to download.
+# (The Modal fleet — S0N1C/c0d3r/v0x — deploys separately and is optional; see docs/MODEL_TIERS.md.)
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mindbot"
+description = "MindBot — an 11-counselor autonomous AI council framework (stdlib-only core)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "The Mind Expansion Network", email = "funkymonkiezband@gmail.com" }]
+keywords = ["agents", "ai", "council", "autonomous", "llm", "openrouter", "mcp"]
+dynamic = ["version"]          # read from mindbot_pipeline.__version__ — one source of truth
+dependencies = []              # stdlib-only core: zero third-party deps
+
+[project.optional-dependencies]
+# Optional extras for the deploy/fleet side. The core never needs these.
+fleet = ["modal>=0.64"]
+dev = []                       # the test suite is stdlib unittest — nothing extra needed
+
+[project.scripts]
+mindbot = "mindbot_pipeline.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/TheMindExpansionNetwork/MINDBOTZ"
+Source = "https://github.com/TheMindExpansionNetwork/MINDBOTZ"
+
+[tool.setuptools]
+packages = ["mindbot_pipeline"]
+
+[tool.setuptools.dynamic]
+version = { attr = "mindbot_pipeline.__version__" }

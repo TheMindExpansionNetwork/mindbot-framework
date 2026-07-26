@@ -1,0 +1,25 @@
+name: tests
+# The suite is the judge — every push to staging/main runs it. No deploy, just truth.
+# Stdlib-only core: no pip install needed. This is the gate the harness already obeys
+# locally, now enforced on every contribution.
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run the suite (stdlib only)
+        working-directory: framework
+        run: python -m unittest discover tests -v
+      - name: Verify the council loads
+        working-directory: framework
+        run: python -m mindbot_pipeline.cli council
